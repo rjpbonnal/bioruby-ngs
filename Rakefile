@@ -15,8 +15,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "bio-ngs"
   gem.homepage = "http://github.com/helios/bioruby-ngs"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby}
+  gem.description = %Q{BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby}
   gem.email = "ilpuccio.febo@gmail.com"
   gem.authors = ["Raoul J.P. Bonnal"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
