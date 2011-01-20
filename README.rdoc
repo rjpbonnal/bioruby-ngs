@@ -1,6 +1,14 @@
 = bio-ngs
 
-Description goes here.
+BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby.
+
+== What we want to do and support
+* SAMtools
+* BWA
+* Bowtie/TopHat/Cufflinks
+
+* Reporting: text and graphs
+* SGE? 
 
 == Contributing to bio-ngs
  
