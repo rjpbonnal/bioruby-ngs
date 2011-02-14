@@ -8,7 +8,7 @@ class BioNGS < Thor::Group
   argument :project_name
   
   def self.source_root
-     File.dirname(__FILE__)
+     File.expand_path(File.dirname(__FILE__))
   end
   
   def create_project_dir
@@ -17,7 +17,6 @@ class BioNGS < Thor::Group
   
   def create_sub_dirs
     empty_directory File.join("#{project_name}","data")
-    empty_directory File.join("#{project_name}","db")
     empty_directory File.join("#{project_name}","log")
     empty_directory File.join("#{project_name}","tasks")
     empty_directory File.join("#{project_name}","scripts")
@@ -26,12 +25,13 @@ class BioNGS < Thor::Group
   
   def create_tasks
     path = BioNGS.source_root
-    Dir.glob(File.join(File.dirname(path),"templates","*.erb")).each do |file|
-      name = file.split(File::SEPARATOR)
+    Dir.glob(File.join(File.dirname(path),"templates","*.erb")).each do |f|
+      name = f.split(File::SEPARATOR)
       filename = name[-1].split('.')
       template(f, "#{project_name}/tasks/#{filename[0]}.thor")
     end
   end
+  
   
 end
 
