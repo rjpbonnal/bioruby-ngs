@@ -42,4 +42,23 @@ class Bwa < Thor
     
   end
 
+
+  class Sam < Bwa
+    
+    desc "single [SAI]", "Convert SAI alignment output into SAM format (single end)"
+    method_options :db_prefix => :required, :fastq => :required, :file_out => :string
+    def single(sai)
+      Bio::BWA.sam_to_sai_single(:prefix => options[:prefix],:sai => sai, :fastq => options[:fastq], :file_out => options[:file_out])
+    end
+    
+    desc "paired", "Convert SAI alignment output into SAM format (paired ends)"
+    method_options :db_prefix => :required, :file_out => :string
+    method_option :sai => :array, :required => true
+    method_option :fastq => :array, :required => true
+    def paired
+      Bio::BWA.sam_to_sai_paired(:prefix => options[:prefix],:sai => options[:sai], :fastq => options[:fastq], :file_out => options[:file_out])
+    end
+    
+  end
+
 end
