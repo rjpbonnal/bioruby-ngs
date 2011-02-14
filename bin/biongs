@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 require 'thor/group'
 
 class BioNGS < Thor::Group
@@ -20,12 +21,17 @@ class BioNGS < Thor::Group
     empty_directory File.join("#{project_name}","log")
     empty_directory File.join("#{project_name}","tasks")
     empty_directory File.join("#{project_name}","scripts")
+    empty_directory File.join("#{project_name}","conf")
   end
   
-  def create_bwa_tasks
-    template(File.join("..","templates","bwa.erb"), "#{project_name}/tasks/bwa.thor")
+  def create_tasks
+    path = BioNGS.source_root
+    Dir.glob(File.join(File.dirname(path),"templates","*.erb")).each do |file|
+      name = file.split(File::SEPARATOR)
+      filename = name[-1].split('.')
+      template(f, "#{project_name}/tasks/#{filename[0]}.thor")
+    end
   end
-  
   
 end
 
