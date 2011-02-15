@@ -25,11 +25,15 @@ class BioNGS < Thor::Group
   
   def create_tasks
     path = BioNGS.source_root
-    Dir.glob(File.join(File.dirname(path),"templates","*.erb")).each do |f|
+    Dir.glob(File.join(File.dirname(path),"templates","tasks","*.erb")).each do |f|
       name = f.split(File::SEPARATOR)
       filename = name[-1].split('.')
       template(f, "#{project_name}/tasks/#{filename[0]}.thor")
     end
+  end
+  
+  def create_readme
+    template(File.join("..","templates","README.erb"), "#{project_name}/README.txt")
   end
   
   
