@@ -1,42 +1,23 @@
 #!/usr/bin/env ruby
 
-require 'thor/group'
+require 'thor'
+require 'thor/runner'
 
-class BioNGS < Thor::Group
-  include Thor::Actions
-  # the project name
-  argument :project_name
-  
-  def self.source_root
-     File.expand_path(File.dirname(__FILE__))
-  end
-  
-  def create_project_dir
-    empty_directory project_name
-  end
-  
-  def create_sub_dirs
-    empty_directory File.join("#{project_name}","data")
-    empty_directory File.join("#{project_name}","log")
-    empty_directory File.join("#{project_name}","tasks")
-    empty_directory File.join("#{project_name}","scripts")
-    empty_directory File.join("#{project_name}","conf")
-  end
-  
-  def create_tasks
-    path = BioNGS.source_root
-    Dir.glob(File.join(File.dirname(path),"templates","tasks","*.erb")).each do |f|
-      name = f.split(File::SEPARATOR)
-      filename = name[-1].split('.')
-      template(f, "#{project_name}/tasks/#{filename[0]}.thor")
-    end
-  end
-  
-  def create_readme
-    template(File.join("..","templates","README.erb"), "#{project_name}/README.txt")
-  end
-  
-  
+path = File.expand_path(File.dirname(__FILE__))
+Dir.glob(File.join(File.dirname(path),"lib","tasks","*.thor")) do |thorfile|
+  Thor::Util.load_thorfile(thorfile)
 end
 
+class BioNGS < Thor::Runner
+
+  def help
+    puts "\nBio-NGS is an official BioRuby plugin for Next Generation Sequencing data analysis and workflows.\n\n"
+    puts "To view the full list of available tasks and commands type:\n\n"
+    puts "\tbiongs -T\n\n"
+  end
+
+
+end
+
+$thor_runner = true
 BioNGS.start
