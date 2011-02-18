@@ -5,12 +5,12 @@ module Bio
       def self.os_binary(name)
         path = File.expand_path(File.dirname(__FILE__))
         os = self.os_type
-        File.join(path,"ext",os,"bin",name)
+        File.join(path,"ext","bin",os,name)
       end
       
       def self.binary(name)
         path = File.expand_path(File.dirname(__FILE__))
-        File.join(path,"ext","bin",name)
+        File.join(path,"ext","bin","common",name)
       end
       
       def self.os_type
