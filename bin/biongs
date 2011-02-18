@@ -1,23 +1,33 @@
 #!/usr/bin/env ruby
 
-require 'thor'
-require 'thor/runner'
+module Bio
+  module NGS
 
-path = File.expand_path(File.dirname(__FILE__))
-Dir.glob(File.join(File.dirname(path),"lib","tasks","*.thor")) do |thorfile|
-  Thor::Util.load_thorfile(thorfile)
-end
+    path = File.expand_path(File.dirname(__FILE__))
+    $:<<File.join(File.dirname(path),"lib")
+    require 'bio-ngs'
 
-class BioNGS < Thor::Runner
+    path = File.expand_path(File.dirname(__FILE__))
+    Dir.glob(File.join(File.dirname(path),"lib","tasks","*.thor")) do |thorfile|
+      Thor::Util.load_thorfile(thorfile)
+    end
 
-  def help
-    puts "\nBio-NGS is an official BioRuby plugin for Next Generation Sequencing data analysis and workflows.\n\n"
-    puts "To view the full list of available tasks and commands type:\n\n"
-    puts "\tbiongs -T\n\n"
+    class Runner < Thor::Runner
+
+      def help(meth = nil)
+        if meth && !self.respond_to?(meth)
+          initialize_thorfiles(meth)
+          klass, task = Thor::Util.find_class_and_task_by_namespace(meth)
+          klass.start(["-h", task].compact, :shell => self.shell)
+        else
+          puts "\nBio-NGS is an official BioRuby plugin for Next Generation Sequencing data analysis and workflows.\n\n"
+          puts "To view the full list of available tasks and commands type:\n\n"
+          puts "\tbiongs -T\n\n"
+        end
+      end
+
+    end
+    $thor_runner = true
+    Runner.start
   end
-
-
 end
-
-$thor_runner = true
-BioNGS.start
