@@ -1,0 +1,8 @@
+require 'rubygems'
+require 'thor'
+require 'thor/group'
+require 'thor/runner'
+require 'bio'
+require 'bio-ngs/utils'
+require 'bio-ngs/history'
+require 'bio-ngs/options'
