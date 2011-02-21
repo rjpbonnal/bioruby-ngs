@@ -11,9 +11,9 @@ module Bio
     Dir.glob(File.join(File.dirname(path),"lib","tasks","*.thor")) do |thorfile|
       Thor::Util.load_thorfile(thorfile)
     end
-
+    
     class Runner < Thor::Runner
-
+      
       def help(meth = nil)
         if meth && !self.respond_to?(meth)
           initialize_thorfiles(meth)
@@ -23,6 +23,8 @@ module Bio
           puts "\nBio-NGS is an official BioRuby plugin for Next Generation Sequencing data analysis and workflows.\n\n"
           puts "To view the full list of available tasks and commands type:\n\n"
           puts "\tbiongs -T\n\n"
+          puts "To get information on specific tasks type:\n\n"
+          puts "\tbiongs help [TASK]\n\n"
         end
       end
 
