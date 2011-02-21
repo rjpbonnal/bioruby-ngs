@@ -10,6 +10,7 @@ class Bwa < Thor
 	  def short(fasta)
 	    real_prefix = (options[:prefix]) ? options[:prefix] : fasta
   	  Bio::BWA.make_index(:file_in => fasta, :c => options[:colorspace], :prefix => real_prefix)
+  	  Bio::NGS::Record.save("bwa:index:short",[fasta,options])
 	  end
 	
 	  desc "long FASTA", "Make the BWT index for a LONG FASTA database"
