@@ -10,7 +10,7 @@ class Mira < Thor
           opts = Bio::NGS::NativeOptions.new # bypass Thor arguments parsing
           bin = Bio::NGS::Utils.os_binary(prog)
           puts Bio::Command.query_command [bin]+opts.args
-          Bio::NGS::Record.save("mira:pre:"+name.to_s,opts.args)
+          Bio::NGS::Record.save(opts.task_name,opts.args)
         end
       end
     end
@@ -26,8 +26,9 @@ class Mira < Thor
         define_method job.to_sym do
           opts = Bio::NGS::NativeOptions.new # bypass Thor arguments parsing
           bin = Bio::NGS::Utils.os_binary("mira")
+          puts opts.args.inspect
           puts Bio::Command.query_command [bin, "--job="+job]+opts.args
-          Bio::NGS::Record.save("mira:run:"+job,opts.args)
+          Bio::NGS::Record.save(opts.task_name,opts.args)
         end
       end
     end
@@ -37,7 +38,7 @@ class Mira < Thor
       opts = Bio::NGS::NativeOptions.new # bypass Thor arguments parsing
       bin = Bio::NGS::Utils.os_binary("mira")
       puts Bio::Command.query_command [bin, "--job="+task.to_s]+opts.args
-      Bio::NGS::Record.save("mira:run:"+task.to_s,opts.args)
+      Bio::NGS::Record.save(opts.task_name,opts.args)
     end
     
   end

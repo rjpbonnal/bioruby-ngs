@@ -6,7 +6,7 @@ class History < Thor
     History.class_eval do
       desc @@num.to_s,"Task #{task[:name]} #{task[:args]}"
       define_method @@num.to_s.to_sym do
-        # set ARGV to mimick a command line invocation
+        # set ARGV to mimick command line invocation
         ARGV[0] = task[:name]
         ARGV[1] = task[:args]
         invoke task[:name], [task[:args][0]], task[:args][1]
