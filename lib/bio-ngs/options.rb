@@ -7,7 +7,8 @@ module Bio
       # let the user call a tool with his own native set of parameters
       def initialize(arguments=ARGV)
           @task_name = arguments[0]
-          @args = arguments[1..-1].flatten!
+          args = arguments[1..-1].flatten
+          @args = (args) ? args : arguments[1..-1]
       end
       
     end
