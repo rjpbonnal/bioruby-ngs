@@ -21,5 +21,6 @@ class Project < Thor::Group
   
   def create_readme
     template(File.join("..","templates","README.erb"), "#{name}/README.txt")
-  end 
+  end
+  
 end
