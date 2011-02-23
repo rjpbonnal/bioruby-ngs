@@ -1,6 +1,6 @@
 = bio-ngs
 
-BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby.
+Provides a framework for handling NGS data with Bioruby.
 
 == What we want to do and support
 * SAMtools
@@ -22,6 +22,6 @@ BioRuby Next Generation Sequencing, provide a framework for handling ngs from bi
 
 == Copyright
 
-Copyright (c) 2011 Raoul J.P. Bonnal and Francesco Strozzi. See LICENSE.txt for
+Copyright (c) 2011 Francesco Strozzi and Raoul J.P. Bonnal. See LICENSE.txt for
 further details.
 
