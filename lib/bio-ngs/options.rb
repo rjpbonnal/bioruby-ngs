@@ -1,16 +1,43 @@
-module Bio
-  module NGS
-    class NativeOptions
-      
-      attr_reader :task_name, :args
-      # simple parsing from ARGV used to bypass Thor options parser and 
-      # let the user call a tool with his own native set of parameters
-      def initialize(arguments=ARGV)
-          @task_name = arguments[0]
-          args = arguments[1..-1].flatten
-          @args = (args) ? args : arguments[1..-1]
-      end
-      
-    end
+# Opening Thor::Option, Thor::Arguments and Thor::Argument to define a :native options type.
+# This is used for parameters sets that need to be passed directly to invoke a binary,
+# without any Thor-like parsing.
+class Thor
+  
+  class Option
+    VALID_TYPES << :native
   end
+    
+  class Arguments
+    
+    def parse_native(name)
+      array = []
+      while peek # check if there are arguments left in the args array
+        array << shift
+      end  
+      return array
+    end
+    
+  end
+  
+  class Argument
+    
+    def default_banner
+      case type
+      when :boolean
+        nil
+      when :string, :default
+        human_name.upcase
+      when :numeric
+        "N"
+      when :hash
+        "key:value"
+      when :array
+        "one two three"
+      when :native
+        " -use AS MANY -params AS --you-want"
+      end
+    end
+    
+  end
+   
 end
