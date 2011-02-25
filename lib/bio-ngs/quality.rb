@@ -14,7 +14,7 @@ module Bio
       
       def quality_profile
         qual = nil
-        tot_reads = 1
+        tot_reads = 0
         @stream.each do |read|
           if qual then
             qual += Vector[*read.quality_scores]
@@ -22,7 +22,6 @@ module Bio
             qual = Vector[*read.quality_scores]
           end
           tot_reads += 1
-          puts qual.inspect
         end
         qual = qual/tot_reads.to_f
         return qual.to_a
