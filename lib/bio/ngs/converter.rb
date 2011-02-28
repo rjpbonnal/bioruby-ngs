@@ -1,5 +1,5 @@
 module Bio
-  class Ngs
+  module NGS
     module Converter
       def self.qseq2fastq_pe(qseq_line)
         qseq = qseq_line.split #logic here
