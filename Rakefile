@@ -15,10 +15,10 @@ Jeweler::Tasks.new do |gem|
   gem.name = "bio-ngs"
   gem.homepage = "http://github.com/helios/bioruby-ngs"
   gem.license = "MIT"
-  gem.summary = %Q{BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby}
-  gem.description = %Q{BioRuby Next Generation Sequencing, provide a framework for handling ngs from bioruby}
-  gem.email = "ilpuccio.febo@gmail.com"
-  gem.authors = ["Raoul J.P. Bonnal"]
+  gem.summary = %Q{bio-ngs provides a framework for handling NGS data with BioRuby}
+  gem.description = %Q{bio-ngs provides a framework for handling NGS data with BioRuby}
+  gem.email = "francesco.strozzi@gmail.com"
+  gem.authors = ["Francesco Strozzi","Raoul J.P. Bonnal"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
   #  gem.add_runtime_dependency 'jabber4r', '> 0.1'
