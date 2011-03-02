@@ -11,7 +11,7 @@ describe "Tophat with include" do
   
   describe "Program name" do
     it "the name is " do
-      Bio::Ngs::Tophat.program.should == ""
+      Bio::Ngs::Tophat.program.should == Bio::NGS::Utils.os_binary("tophat/tophat")
     end
   end
 end

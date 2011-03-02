@@ -8,6 +8,10 @@ module Bio
     class Tophat
       include Bio::Command::Wrapper
       
+      # User should provide a complete path to the tool.
+      # I think it would it better identify the program from just a name
+      # looking int othe ext/ or host system path
+      # Why not grab the file name from the class name if not specified ?
       set_program Bio::NGS::Utils.os_binary("tophat/tophat")
 
       add_option :reads, :type => :array, :required => true
@@ -63,9 +67,9 @@ module Bio
       add_option "rg-date", :type => :string
       add_option "rg-platform", :type => :string
 
-      def initialize
-        @program = Bio::NGS::Utils.os_binary("tophat/tophat")
-      end
+      # def initialize
+      #   @program = Bio::NGS::Utils.os_binary("tophat/tophat")
+      # end
 
       private
       def normalize_options
