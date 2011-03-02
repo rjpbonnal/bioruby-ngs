@@ -1,5 +1,5 @@
 module Bio
-  module NGS
+  module Ngs
     class Utils
       
       def self.os_binary(name)
@@ -18,7 +18,7 @@ module Bio
         case Config::CONFIG['host_os']
           when /darwin/ then return "osx" 
           when /linux/ then return "linux"
-          when /mswin|mingw/ then raise NotImplementedError, "This plugin do not run on Windows"
+          when /mswin|mingw/ then raise NotImplementedError, "This plugin does not run on Windows"
         end
       end
       

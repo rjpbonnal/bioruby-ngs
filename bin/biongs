@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 module Bio
-  module NGS
+  module Ngs
 
     path = File.expand_path(File.dirname(__FILE__))
     $:<<File.join(File.dirname(path),"lib")
