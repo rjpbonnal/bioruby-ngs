@@ -1,4 +1,6 @@
 #require 'rubygems'
+require 'wrapper'
+
 require 'bio-bwa'
 require 'thor'
 require 'thor/group'
@@ -9,5 +11,10 @@ require 'bio/ngs/record'
 require 'bio/ngs/options'
 require 'bio/ngs/quality'
 require 'bio/ngs/graphics'
+
+#tools
+require 'bio/appl/ngs/tophat'
+
+
 
 
