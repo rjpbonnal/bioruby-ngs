@@ -25,13 +25,13 @@ class Rna < Thor
   end
   
   desc "tophat_sr", "tophat alignment single reads"
-  method_options :threads, :type=>:numeric, :default=>1
+  method_option :threads, :type=>:numeric, :default=>1
   def tophap_sr
     # TODO tophat --num-threads 1 --solexa1.3-quals --output-dir liver_output Homo_ sapiens/UCSC/hg18/Sequence/BowtieIndex/genome liver.fastq
   end
 
   desc "tophat_pe", "tophat alignment paired ends reads"
-  method_options :threads, :type=>:numeric, :default=>1
+  method_option :threads, :type=>:numeric, :default=>1
   def tophap_pe
     # TODO 
   end

@@ -44,7 +44,7 @@ end
 # describe Tophat do
 #   describe "Tophat" do
 #     it "the program is " do
-#       Bio::Ngs::Tophat.new.program.should == Bio::NGS::Utils.os_binary("tophat/tophat")
+#       Bio::Ngs::Tophat.new.program.should == Bio::Ngs::Utils.os_binary("tophat/tophat")
 #     end
 #     
 #     it "returns the default parameters" do
