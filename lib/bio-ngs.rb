@@ -11,6 +11,7 @@ require 'bio/ngs/record'
 require 'bio/ngs/options'
 require 'bio/ngs/quality'
 require 'bio/ngs/graphics'
+require 'bio/ngs/task'
 
 #tools
 require 'bio/appl/ngs/tophat'
