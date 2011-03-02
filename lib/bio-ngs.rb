@@ -15,6 +15,9 @@ require 'bio/ngs/graphics'
 #tools
 require 'bio/appl/ngs/tophat'
 
+# history 
+Bio::Ngs::HISTORY_FILE = ".task-history.yml"
+
 
 
 
