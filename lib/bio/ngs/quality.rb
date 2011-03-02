@@ -1,5 +1,5 @@
 module Bio
-  module NGS
+  module Ngs
     class FastQuality
       
       require 'matrix'
