@@ -1,4 +1,4 @@
-
+# opening class Thor::Task to add a save_history method
 class Thor
   class Task
 
@@ -16,6 +16,7 @@ class Thor
     
     private
     
+    # process Thor instance and save the task name and parameters
     def save_history(instance,args)
       invocation =  instance.instance_variable_get("@_invocations").to_a[0]
       classes = invocation[0].to_s
