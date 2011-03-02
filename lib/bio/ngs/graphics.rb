@@ -1,7 +1,7 @@
 require 'rubyvis'
 
 module Bio
-  module NGS
+  module Ngs
     class Graphics
       
         def self.draw_area(data,width,height,out=nil)

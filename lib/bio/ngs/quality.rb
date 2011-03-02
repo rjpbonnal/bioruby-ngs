@@ -4,7 +4,6 @@ module Bio
       
       require 'matrix'
       
-      attr_reader :stream
       def initialize(file)
         begin
           @stream = Bio::FlatFile.auto(file)
