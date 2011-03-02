@@ -1,49 +1,41 @@
 module Bio
-  module NGS  
+  module Ngs
     class Record
       
-      require 'yaml'
-      def self.save(name,*args)
+      require 'yaml'  
+      
+      def initialize(file)
+        @filename = file
+        @file = File.new(file,"a+")
+      end
+    
+      def save(name,*args)
         params = {:name => name, :args => args }
-        unless saved?(params) || params[:name] =~/history/
-          history = File.new(".task-history.yml","a") 
-          history.write(params.to_yaml)
-          history.close
+        unless is_saved?(params) || params[:name] =~/history/
+          @file.write(params.to_yaml)
+          @file.close
         end
       end
       
-      def self.load
-        begin
-          history = File.open(".task-history.yml")
-        rescue
-          return {}
-        else    
+      def load   
           tasks = []
-          YAML.each_document(history) do |ydoc| 
+          YAML.each_document(@file) do |ydoc| 
             ydoc[:args].flatten!
             tasks << ydoc
           end
           return tasks
-        end  
       end
       
-      def self.clear
-        history = File.open(".task-history.yml","w")
-        history.close
+      def clear
+        history = File.delete(@filename)
       end
       
       private
       
-      def self.saved?(params)
-        begin
-          history = File.open(".task-history.yml")
-        rescue
-          return false
-        else      
+      def is_saved?(params)    
           tasks = []
-          YAML.each_document(history) {|ydoc| tasks << ydoc}
-          return tasks.include?(params) 
-        end
+          YAML.each_document(@file) {|ydoc| tasks << ydoc}
+          return tasks.include?(params)
       end
       
     end
