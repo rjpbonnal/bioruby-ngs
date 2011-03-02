@@ -12,6 +12,10 @@ module Bio
       
 
       set_program Bio::Ngs::Utils.os_binary("tophat/tophat")
+      # User should provide a complete path to the tool.
+      # I think it would it better identify the program from just a name
+      # looking int othe ext/ or host system path
+      # Why not grab the file name from the class name if not specified ?
 
 
       add_option :reads, :type => :array, :required => true
