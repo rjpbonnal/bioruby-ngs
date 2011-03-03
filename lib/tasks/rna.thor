@@ -9,11 +9,12 @@ class Rna < Thor
   # check for required tools tophat, cufflinks, bowtie, bwa, ....
   # convert bcl for illumina data
 
-  desc "tophat", "run tophat as from command line"
-
-  Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper|
-      puts wrapper.program
-      puts "pippo"
+  desc "tophat TEXT WHO CHECK", "run tophat as from command line"
+  Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, text, who|
+#      puts wrapper.program
+#      puts task.inspect
+      puts text
+      puts who
       #you tasks here
   end
 
@@ -25,15 +26,17 @@ class Rna < Thor
     sh "bowtie-inspect #{options.index} > #{fasta}"
   end
 
-  desc "tophat_sr", "tophat alignment single reads"
+  desc "tophat_sr TEXT", "tophat alignment single reads"
   method_option :threads, :type=>:numeric, :default=>1
-  def tophap_sr
+  def tophat_sr(text)
+    puts self.inspect
+    puts options.text
     # TODO tophat --num-threads 1 --solexa1.3-quals --output-dir liver_output Homo_ sapiens/UCSC/hg18/Sequence/BowtieIndex/genome liver.fastq
   end
 
   desc "tophat_pe", "tophat alignment paired ends reads"
   method_option :threads, :type=>:numeric, :default=>1
-  def tophap_pe
+  def tophat_pe
     # TODO 
   end
 

@@ -23,28 +23,26 @@ module Bio
         @options = options
       end
 
-      # def dynamic_task(tasks, name=nil, desc=nil)
-      #   task = Thor::DynamicTask.new(name || class_name)
-      #   task.options = options
-      #   tasks[task.name] = task
-      #   task
-      #   #Thor::DynamicTask.new('task').description.should == 'A dynamically-generated task'
-      #   #Thor::DynamicTask.new('task').usage.should == 'task'
-      #   #Thor::DynamicTask.new('task').options.should == {}      
-      # end
-
-
       # Inject into the Thor::Sandbox::TaskName the options defined for this 
       # wrapper
+      # Example of call
+      #   desc "task_name ARG_ONE ARG_SECOND", "run tophat as from command line"
+      #   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, ARG_ONE ARG_SECOND|
+      #       puts ARG_ONE
+      #       puts ARG_SECOND
+      #       #you tasks here
+      #   end      
       def thor_task(klass, task_name, &block)
         if klass
-          options.each_pair do |name, opt|
-            klass.method_option name, opt
-          end #each_pait
-          instance = self   
-          klass.class_eval do
-            define_method(task_name) do
-              yield instance
+          wrapper = self   
+          klass.class_eval do            
+            wrapper.options.each_pair do |name, opt|
+               method_option name, opt
+             end #each_pair
+
+            # Thor's behavior should be respected passing attributes            
+            define_method(task_name) do |*args|
+              yield wrapper, self, args
             end #define_method
           end#class_eval
         end
