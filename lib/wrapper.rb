@@ -23,24 +23,25 @@ module Bio
         @options = options
       end
       
-      def dynamic_task(tasks, name=nil, desc=nil)
-        task = Thor::DynamicTask.new(name || class_name)
-        task.options = options
-        tasks[task.name] = task
-        task
-        #Thor::DynamicTask.new('task').description.should == 'A dynamically-generated task'
-        #Thor::DynamicTask.new('task').usage.should == 'task'
-        #Thor::DynamicTask.new('task').options.should == {}      
-      end
+      # def dynamic_task(tasks, name=nil, desc=nil)
+      #   task = Thor::DynamicTask.new(name || class_name)
+      #   task.options = options
+      #   tasks[task.name] = task
+      #   task
+      #   #Thor::DynamicTask.new('task').description.should == 'A dynamically-generated task'
+      #   #Thor::DynamicTask.new('task').usage.should == 'task'
+      #   #Thor::DynamicTask.new('task').options.should == {}      
+      # end
       
       
-      # add the method option 
-      # todo check for name nil
-      def thor_task(klass, task_name)
+      # Inject into the Thor::Sandbox::TaskName the options defined for this 
+      # wrapper
+      def thor_task(klass, task_name=nil)
         if klass
-          options.each_pair do |name, opt|
-            klass.method_option name, opt
-          end
+            options.each_pair do |name, opt|
+              klass.method_option name, opt
+            end            
+
         end
       end
       
