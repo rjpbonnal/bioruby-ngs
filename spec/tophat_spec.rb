@@ -9,7 +9,7 @@ describe "Tophat" do
     end
     
     it "default program name" do
-      Bio::Ngs::Tophat.program.should == Bio::NGS::Utils.os_binary("tophat/tophat")
+      Bio::Ngs::Tophat.program.should == Bio::Ngs::Utils.os_binary("tophat/tophat")
     end
   end
   
