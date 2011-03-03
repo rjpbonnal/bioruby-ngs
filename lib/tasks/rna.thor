@@ -1,9 +1,20 @@
+require File.expand_path(File.dirname(__FILE__) + '/../bio/ngs/utils')
+require File.expand_path(File.dirname(__FILE__) + '/../wrapper')
+require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/tophat')
+
 class Rna < Thor
   
   #TODO : 
   # tophat alignment
   # check for required tools tophat, cufflinks, bowtie, bwa, ....
   # convert bcl for illumina data
+  
+  desc "tophat", "xxxx"
+  puts self
+  def tophat
+    Bio::Ngs::Tophat.new.thor_task(self,:tophat)
+    puts "pippo"
+  end
   
   desc "idx_fasta [INDEX] [FASTA]", "Create a fasta file from an indexed genome, using bowtie-inspect"
   method_option :index, :type => :string, :require => true

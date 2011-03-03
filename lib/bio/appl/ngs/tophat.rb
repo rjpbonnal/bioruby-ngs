@@ -1,11 +1,13 @@
-require 'bio/command'
-require 'shellwords'
-require 'thor'
-require 'wrapper'
+#require 'bio/command'
+#require 'shellwords'
+#require 'thor'
+#require 'bio/ngs/utils'
+
 
 module Bio
-  module Ngs
+  module Ngs    
     class Tophat
+      
       include Bio::Command::Wrapper
       
       # User should provide a complete path to the tool.
