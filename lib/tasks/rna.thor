@@ -3,16 +3,18 @@ require File.expand_path(File.dirname(__FILE__) + '/../wrapper')
 require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/tophat')
 
 class Rna < Thor
-  
+
   #TODO : 
   # tophat alignment
   # check for required tools tophat, cufflinks, bowtie, bwa, ....
   # convert bcl for illumina data
-  
+
   desc "tophat", "run tophat as from command line"
-  Bio::Ngs::Tophat.new.thor_task(self)
-  def tophat
-    #you tasks here
+
+  Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper|
+      puts wrapper.program
+      puts "pippo"
+      #you tasks here
   end
 
   desc "idx_fasta [INDEX] [FASTA]", "Create a fasta file from an indexed genome, using bowtie-inspect"
@@ -22,7 +24,7 @@ class Rna < Thor
     fasta = options.fasta || "#{options.index}.fasta"
     sh "bowtie-inspect #{options.index} > #{fasta}"
   end
-  
+
   desc "tophat_sr", "tophat alignment single reads"
   method_option :threads, :type=>:numeric, :default=>1
   def tophap_sr
@@ -34,7 +36,7 @@ class Rna < Thor
   def tophap_pe
     # TODO 
   end
-  
+
   desc "assembly_bwt", "assembly using bowtie"
   def assembly_bwt
   end
@@ -46,11 +48,11 @@ class Rna < Thor
   desc "cuffscmp", "make a comparison with cufflinkscompare"
   def cuffcmp
   end
-  
+
   desc "cuffsquant", "do a complete quantification usinf cufflinks"
   def cuffcmp
   end
-  
+
   desc "samindex", "index a genome with samtools"
   def samindex
   end
@@ -72,5 +74,5 @@ class Rna < Thor
     # TODO use code coming from Valeria
     # Bio::Ngs.qseq_to_fastq_pe(path)
   end
-  
+
 end

@@ -19,7 +19,6 @@ module Bio
 
 
       add_option :reads, :type => :array, :required => true
-      add_option :reads, :type => :array, :required => true
       add_option :quality, :type => :array, :required => true
       add_option "output-dir",:type => :string, :aliases => '-o'
       add_option "min-anchor", :type => :numeric, :aliases => '-a'
