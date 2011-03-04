@@ -1,3 +1,13 @@
+#
+#  tophat_spec.rb - RSpec Test
+#
+# Copyright:: Copyright (C) 2011
+#     Raoul Bonnal <r@bioruby.org>
+# License:: The Ruby License
+#
+#
+
+
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'thor/base'
 #require 'bio/appl/ngs/tophat'
@@ -51,14 +61,12 @@ describe "Tophat" do
       tophat.options={:parameter_xxx=>{:type=>:numeric, :default=>10}}
       tophat.normalize_params.should == "--parameter_xxx=10"
     end
-    
+
     it "does not save a valid parameter/option" do
       tophat = Bio::Ngs::Tophat.new
       tophat.params={:fake_parameter=>1234567890}
       tophat.normalize_params.should == ""
     end
-    
-
 
     it "set a default option and get the parameters for the binary program" do
       tophat = Bio::Ngs::Tophat.new
@@ -69,12 +77,6 @@ describe "Tophat" do
       tophat.params={:fake_parameter=>01}
       tophat.normalize_params.should == "--parameter_xxx=10"
     end
-
-    
-    # it "expose to thor class default" do
-    #   Bio::Ngs::Tophat.new.thos_newdynamic_task({}).should == Thor::DynamicTask.new("")
-    # end
-  end #instance
 end
 
 

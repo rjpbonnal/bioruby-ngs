@@ -1,3 +1,12 @@
+#
+#  
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 class Quality < Thor
   
   desc "reads FASTQ", "perform quality check for NGS reads"

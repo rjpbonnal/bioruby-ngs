@@ -1,3 +1,12 @@
+#
+#  
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 class Project < Thor::Group
   include Thor::Actions
   # the project name

@@ -11,7 +11,6 @@ class Rna < Thor
 
   desc "tophat TEXT WHO CHECK", "run tophat as from command line"
   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, text, who|
-
       wrapper.params = task.options
       wrapper.run :arguments=>[text, who] 
       #you tasks here

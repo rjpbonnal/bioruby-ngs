@@ -1,3 +1,14 @@
+#
+#  converter.rb - convert qseq format to fastq
+#
+# Copyright:: Copyright (C) 2011
+#     Raoul Bonnal <r@bioruby.org>,
+#     Ranzani Valeria <ranzani@ingm.it>
+# License:: The Ruby License
+#
+#
+
+
 module Bio
   module Ngs
     module Converter

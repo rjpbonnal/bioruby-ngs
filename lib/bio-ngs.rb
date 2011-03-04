@@ -1,3 +1,14 @@
+#
+#  bio-ngs.rb - Mian bio-ngs clas
+#
+# Copyright:: Copyright (C) 2011
+#     Raoul Bonnal <r@bioruby.org>,
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
+
 #require 'rubygems'
 require 'wrapper'
 

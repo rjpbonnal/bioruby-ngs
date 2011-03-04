@@ -1,3 +1,14 @@
+#
+#  wrapper.rb - Wrapper class for a generic command
+#
+# Copyright:: Copyright (C) 2011
+#     Raoul Bonnal <r@bioruby.org>
+# License:: The Ruby License
+#
+#
+
+
+
 module Bio
   module Command
     module Wrapper
@@ -23,8 +34,7 @@ module Bio
         @options = options
         @params = {}
       end
-      
-      
+            
       # Parameters are accepted ONLY if the key is present as
       # a key on the options hash. Sort of validation.
       # ONLY the valid options are taken into account.
@@ -60,7 +70,7 @@ module Bio
           option_name = option[0]
           option_values = option[1]
           if option_values.kind_of? Hash
-              "--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
+            "--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
           else #is a value of the main hash. (mostly a parameter)
             "--#{option_name}=#{option_values}"
           end

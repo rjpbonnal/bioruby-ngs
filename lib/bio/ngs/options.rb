@@ -1,3 +1,12 @@
+#
+#  
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 # Opening Thor::Option, Thor::Arguments and Thor::Argument to define a :native options type.
 # This is used for parameters sets that need to be passed directly to invoke a binary,
 # without any Thor-like parsing.

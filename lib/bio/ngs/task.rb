@@ -1,3 +1,12 @@
+#
+#  
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 # opening class Thor::Task to add a save_history method
 class Thor
   class Task
