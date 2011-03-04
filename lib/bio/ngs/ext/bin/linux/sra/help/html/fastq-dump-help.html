@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>fastq-dump help</title>
+</head>
+<body>
+
+<pre>
+Usage:
+  fastq-dump [options] [ -A ] <accession>
+  fastq-dump [options] <path>
+
+	-A, --accession             Accession.
+
+Options:
+
+	-D, --table-path            Path to accession data.
+	-O, --outdir                Output directory. Default: '.'
+	-N, --minSpotId             Minimum spot id to output.
+	-X, --maxSpotId             Maximum spot id to output.
+	-G, --spot-group            Split into files by SPOT_GROUP (member).
+	-T, --group-in-dirs         Split into subdirectories instead of files.
+	-K, --keep-empty-files      Do not delete empty files.
+	-L, --log-level             Logging level: fatal|sys|int|err|warn|info. Default: info
+	-+, --debug                 debug: APP|KFS|XML|VDB|SRA|REF|LEGREF. Default: APP
+	-H, --help                  Prints this message.
+
+Format options:
+
+	-M, --minReadLen            Minimum read length to output. Default: 25
+	-W, --noclip                Do not clip quality right for spot.
+	-F, --origfmt               Excludes SRR accession & length on defline.
+	-C, --dumpcs [cskey]        Dump color space sequence (default for ABI SOLID), single letter color space key is optional.
+	-B, --dumpbase              Dump base sequence (default for other than ABI SOLID).
+	-Q, --offset                Offset to use for quality conversion. Default: 33
+	-I, --readids               Append read id after spot id as 'accession.spot.readid' on defline.
+	-E, --no-qual-filter        Disable filtering by leading/trailng low quality.
+	-SF, --complete              Dump ALL reads in a single file.
+	-DB, --defline-seq           sequence defline format specification. String of characters and/or variables.
+
+		Variables are one of:
+		  $ac - accession, $si - spot id, $sn - spot name, $sg - spot group (barcode),
+		  $sl - spot length in bases, $ri - read id, $rn - read name, $rl - read length in bases.
+		'[]' could be used for an optional output: if all variables in [] yield empty values whole group is not printed.
+		Empty value is empty string or 0 for numeric variables.
+		Ex: @$sn[_$rn]/$ri - '_$rn' is omitted if name is empty
+
+	-DQ, --defline-qual          quailty defline format specification. If -DB is provided but -DQ ommitted, -DB value is used.
+	-alt [n]                    alternative formatting version [1].
+</pre>
+
+</body>
+</html>
