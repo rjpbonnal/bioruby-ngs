@@ -18,8 +18,6 @@ module Bio
       # Why not grab the file name from the class name if not specified ?
 
 
-      add_option :reads, :type => :string, :required => true
-      add_option :quality, :type => :string, :required => false
       add_option "output-dir",:type => :string, :aliases => '-o'
       add_option "min-anchor", :type => :numeric, :aliases => '-a'
       add_option "splice-mismatches", :type => :numeric, :aliases => '-m'
