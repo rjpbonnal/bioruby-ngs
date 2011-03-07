@@ -10,13 +10,13 @@
 
 
 #require 'rubygems'
-require 'wrapper'
 
 require 'bio-bwa'
 require 'thor'
 require 'thor/group'
 require 'thor/runner'
 require 'bio'
+require 'wrapper'
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
 require 'bio/ngs/options'
