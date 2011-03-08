@@ -29,10 +29,3 @@ require 'bio/appl/ngs/bowtie-inspect'
 
 # history 
 Bio::Ngs::HISTORY_FILE = ".task-history.yml"
-
-# history 
-Bio::Ngs::HISTORY_FILE = ".task-history.yml"
-
-
-
-
