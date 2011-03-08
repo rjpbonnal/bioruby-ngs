@@ -7,6 +7,7 @@ $TESTING=true
 # end
 
 require 'thor'
+require 'thor/base'
 require 'stringio'
 require 'rdoc'
 require 'rspec'

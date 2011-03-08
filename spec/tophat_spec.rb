@@ -9,8 +9,6 @@
 
 
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require 'thor/base'
-#require 'bio/appl/ngs/tophat'
 
 describe "Tophat" do 
   describe "class" do
@@ -65,7 +63,7 @@ describe "Tophat" do
     it "does not save a valid parameter/option" do
       tophat = Bio::Ngs::Tophat.new
       tophat.params={:fake_parameter=>1234567890}
-      tophat.normalize_params.should == ""
+      tophat.normalize_params.should == []
     end
 
     it "set a default option and get the parameters for the binary program" do
@@ -77,6 +75,7 @@ describe "Tophat" do
       tophat.params={:fake_parameter=>01}
       tophat.normalize_params.should == "--parameter_xxx=10"
     end
+  end
 end
 
 
