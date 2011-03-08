@@ -141,21 +141,6 @@ module Bio
       add_option "rg-date", :type => :string
       add_option "rg-platform", :type => :string
 
-<<<<<<< HEAD
-=======
-      def initialize
-        @program = Bio::Ngs::Utils.os_binary("tophat/tophat")
-      end
-
-      private
-      def normalize_options
-        opts = options.to_a if options.kind_of? Hash
-        if options.kind_of? Array
-          opts = options.map{|opt| "--#{opt[0].gsub(/--/,"")}=#{opt[1]}"}.join(" ")
-        end
-        opts
-      end#normalize_options
->>>>>>> master
     end #That
   end #Ngs
 end #Bio 
