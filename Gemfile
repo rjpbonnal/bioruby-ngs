@@ -18,5 +18,6 @@ group :development do
   gem "ffi", ">= 1.0.6"
   gem 'bio-bwa'
   gem "rubyvis", ">= 0.5.0"
+  gem "rspec", ">= 2.5.0"
 
 end
