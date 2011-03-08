@@ -26,6 +26,7 @@ require 'bio/ngs/task'
 
 #tools
 require 'bio/appl/ngs/tophat'
+require 'bio/appl/ngs/bowtie-inspect'
 
 # history 
 Bio::Ngs::HISTORY_FILE = ".task-history.yml"
