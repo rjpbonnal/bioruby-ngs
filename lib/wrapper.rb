@@ -114,6 +114,7 @@ module Bio
           Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
         end #if
       end #run
+      
       # Inject into the Thor::Sandbox::TaskName (klass) the options defined for this 
         # wrapper
         # Example of call
@@ -130,14 +131,15 @@ module Bio
               wrapper.options.each_pair do |name, opt|
                 method_option name, opt
               end #each_pair
-
               # Thor's behavior should be respected passing attributes
               define_method task_name do |*arguments|
+                #it's mandatory that the first and second parameter are respectively wrapper and task
+                raise ArgumentError, "wrong number of arguments (#{arguments.size} for #{block.parameters.size-2})" if arguments.size != block.parameters.size-2
                 yield wrapper, self, *arguments
               end
             end#class_eval
-          end
-        end
+          end #klass
+        end #thor_task
 
         def thor_test(klass, name)
           puts klass.inspect
