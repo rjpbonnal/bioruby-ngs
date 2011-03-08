@@ -19,7 +19,6 @@ require 'thor/runner'
 require 'bio'
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
-require 'bio/ngs/options'
 require 'bio/ngs/quality'
 require 'bio/ngs/graphics'
 require 'bio/ngs/task'
@@ -27,6 +26,9 @@ require 'bio/ngs/task'
 #tools
 require 'bio/appl/ngs/tophat'
 require 'bio/appl/ngs/bowtie-inspect'
+
+# history 
+Bio::Ngs::HISTORY_FILE = ".task-history.yml"
 
 # history 
 Bio::Ngs::HISTORY_FILE = ".task-history.yml"
