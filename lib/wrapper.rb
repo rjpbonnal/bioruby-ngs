@@ -3,12 +3,11 @@
 #
 # Copyright:: Copyright (C) 2011
 #     Raoul Bonnal <r@bioruby.org>
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+#      
 # License:: The Ruby License
 #
 #
-
-require 'bio'
-
 module Bio
   module Command
     module Wrapper
@@ -77,7 +76,7 @@ module Bio
             "--#{option_name}=#{option_values}"
           end
         end
-        args.empty? ? []  : args.join(" ")
+        args.empty? ? [] : args.join(" ")
       end
 
       def output
@@ -91,7 +90,7 @@ module Bio
       # in the particular case the user wants to submit other options
       # these must be passed like {"option_name"=>value} similar when settin params
       # TODO handle output file with program which writes on stdout
-      def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
+      def run(opts = {:options=>{}, :arguments => [], :output_file=>nil})
         params = opts[:options]
         ###puts "tipo di output scelto: #{output}"
         if output == :stdout 
@@ -107,7 +106,7 @@ module Bio
             ensure
               t.join
             end
-          end #ommand call open3
+          end #command call open3
           file_stdlog.close
           file_errlog.close          
         else
@@ -126,18 +125,15 @@ module Bio
         def thor_task(klass, task_name, *arguments, &block)
           if klass
             wrapper = self   
-            klass.class_eval do            
+            klass.class_eval do 
               wrapper.options.each_pair do |name, opt|
                 method_option name, opt
               end #each_pair
-
-              # Thor's behavior should be respected passing attributes
-              define_method task_name do |*args|
-                yield wrapper, self, *args
-              end
-              # define_method(task_name) do |*args|
-              #   yield wrapper, self, args
-              # end #define_method
+              
+              # Dynamically defines a Thor task method with a fixed number of arguments
+              p = eval "Proc.new {|#{arguments.join(",")}| yield wrapper, self, #{arguments.join(",")}}"
+              define_method(task_name, &p)
+              
             end#class_eval
           end
         end
