@@ -19,6 +19,8 @@ class Rna < Thor
 #TODO: Non funziona nel modo corretto il passaggio dei paramtri nel blocco, prende il primo paramtero come array il secondo non prende un mazza !!!!
    desc "idx_fasta INDEX FASTAQ", "Create a fasta file from an indexed genome, using bowtie-inspect"
    Bio::Ngs::BowtieInspect.new.thor_task(self, :idx_fasta) do |wrapper, task, index, fasta|
+     puts "indice #{index}"
+     puts "fasta #{fasta}"
 #     wrapper.run :arguments=>[index.first], :output_file=>index.last
 #     wrapper.run index, fasta
    end

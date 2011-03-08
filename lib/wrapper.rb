@@ -123,7 +123,7 @@ module Bio
         #       puts ARG_SECOND
         #       #you tasks here
         #   end      
-        def thor_task(klass, task_name, *arguments, &block)
+        def thor_task(klass, task_name, &block)
           if klass
             wrapper = self   
             klass.class_eval do            
@@ -132,12 +132,9 @@ module Bio
               end #each_pair
 
               # Thor's behavior should be respected passing attributes
-              define_method task_name do |*args|
-                yield wrapper, self, *args
+              define_method task_name do |*arguments|
+                yield wrapper, self, *arguments
               end
-              # define_method(task_name) do |*args|
-              #   yield wrapper, self, args
-              # end #define_method
             end#class_eval
           end
         end
