@@ -91,25 +91,41 @@ module Bio
       # in the particular case the user wants to submit other options
       # these must be passed like {"option_name"=>value} similar when settin params
       # TODO handle output file with program which writes on stdout
+      #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
         params = opts[:options]
-        ###puts "tipo di output scelto: #{output}"
         if output == :stdout 
           raise "Can't write to any output file. With a program which writes on stdout you must provide a file name" if opts[:output_file].nil?
-          file_stdlog = File.open(opts[:output_file], 'w')
-          file_errlog = File.open(opts[:output_file]+".err",'w')
+           file_stdlog = File.open(opts[:output_file], 'w')
+           file_errlog = File.open(opts[:output_file]+".err",'w')
+
           Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
-            perr.sync = true
-            t = Thread.start { file_errlog.puts perr.read }
+
+#           pout.sync = true
+#          perr.sync = true           
+#Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
+          
+         #  pout.flush
+           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
+           t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
             begin
               pin.close
-              file_stdlog.puts pout.read
+              #sleep(10)
+              # file_stdlog.write pout.read
+              # file_stdlog.puts pout.read
+              # pout.readline.split("\n").each do |line|
+              #    file_stdlog.puts line
+              # end
+              
             ensure
-              t.join
+            t.join
+            x.join
             end
           end #ommand call open3
           file_stdlog.close
-          file_errlog.close          
+          file_errlog.close
+          
+         
         else
           Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
         end #if
@@ -132,10 +148,10 @@ module Bio
                 method_option name, opt
               end #each_pair
               # Thor's behavior should be respected passing attributes
-              define_method task_name do |*arguments|
+              define_method task_name do |*args|
                 #it's mandatory that the first and second parameter are respectively wrapper and task
-                raise ArgumentError, "wrong number of arguments (#{arguments.size} for #{block.parameters.size-2})" if arguments.size != block.parameters.size-2
-                yield wrapper, self, *arguments
+                raise ArgumentError, "wrong number of arguments (#{args.size} for #{block.parameters.size-2})" if args.size != block.parameters.size-2
+                yield wrapper, self, *args
               end
             end#class_eval
           end #klass
@@ -155,7 +171,7 @@ module Bio
           #TODO: do I need to set a default program name using class name or not ?
           #       or do we need to specify somewhere a defaitl path and looking for a real binary ?
 
-          OUTPUT = [:file, :stdout]
+          OUTPUT = [:file, :stdout, :stdin]
 
           # output = {:file=>true, :stdout=>}
           attr_accessor :output

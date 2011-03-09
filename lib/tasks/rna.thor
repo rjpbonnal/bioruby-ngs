@@ -17,12 +17,12 @@ class Rna < Thor
 
 
 #TODO: write test to verify the behaviour
-   desc "idx_fasta INDEX FASTAQ", "Create a fasta file from an indexed genome, using bowtie-inspect"
-   Bio::Ngs::BowtieInspect.new.thor_task(self, :idx_fasta) do |wrapper, task, index, fasta|
-     puts "indice #{index}"
-     puts "fasta #{fasta}"
-#     wrapper.run :arguments=>[index.first], :output_file=>index.last
-#     wrapper.run index, fasta
+   desc "idx2fasta INDEX FASTA", "Create a fasta file from an indexed genome, using bowtie-inspect"
+   Bio::Ngs::BowtieInspect.new.thor_task(self, :idx2fasta) do |wrapper, task, index, fasta|
+     puts "Index file... #{index}"
+     puts "Output file... #{fasta}"
+     #Perhaps it would be better that the lib undertands by itself that the second arguments is the output file in case of stdoutput
+     wrapper.run :arguments=>[index], :output_file=>fasta
    end
      
   # desc "idx_fasta [INDEX] [FASTA]", "Create a fasta file from an indexed genome, using bowtie-inspect"

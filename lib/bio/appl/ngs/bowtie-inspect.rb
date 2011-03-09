@@ -31,13 +31,14 @@ module Bio
 
       include Bio::Command::Wrapper
 
-      set_program "/bin/ps"#Bio::Ngs::Utils.os_binary("bowtie/bowtie-inspect")
+      set_program Bio::Ngs::Utils.os_binary("bowtie/bowtie-inspect")
       # User should provide a complete path to the tool.
       # I think it would it better identify the program from just a name
       # looking int othe ext/ or host system path
       # Why not grab the file name from the class name if not specified ?
 
       set_output :stdout
+
       
       add_option "across",:type => :numeric, :aliases => '-a'
       add_option "names", :type => :boolean, :aliases => '-n'
