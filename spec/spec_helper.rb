@@ -7,6 +7,7 @@ $TESTING=true
 # end
 
 require 'thor'
+require 'thor/base'
 require 'stringio'
 require 'rdoc'
 require 'rspec'
@@ -24,7 +25,7 @@ ARGV.clear
 Thor::Base.shell = Thor::Shell::Basic
 
 # Load fixtures
-%w(bwa history mira project quality tophat).each do |task|
+%w(bwa history project quality tophat sff_extract).each do |task|
   load File.join(File.dirname(__FILE__), "..", "lib", "tasks", "#{task}.thor" )
 end
 
