@@ -15,6 +15,9 @@ group :development do
   gem "rcov", ">= 0"
   gem "bio", ">= 1.4.1"
   gem "thor", ">= 0.14.6"
+  gem "ffi", ">= 1.0.6"
   gem 'bio-bwa'
+  gem "rubyvis", ">= 0.5.0"
+  gem "rspec", ">= 2.5.0"
 
 end
