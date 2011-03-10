@@ -101,12 +101,12 @@ module Bio
 
           Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
 
-#           pout.sync = true
-#          perr.sync = true           
+           pout.sync = true
+           perr.sync = true           
 #Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
           
          #  pout.flush
-           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
+#           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
            t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
             begin
               pin.close
@@ -119,7 +119,7 @@ module Bio
               
             ensure
             t.join
-            x.join
+#            x.join
             end
           end #ommand call open3
           file_stdlog.close
