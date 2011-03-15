@@ -11,15 +11,18 @@ module Bio
   module Ngs
     class Utils
       
-      def self.os_binary(name)
-        path = File.expand_path(File.dirname(__FILE__))
-        os = self.os_type
-        File.join(path,"ext","bin",os,name)
-      end
-      
       def self.binary(name)
         path = File.expand_path(File.dirname(__FILE__))
-        File.join(path,"ext","bin","common",name)
+        file = File.join(path,"ext","bin","common",name)
+        os = self.os_type
+        os_file = File.join(path,"ext","bin",os,name)
+        if File.exists?(file)
+          return file
+        elsif File.exists?(os_file)  
+          return os_file
+        else
+          raise ArgumentError, "No binary found with this name: #{name}"
+        end  
       end
       
       def self.os_type
