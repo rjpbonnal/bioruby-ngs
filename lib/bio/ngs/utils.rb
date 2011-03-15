@@ -13,13 +13,16 @@ module Bio
       
       def self.binary(name)
         path = File.expand_path(File.dirname(__FILE__))
-        file = File.join(path,"ext","bin","common",name)
         os = self.os_type
-        os_file = File.join(path,"ext","bin",os,name)
-        if File.exists?(file)
-          return file
-        elsif File.exists?(os_file)  
-          return os_file
+        plugin_binary = File.join(path,"ext","bin","common",name)
+        plugin_os_binary = File.join(path,"ext","bin",os,name)
+        os_binary = Bio::Command.query_command ["which", name]
+        if File.exists?(plugin_binary)
+          return plugin_binary
+        elsif File.exists?(plugin_os_binary)
+          return plugin_os_binary
+        elsif os_binary != ""
+          return os_binary.tr("\n","")
         else
           raise ArgumentError, "No binary found with this name: #{name}"
         end  
