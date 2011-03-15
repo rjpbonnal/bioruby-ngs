@@ -22,6 +22,7 @@ require 'bio/ngs/record'
 require 'bio/ngs/quality'
 require 'bio/ngs/graphics'
 require 'bio/ngs/task'
+require 'bio/ngs/core_ext'
 
 #tools
 require 'bio/appl/ngs/tophat'
