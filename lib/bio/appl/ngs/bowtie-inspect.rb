@@ -31,7 +31,7 @@ module Bio
 
       include Bio::Command::Wrapper
 
-      set_program Bio::Ngs::Utils.os_binary("bowtie/bowtie-inspect")
+      set_program Bio::Ngs::Utils.binary("bowtie/bowtie-inspect")
       # User should provide a complete path to the tool.
       # I think it would it better identify the program from just a name
       # looking int othe ext/ or host system path

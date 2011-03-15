@@ -85,7 +85,7 @@ module Bio
       include Bio::Command::Wrapper
 
 
-      set_program Bio::Ngs::Utils.os_binary("tophat/tophat")
+      set_program Bio::Ngs::Utils.binary("tophat/tophat")
       # User should provide a complete path to the tool.
       # I think it would it better identify the program from just a name
       # looking int othe ext/ or host system path
@@ -164,7 +164,7 @@ end #Bio
 # 
 #       def initialize(options="--help")
 #         super
-#         @program = Bio::Ngs::Utils.os_binary("tophat/tophat")
+#         @program = Bio::Ngs::Utils.binary("tophat/tophat")
 #       end
 # 
 #       no_tasks do
