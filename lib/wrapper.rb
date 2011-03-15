@@ -93,21 +93,21 @@ module Bio
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
-        params = opts[:options]
+        #REMOVE        params = opts[:options]
         if output == :stdout 
           raise "Can't write to any output file. With a program which writes on stdout you must provide a file name" if opts[:output_file].nil?
-           file_stdlog = File.open(opts[:output_file], 'w')
-           file_errlog = File.open(opts[:output_file]+".err",'w')
+          file_stdlog = File.open(opts[:output_file], 'w')
+          file_errlog = File.open(opts[:output_file]+".err",'w')
 
           Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
 
-           pout.sync = true
-           perr.sync = true           
-#Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
-          
-         #  pout.flush
-#           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
-           t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
+            pout.sync = true
+            perr.sync = true           
+            #REMOVE Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
+
+            #REMOVE           pout.flush
+            #REMOVE           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
+            t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
             begin
               pin.close
               #sleep(10)
@@ -116,87 +116,85 @@ module Bio
               # pout.readline.split("\n").each do |line|
               #    file_stdlog.puts line
               # end
-              
+
             ensure
-            t.join
-#            x.join
+              t.join
+              #REMOVE            x.join
             end
           end #ommand call open3
           file_stdlog.close
           file_errlog.close
-          
-         
         else
           Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
         end #if
       end #run
-      
+
       # Inject into the Thor::Sandbox::TaskName (klass) the options defined for this 
-        # wrapper
-        # Example of call
-        #   desc "task_name ARG_ONE ARG_SECOND", "run tophat as from command line"
-        #   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, ARG_ONE ARG_SECOND|
-        #       puts ARG_ONE
-        #       puts ARG_SECOND
-        #       #you tasks here
-        #   end      
-        def thor_task(klass, task_name, &block)
-          if klass
-            wrapper = self   
-            klass.class_eval do            
-              wrapper.options.each_pair do |name, opt|
-                method_option name, opt
-              end #each_pair
-              # Thor's behavior should be respected passing attributes
-              define_method task_name do |*args|
-                #it's mandatory that the first and second parameter are respectively wrapper and task
-                raise ArgumentError, "wrong number of arguments (#{args.size} for #{block.parameters.size-2})" if args.size != block.parameters.size-2
-                yield wrapper, self, *args
-              end
-            end#class_eval
-          end #klass
-        end #thor_task
-
-        def thor_test(klass, name)
-          puts klass.inspect
-          puts klass.options.inspect1
-        end
-
-        #Return the class name
-        def class_name
-          self.class.name.split("::").last.downcase
-        end
-
-        module ClassMethods
-          #TODO: do I need to set a default program name using class name or not ?
-          #       or do we need to specify somewhere a defaitl path and looking for a real binary ?
-
-          OUTPUT = [:file, :stdout, :stdin]
-
-          # output = {:file=>true, :stdout=>}
-          attr_accessor :output
-
-          #TODO I don't like this way, Is it possible to configure the variable as global and default ?
-          def set_output(output_type=:file)
-            if OUTPUT.include? output_type
-              @output = output_type
-            else
-              raise "Output type #{output_type} is not suported. Valid types are #{OUTPUT}"
+      # wrapper
+      # Example of call
+      #   desc "task_name ARG_ONE ARG_SECOND", "run tophat as from command line"
+      #   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, ARG_ONE ARG_SECOND|
+      #       puts ARG_ONE
+      #       puts ARG_SECOND
+      #       #you tasks here
+      #   end      
+      def thor_task(klass, task_name, &block)
+        if klass
+          wrapper = self   
+          klass.class_eval do            
+            wrapper.options.each_pair do |name, opt|
+              method_option name, opt
+            end #each_pair
+            # Thor's behavior should be respected passing attributes
+            define_method task_name do |*args|
+              #it's mandatory that the first and second parameter are respectively wrapper and task
+              raise ArgumentError, "wrong number of arguments (#{args.size} for #{block.parameters.size-2})" if args.size != block.parameters.size-2
+              yield wrapper, self, *args
             end
+          end#class_eval
+        end #klass
+      end #thor_task
+
+      def thor_test(klass, name)
+        puts klass.inspect
+        puts klass.options.inspect1
+      end
+
+      #Return the class name
+      def class_name
+        self.class.name.split("::").last.downcase
+      end
+
+      module ClassMethods
+        #TODO: do I need to set a default program name using class name or not ?
+        #       or do we need to specify somewhere a defaitl path and looking for a real binary ?
+
+        OUTPUT = [:file, :stdout, :stdin]
+
+        # output = {:file=>true, :stdout=>}
+        attr_accessor :output
+
+        #TODO I don't like this way, Is it possible to configure the variable as global and default ?
+        def set_output(output_type=:file)
+          if OUTPUT.include? output_type
+            @output = output_type
+          else
+            raise "Output type #{output_type} is not suported. Valid types are #{OUTPUT}"
           end
+        end
 
-          attr_accessor :program, :options        
+        attr_accessor :program, :options        
 
-          # external_parameter can be an array a string or an hash
-          # def validate_parameters(external_parameters)
-          def add_option(name, opt={})
-            @options = (@options || {}).merge(name=>opt)
-          end
+        # external_parameter can be an array a string or an hash
+        # def validate_parameters(external_parameters)
+        def add_option(name, opt={})
+          @options = (@options || {}).merge(name=>opt)
+        end
 
-          alias set_program program=
+        alias set_program program=
 
-        end #ClassMethods
+      end #ClassMethods
 
-      end #Wrapper
-    end #Command
-  end #Bio
+    end #Wrapper
+  end #Command
+end #Bio
