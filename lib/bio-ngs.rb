@@ -23,6 +23,7 @@ require 'bio/ngs/quality'
 require 'bio/ngs/graphics'
 require 'bio/ngs/task'
 require 'bio/ngs/core_ext'
+require 'bio/ngs/converter'
 
 #tools
 require 'bio/appl/ngs/tophat'
