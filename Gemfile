@@ -4,7 +4,9 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 
 gem "bio", ">= 1.4.1"
-gem 'bio-bwa'
+gem "bio-bwa", ">= 0.0.0"
+gem "thor", ">= 0.14.6"
+gem "rubyvis", ">= 0.5.0"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -16,7 +18,7 @@ group :development do
   gem "bio", ">= 1.4.1"
   gem "thor", ">= 0.14.6"
   gem "ffi", ">= 1.0.6"
-  gem 'bio-bwa'
+  gem 'bio-bwa', ">= 0.0.0"
   gem "rubyvis", ">= 0.5.0"
   gem "rspec", ">= 2.5.0"
 

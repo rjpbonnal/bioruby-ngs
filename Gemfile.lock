@@ -2,9 +2,9 @@ GEM
   remote: http://rubygems.org/
   specs:
     bio (1.4.1)
-    bio-bwa (0.1.0)
+    bio-bwa (0.2.1)
     diff-lcs (1.1.2)
-    ffi (1.0.6)
+    ffi (1.0.7)
       rake (>= 0.8.7)
     git (1.2.5)
     jeweler (1.5.2)
@@ -30,7 +30,7 @@ PLATFORMS
 
 DEPENDENCIES
   bio (>= 1.4.1)
-  bio-bwa
+  bio-bwa (>= 0.0.0)
   bundler (~> 1.0.0)
   ffi (>= 1.0.6)
   jeweler (~> 1.5.2)
