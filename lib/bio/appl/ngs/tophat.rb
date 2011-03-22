@@ -84,12 +84,7 @@ module Bio
 
       include Bio::Command::Wrapper
 
-
       set_program Bio::Ngs::Utils.binary("tophat/tophat")
-      # User should provide a complete path to the tool.
-      # I think it would it better identify the program from just a name
-      # looking int othe ext/ or host system path
-      # Why not grab the file name from the class name if not specified ?
 
       add_option "output-dir",:type => :string, :aliases => '-o'
       add_option "min-anchor", :type => :numeric, :aliases => '-a'
