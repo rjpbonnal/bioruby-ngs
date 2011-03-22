@@ -18,10 +18,10 @@ module Convert
       method_option :append, :type => :boolean, :default => false, :desc => 'Append this convertion to the output file if exists'
       # output is just a string I'll attach the fastq extension
       def by_file(first, output)
-        qseq = Bio::Ngs::Converter::Qseq.new(:pe)
+        qseq = Bio::Ngs::Converter::Qseq.new(options.paired ? :pe : :se)
         qseq.buffer = File.open(first,'r')
-        fastq_file = File.open("#{output}.fastq", (options.append ? 'w' : 'a'))
-        qseq.to_fastq(options.paired ? :pe : :se) do |fastq|
+        fastq_file = File.open("#{output}.fastq", (options.append ? 'a' : 'w'))
+        qseq.to_fastq do |fastq|
           fastq_file.puts fastq if fastq
         end
         fastq_file.close
