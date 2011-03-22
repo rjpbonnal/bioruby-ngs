@@ -18,17 +18,30 @@ module Bio
         # String with \n as line separator
         # File (reading)
         attr_accessor :buffer
+        attr_reader :type
+                
+        def initialize(default_type=nil)
+          @type=default_type if [:pe, :se].include?(default_type)
+        end
+        
+        def type=(data)
+          if [:pe, :se].include?(data)
+            @type = data
+          else
+            @type = nil
+          end
+        end
         
         # Return each line converted in fastq, is a line is not valid
         # because is not good enough that line will return a nil
         # rember to remove the nil values if you are building an array     
-        def to_fastq(type)
-          if ([:pe, :se].include? type.to_sym)
+        def to_fastq
+          if (type.nil?)            
+            raise "Type of qseq not specifed."            
+          else
             @buffer.lines do |line|
               yield (send "qseq2fastq_#{type}", line)
             end
-          else
-            raise "Unsupported format #{type.to_sym} for qseq"
           end
         end
 
