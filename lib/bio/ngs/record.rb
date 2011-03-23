@@ -11,8 +11,6 @@ module Bio
   module Ngs
     class Record
       
-      require 'yaml'  
-      
       def initialize(file)
         @filename = file
         @file = File.new(file,"a+")
@@ -42,9 +40,9 @@ module Bio
       private
       
       def is_saved?(params)    
-          tasks = []
-          YAML.each_document(@file) {|ydoc| tasks << ydoc}
-          return tasks.include?(params)
+        tasks = []
+        YAML.each_document(@file) {|ydoc| tasks << ydoc}
+        return tasks.include?(params)
       end
       
     end
