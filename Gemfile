@@ -4,7 +4,7 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 
 gem "bio", ">= 1.4.1"
-gem "bio-bwa", ">= 0.0.0"
+gem "bio-bwa", ">= 0.2.1"
 gem "thor", ">= 0.14.6"
 gem "rubyvis", ">= 0.5.0"
 gem "daemons", ">= 1.1.0"

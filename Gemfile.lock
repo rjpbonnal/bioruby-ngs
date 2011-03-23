@@ -31,7 +31,7 @@ PLATFORMS
 
 DEPENDENCIES
   bio (>= 1.4.1)
-  bio-bwa (>= 0.0.0)
+  bio-bwa (>= 0.2.1)
   bundler (~> 1.0.0)
   daemons (>= 1.1.0)
   ffi (>= 1.0.6)
