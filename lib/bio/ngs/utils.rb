@@ -3,6 +3,7 @@
 #
 # Copyright:: Copyright (C) 2011
 #     Francesco Strozzi <francesco.strozzi@gmail.com>
+#     Raoul J.P. Bonnal <r@bioruby.org>
 # License:: The Ruby License
 #
 #
@@ -13,15 +14,11 @@ module Bio
       
       def self.binary(name)
         path = File.expand_path(File.dirname(__FILE__))
-        os = self.os_type
-        plugin_binary = File.join(path,"ext","bin","common",name)
-        plugin_os_binary = File.join(path,"ext","bin",os,name)
-        os_binary = Bio::Command.query_command ["which", name]
-        if File.exists?(plugin_binary)
+        if File.exists?(plugin_binary = File.join(path,"ext","bin","common",name))
           return plugin_binary
-        elsif File.exists?(plugin_os_binary)
+        elsif File.exists?(plugin_os_binary = File.join(path,"ext","bin",self.os_type,name))
           return plugin_os_binary
-        elsif os_binary != ""
+        elsif (os_binary = Bio::Command.query_command ["which", name]) != ""
           return os_binary.tr("\n","")
         else
           raise ArgumentError, "No binary found with this name: #{name}"
