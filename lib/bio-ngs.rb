@@ -10,6 +10,8 @@
 
 
 #require 'rubygems'
+require 'yaml'
+require 'daemons'
 
 require 'bio-bwa'
 require 'thor'
@@ -29,6 +31,7 @@ require 'bio/ngs/converter'
 require 'bio/appl/ngs/tophat'
 require 'bio/appl/ngs/bowtie-inspect'
 require 'bio/appl/ngs/sff_extract'
+require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
 # history 
 Bio::Ngs::HISTORY_FILE = ".task-history.yml"
