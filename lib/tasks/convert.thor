@@ -65,8 +65,6 @@ module Convert
               strand_lambda.call(dir, :reverse)
             end #daemon2
           end #ifpaired
-          
-          puts task1.show_status.inspect
         end #by_lane
       end #Fastq
     end #Qseq
