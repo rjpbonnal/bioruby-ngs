@@ -34,4 +34,4 @@ require 'bio/appl/ngs/sff_extract'
 require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
 # history 
-Bio::Ngs::HISTORY_FILE = ".task-history.yml"
+Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
