@@ -36,6 +36,21 @@ describe "Converter" do
       fastq_file.readlines[0..4].join("").should == "@H125:1:1108:1188:2036#0/1\nCTTGTATGCAGCATCCCCTTCTTGCCTAGGGACTTGAAGGGCCAGGCTTCCTGTCATTGCCTCACTCAAATGTAGC\n+\ngggggggggggggegggggffggeggegggeagge^ggdbcgggcdgedegfggffff^ffffefdeeZefccceg\n"
       fastq_file.close
       File.delete(fastq_filename)
+    end
+    
+    it "get statistics from converted reads" do
+      qseq = Bio::Ngs::Converter::Qseq.new(:pe)
+      buffer_filename = File.dirname(__FILE__) + "/fixture/s_1_1_1108_qseq.txt"
+      fastq_filename  = File.dirname(__FILE__) + "/fixture/s_1_1_1108_qseq.fastq"
+      qseq.buffer = File.open(buffer_filename,'r')
+      fastq_file = File.open(fastq_filename, 'w')
+      qseq.to_fastq do |fastq|
+        fastq_file.puts fastq if fastq
+      end
+      fastq_file.close
+      File.delete(fastq_filename)      
+      qseq.stats.should == {:reads_total=>100, :reads_passed=>1, :reads_rejected=>99, :bases_passed_total=>76, :bases_rejected_total=>7524, :bases_passed_with_b_quality=>0, :bases_rejected_with_b_quality=>4004, :bases_passed_with_n=>0, :bases_rejected_with_n=>12}
     end    
+    
   end
 end
