@@ -9,6 +9,11 @@
 
 require 'bio'
 
+#Notes
+# in case you are developing a new wrapper and want to have a secure environment
+# you must not define the program name and the task will not be cerated.
+
+
 module Bio
   module Command
     module Wrapper
