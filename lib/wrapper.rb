@@ -9,6 +9,11 @@
 
 require 'bio'
 
+#Notes
+# in case you are developing a new wrapper and want to have a secure environment
+# you must not define the program name and the task will not be cerated.
+
+
 module Bio
   module Command
     module Wrapper
@@ -93,6 +98,10 @@ module Bio
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
+        if program.nil?
+          warn "WARNING: no program is associated with #{class_name.upcase} task."
+          return nil
+        end  
         #REMOVE        params = opts[:options]
         if output == :stdout 
           raise "Can't write to any output file. With a program which writes on stdout you must provide a file name" if opts[:output_file].nil?
@@ -100,28 +109,15 @@ module Bio
           file_errlog = File.open(opts[:output_file]+".err",'w')
 
           Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
-
             pout.sync = true
             perr.sync = true           
-            #REMOVE Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
-
-            #REMOVE           pout.flush
-            #REMOVE           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
             t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
             begin
               pin.close
-              #sleep(10)
-              # file_stdlog.write pout.read
-              # file_stdlog.puts pout.read
-              # pout.readline.split("\n").each do |line|
-              #    file_stdlog.puts line
-              # end
-
             ensure
               t.join
-              #REMOVE            x.join
             end
-          end #ommand call open3
+          end #command call open3
           file_stdlog.close
           file_errlog.close
         else
@@ -139,6 +135,10 @@ module Bio
       #       #you tasks here
       #   end      
       def thor_task(klass, task_name, &block)
+        if program.nil?
+          warn "WARNING: no program is associated with #{class_name.upcase} task, does not make sense to create a thor task."
+          return nil
+        end          
         if klass
           wrapper = self   
           klass.class_eval do            
