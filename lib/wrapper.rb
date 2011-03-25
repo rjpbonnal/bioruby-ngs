@@ -100,28 +100,15 @@ module Bio
           file_errlog = File.open(opts[:output_file]+".err",'w')
 
           Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
-
             pout.sync = true
             perr.sync = true           
-            #REMOVE Works quasi           t = Thread.start {file_stdlog.puts pout.readline while !perr.eof?}
-
-            #REMOVE           pout.flush
-            #REMOVE           x = Thread.start {perr.lines{|line| file_errlog.puts line}}
             t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
             begin
               pin.close
-              #sleep(10)
-              # file_stdlog.write pout.read
-              # file_stdlog.puts pout.read
-              # pout.readline.split("\n").each do |line|
-              #    file_stdlog.puts line
-              # end
-
             ensure
               t.join
-              #REMOVE            x.join
             end
-          end #ommand call open3
+          end #command call open3
           file_stdlog.close
           file_errlog.close
         else
