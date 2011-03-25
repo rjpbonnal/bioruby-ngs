@@ -93,6 +93,10 @@ module Bio
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
+        if program.nil?
+          warn "WARNING: no program is associated with #{class_name.upcase} task."
+          return nil
+        end  
         #REMOVE        params = opts[:options]
         if output == :stdout 
           raise "Can't write to any output file. With a program which writes on stdout you must provide a file name" if opts[:output_file].nil?
@@ -126,6 +130,10 @@ module Bio
       #       #you tasks here
       #   end      
       def thor_task(klass, task_name, &block)
+        if program.nil?
+          warn "WARNING: no program is associated with #{class_name.upcase} task, does not make sense to create a thor task."
+          return nil
+        end          
         if klass
           wrapper = self   
           klass.class_eval do            
