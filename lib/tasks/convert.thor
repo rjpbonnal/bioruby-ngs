@@ -7,8 +7,6 @@
 #
 #
 
-#TODO: Usare i name spaces per suddividere le conversioni, così non mi piacciono
-#TODO: biongs convert:qseq:fastq
 module Convert
   module Qseq
     class Fastq < Thor
@@ -49,10 +47,10 @@ module Convert
         append = options.append
         strand_lambda = lambda do |dir, strand| #Forward
           strand_number = case strand 
-                            when :forward then 1
-                            when :reverse then 2
-                          end              
-            invoke :by_file, [Dir[File.join(dir,"00?/s_#{lane}_#{strand_number}_*_qseq.txt")], "#{output}_#{strand}"], :paired => paired, :append => append, :dir => dir
+          when :forward then 1
+          when :reverse then 2
+          end              
+          invoke :by_file, [Dir[File.join(dir,"00?/s_#{lane}_#{strand_number}_*_qseq.txt")], "#{output}_#{strand}"], :paired => paired, :append => append, :dir => dir
         end
 
         forward_daemon_options = {
@@ -102,5 +100,64 @@ module Convert
           end #run_bcl_to_qseq
         end #Qseq
       end #Bcl
+      module Illumina
+        class Fastq < Thor
+          
+          
+          # Trim fastq sequences (Illumina format 1.5+) starting from the first B in the quality sequence.
+          # If user passes an output file name that witll be used as suffix for the other output files.
+          # If no file name is passed the input file name will be used as suffix.
+          # Output: 3 files
+          # 1) xxx.fastq_trim the trimmed sequences in fastq format
+          # 2) xxx.fastq_profile the length distribution of the trimmed sequnces
+          # 3) xxx.fastq_report statistics on processed reads as total number of reads in input,
+          #    trimmed, removed, untouched ( not trimmed)
+          # Note: removed reads are the ones which start with a B
+          desc "trim_b FASTQ", "perform a trim on all the sequences on B qualities with Illumina's criteria. Ref to CASAVA manual."
+          #TODO, report the legth/profile of all the sequences.
+          method_option :fileout, :type => :string  
+          def trim_b(fastq)
+            #reads = Bio::Ngs::FastQuality.new(fastq, :fastq_illumina)
+            reads = Bio::FlatFile.auto(fastq)
+            count_total = 0
+            count_trimmed = 0
+            count_removed = 0
+            sequences_profile=Hash.new(0)
+            File.open(options[:fileout].nil? ? "#{fastq}_trim" : options.fileout, 'w') do |f|
+              reads.each do |read|
+                count_total+=1
+                read.format = :fastq_illumina
+                if (b_index=read.quality_scores.find_index {|quality| quality == 2})
+                  if (b_index > 0)
+                    count_trimmed+=1
+                    sequences_profile[b_index]+=1
+                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
+                    #                    fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
+                    #                    trim_read = Bio::Fastq.new(fastq_string)
+                    #                    trim_read.format = :fastq_illumina
+                    #                    f.puts trim_read.to_biosequence.output(:fastq_illumina)
+                  else
+                    count_removed+=1
+                  end
+                else
+                  sequences_profile[read.seq.length]+=1
+                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
+                  #                  f.puts read.to_biosequence.output(:fastq_illumina)
+                end #find sequence to trim
+              end#read
+            end #Write fastq
+          File.open(options[:fileout].nil? ? "#{fastq}_profile" : options.fileout, 'w') do |f_profile|
+            f_profile.puts "Sequnce length,count"
+            sequences_profile.each_pair do |length, count|
+              f_profile.puts "#{length},#{count}"
+            end
+          end #Write profile
+            File.open(options[:fileout].nil? ? "#{fastq}_report" : options.fileout, 'w') do |report|
+              report.puts "Reads processed,Reads trimmed,Reads removed,Reads untouched"
+              report.puts "#{count_total},#{count_trimmed},#{count_removed},#{count_total-count_trimmed-count_removed}"
+            end #Write report
+          end #trim_b
+        end #Fastq
+      end #Illumina
 
     end #Convert
