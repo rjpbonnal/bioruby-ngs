@@ -141,18 +141,20 @@ module Convert
                   if (b_index > 0)
                     count_trimmed+=1
                     sequences_profile[b_index]+=1
-                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
-                    #                    fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
-                    #                    trim_read = Bio::Fastq.new(fastq_string)
-                    #                    trim_read.format = :fastq_illumina
-                    #                    f.puts trim_read.to_biosequence.output(:fastq_illumina)
+#                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
+                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
+                                        # fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
+                                        # trim_read = Bio::Fastq.new(fastq_string)
+                                        # trim_read.format = :fastq_illumina
+                                        # f.puts trim_read.to_biosequence.output(:fastq_illumina)
                   else
                     count_removed+=1
                   end
                 else
                   sequences_profile[read.seq.length]+=1
-                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
-                  #                  f.puts read.to_biosequence.output(:fastq_illumina)
+#                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
+                  f.puts "@#{read.entry_id}\n#{read.seq}\n+\n#{read.quality_string}"
+                                    # f.puts read.to_biosequence.output(:fastq_illumina)
                 end #find sequence to trim
               end#read
             end #Write fastq
