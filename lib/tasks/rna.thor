@@ -8,10 +8,10 @@ class Rna < Thor
   # tophat alignment
   # check for required tools tophat, cufflinks, bowtie, bwa, ....
   # convert bcl for illumina data
-  desc "tophat TEXT WHO CHECK", "run tophat as from command line"
-  Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, text, who|
-      wrapper.params = task.options
-      wrapper.run :arguments=>[text, who] 
+  desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors"
+  Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, dist, index, output, fastqs|
+      wrapper.params = {"mate-inner-dist"=>dist, "output-dir"=>outputdir, "num-threads"=>6, "solexa-quals"=>true}
+      wrapper.run :arguments=>[index, fastqs ] 
       #you tasks here
   end
 
