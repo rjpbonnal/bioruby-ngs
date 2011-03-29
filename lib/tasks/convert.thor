@@ -35,7 +35,13 @@ module Convert
         # puts "Done #{file_name}"
       end #by_file
 
-      #THIS WORKS ONLY ON ILLUMINA DATA DEMULTIPLEXED
+      # This tasks is used to aggregate the data demultiplexed from Illumina OLB 1.9 and CASAVA 1.7.
+      # Demultiplexing software splits the reads in different subdirectories based on the tag index of the reads,
+      # usually the wet-lab puts a population in a single lane an tags it with different indexes. The demultiplexer
+      # behaviour is not so clear, so this task takes care of simplify the aggregation for the final dataset.
+      # Output: 2 files
+      # 1) Forward fastq
+      # 2) Reverse fastq
       desc "by_lane LANE OUTPUT", "Convert all the file in the current and descendant directories belonging to the specified lane in fastq. This command is specific for Illumina qseqs file s_#LANE_#STRAND_#TILE. Note UNKOWN directory is excluded by default."
       method_option :paired, :type => :boolean, :default => false, :desc => 'Convert the reads in the paired format searching in the directories.'
       method_option :append, :type => :boolean, :default => false, :desc => 'Append this convertion to the output file if exists'      
@@ -100,9 +106,11 @@ module Convert
           end #run_bcl_to_qseq
         end #Qseq
       end #Bcl
+      
+      
+      
       module Illumina
         class Fastq < Thor
-          
           
           # Trim fastq sequences (Illumina format 1.5+) starting from the first B in the quality sequence.
           # If user passes an output file name that witll be used as suffix for the other output files.
@@ -118,12 +126,14 @@ module Convert
           method_option :fileout, :type => :string  
           def trim_b(fastq)
             #reads = Bio::Ngs::FastQuality.new(fastq, :fastq_illumina)
+            output_filename_base = options[:fileout].nil? ? fastq : options.fileout
+            
             reads = Bio::FlatFile.auto(fastq)
             count_total = 0
             count_trimmed = 0
             count_removed = 0
             sequences_profile=Hash.new(0)
-            File.open(options[:fileout].nil? ? "#{fastq}_trim" : options.fileout, 'w') do |f|
+            File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim", "fastq"), 'w') do |f|
               reads.each do |read|
                 count_total+=1
                 read.format = :fastq_illumina
@@ -146,13 +156,13 @@ module Convert
                 end #find sequence to trim
               end#read
             end #Write fastq
-          File.open(options[:fileout].nil? ? "#{fastq}_profile" : options.fileout, 'w') do |f_profile|
+          File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "profile", "csv"), 'w') do |f_profile|
             f_profile.puts "Sequnce length,count"
             sequences_profile.each_pair do |length, count|
               f_profile.puts "#{length},#{count}"
             end
           end #Write profile
-            File.open(options[:fileout].nil? ? "#{fastq}_report" : options.fileout, 'w') do |report|
+            File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "report", "csv"), 'w') do |report|
               report.puts "Reads processed,Reads trimmed,Reads removed,Reads untouched"
               report.puts "#{count_total},#{count_trimmed},#{count_removed},#{count_total-count_trimmed-count_removed}"
             end #Write report
