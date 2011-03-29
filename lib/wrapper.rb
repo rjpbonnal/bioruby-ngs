@@ -77,9 +77,19 @@ module Bio
           option_name = option[0]
           option_values = option[1]
           if option_values.kind_of? Hash
-            "--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
+            #TODO: refactor this code and verify that the boolean needs a specific options setting.
+            #"--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
+            if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
+              "--#{option_name}"
+            else
+              "--#{option_name}=#{option_values[:default]}"
+            end
           else #is a value of the main hash. (mostly a parameter)
-            "--#{option_name}=#{option_values}"
+            if option_values == true
+              "--#{option_name}"
+            elsif option_values != false
+              "--#{option_name}=#{option_values}"
+            end
           end
         end
         args.empty? ? []  : args.join(" ")
@@ -94,7 +104,7 @@ module Bio
       # but will not save the changes
       # opts = {:options=>{}, :arguments=>[]}
       # in the particular case the user wants to submit other options
-      # these must be passed like {"option_name"=>value} similar when settin params
+      # these must be passed in arguments like {"option_name"=>value} similar when settin params
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
@@ -121,6 +131,7 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
+#          puts [program, normalize_params, opts[:arguments]].flatten
           Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
         end #if
       end #run
