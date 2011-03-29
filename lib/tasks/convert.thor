@@ -158,8 +158,10 @@ module Convert
             end #Write fastq
           File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "profile", "csv"), 'w') do |f_profile|
             f_profile.puts "Sequnce length,count"
-            sequences_profile.each_pair do |length, count|
-              f_profile.puts "#{length},#{count}"
+            sequences_profile.sort.each do |profile|
+              read_size = profile[0]
+              read_number = profile[1]
+              f_profile.puts "#{read_size},#{read_number}"
             end
           end #Write profile
             File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "report", "csv"), 'w') do |report|
