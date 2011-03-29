@@ -121,6 +121,7 @@ module Convert
           # 3) xxx.fastq_report statistics on processed reads as total number of reads in input,
           #    trimmed, removed, untouched ( not trimmed)
           # Note: removed reads are the ones which start with a B
+          # IMPORTANT: Data in FastQ formant MUST NOT BE WRAPPED sequence and quality MUST BE ON 1 LINE EACH
           desc "trim_b FASTQ", "perform a trim on all the sequences on B qualities with Illumina's criteria. Ref to CASAVA manual."
           #TODO, report the legth/profile of all the sequences.
           method_option :fileout, :type => :string  
@@ -128,34 +129,62 @@ module Convert
             #reads = Bio::Ngs::FastQuality.new(fastq, :fastq_illumina)
             output_filename_base = options[:fileout].nil? ? fastq : options.fileout
             
-            reads = Bio::FlatFile.auto(fastq)
+#            reads = Bio::FlatFile.auto(fastq)
+            reads = File.open(fastq,'r') #remove
             count_total = 0
             count_trimmed = 0
             count_removed = 0
             sequences_profile=Hash.new(0)
+            fastq=0
+            head =""
+            seq=""
+            qual=""
             File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim", "fastq"), 'w') do |f|
-              reads.each do |read|
-                count_total+=1
-                read.format = :fastq_illumina
-                if (b_index=read.quality_scores.find_index {|quality| quality == 2})
-                  if (b_index > 0)
-                    count_trimmed+=1
-                    sequences_profile[b_index]+=1
-#                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
-                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
-                                        # fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
-                                        # trim_read = Bio::Fastq.new(fastq_string)
-                                        # trim_read.format = :fastq_illumina
-                                        # f.puts trim_read.to_biosequence.output(:fastq_illumina)
-                  else
-                    count_removed+=1
-                  end
-                else
-                  sequences_profile[read.seq.length]+=1
-#                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
-                  f.puts "@#{read.entry_id}\n#{read.seq}\n+\n#{read.quality_string}"
-                                    # f.puts read.to_biosequence.output(:fastq_illumina)
-                end #find sequence to trim
+#              reads.each do |read|
+               reads.lines do |line| #remove
+                 case (fastq % 4 )
+                 when 0 then
+                   head = line
+                   count_total+=1
+                 when 1 then seq=line
+                   #2 is the plus sign
+                 when 3 then 
+#                   qual=line
+                   if (b_index=line=~/B/)
+                     if (b_index > 0)
+                       b_index-1
+                       count_trimmed+=1
+                       sequences_profile[b_index]+=1
+                       f.puts "@#{head}#{seq[0..(b_index)]}\n+\n#{line[0..(b_index)]}"
+                     else
+                       count_removed+=1
+                     end
+                   else
+                     f.puts "@#{head}#{seq}+\n#{qual}"
+                   end
+                 end #case
+                fastq+=1                
+                    
+#                read.format = :fastq_illumina
+#                 if (b_index=read.quality_scores.find_index {|quality| quality == 2})
+#                   if (b_index > 0)
+#                     count_trimmed+=1
+#                     sequences_profile[b_index]+=1
+# #                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
+#                     f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
+#                                         # fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
+#                                         # trim_read = Bio::Fastq.new(fastq_string)
+#                                         # trim_read.format = :fastq_illumina
+#                                         # f.puts trim_read.to_biosequence.output(:fastq_illumina)
+#                   else
+#                     count_removed+=1
+#                   end
+#                 else
+#                   sequences_profile[read.seq.length]+=1
+# #                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
+#                   f.puts "@#{read.entry_id}\n#{read.seq}\n+\n#{read.quality_string}"
+#                                     # f.puts read.to_biosequence.output(:fastq_illumina)
+#                 end #find sequence to trim
               end#read
             end #Write fastq
           File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "profile", "csv"), 'w') do |f_profile|
