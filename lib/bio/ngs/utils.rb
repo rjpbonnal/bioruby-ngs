@@ -34,6 +34,15 @@ module Bio
         end
       end
       
+      # Remove from filename the dot and the extension, adds the tag and the new extension
+      def self.tag_filename(filename, tag, extension)
+        if filename=~/\..*/
+          filename.gsub(/\..*/, "_#{tag}.#{extension}")
+        else
+          "#{filename}_#{tag}.#{extension}"
+        end
+      end #tag_filename
+      
     end # end Utils
   end # end NGS
 end # end Bio

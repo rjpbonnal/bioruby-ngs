@@ -69,17 +69,28 @@ module Bio
       end
 
       # Return the options and parameters formmatted as typed in the command line as a string
+      # opts[:separator] is important not all the applications require a "=" for separating options and values
       # TODO: need to be compliant with Bio::Command ?
       # TODO: make a test because it should not return an empty string.
       # TODO: refactor is not beauty
-      def normalize_params
+      def normalize_params(separator="=")
         args=params.to_a.map do |option|
           option_name = option[0]
           option_values = option[1]
           if option_values.kind_of? Hash
-            "--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
+            #TODO: refactor this code and verify that the boolean needs a specific options setting.
+            #"--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
+            if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
+              "--#{option_name}"
+            else
+              "--#{option_name}#{separator}#{option_values[:default]}"
+            end
           else #is a value of the main hash. (mostly a parameter)
-            "--#{option_name}=#{option_values}"
+            if option_values == true
+              "--#{option_name}"
+            elsif option_values != false
+              "--#{option_name}#{separator}#{option_values}"
+            end
           end
         end
         args.empty? ? []  : args.join(" ")
@@ -94,10 +105,11 @@ module Bio
       # but will not save the changes
       # opts = {:options=>{}, :arguments=>[]}
       # in the particular case the user wants to submit other options
-      # these must be passed like {"option_name"=>value} similar when settin params
+      # these must be passed in arguments like {"option_name"=>value} similar when settin params
+      # opts[:separator] is important not all the applications require a "=" for separating options and values
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
-      def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
+      def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil, :separator=>"="})
         if program.nil?
           warn "WARNING: no program is associated with #{class_name.upcase} task."
           return nil
@@ -121,7 +133,8 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
-          Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
+#          puts "#{[program, normalize_params + " " + opts[:arguments].join(" ")].flatten}"
+          Bio::Command.query_command [program, normalize_params(opts[:separator]) + " " + opts[:arguments].join(" ")].flatten
         end #if
       end #run
 
