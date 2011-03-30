@@ -15,6 +15,11 @@ Provides a framework for handling NGS data with Bioruby.
 * Develop fastq quality reports with RibuVis ?
 
 == Contributing to bio-ngs
+
+Please do not hesitate to contact us:
+
+Raoul J.P. Bonnal, http://github.com/helios, r -at- bioruby -dot- org
+Francesco Strozzi, http://github.com/fstrozzi
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
