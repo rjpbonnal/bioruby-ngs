@@ -69,10 +69,11 @@ module Bio
       end
 
       # Return the options and parameters formmatted as typed in the command line as a string
+      # opts[:separator] is important not all the applications require a "=" for separating options and values
       # TODO: need to be compliant with Bio::Command ?
       # TODO: make a test because it should not return an empty string.
       # TODO: refactor is not beauty
-      def normalize_params
+      def normalize_params(separator="=")
         args=params.to_a.map do |option|
           option_name = option[0]
           option_values = option[1]
@@ -82,13 +83,13 @@ module Bio
             if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
               "--#{option_name}"
             else
-              "--#{option_name}=#{option_values[:default]}"
+              "--#{option_name}#{separator}#{option_values[:default]}"
             end
           else #is a value of the main hash. (mostly a parameter)
             if option_values == true
               "--#{option_name}"
             elsif option_values != false
-              "--#{option_name}=#{option_values}"
+              "--#{option_name}#{separator}#{option_values}"
             end
           end
         end
@@ -105,9 +106,10 @@ module Bio
       # opts = {:options=>{}, :arguments=>[]}
       # in the particular case the user wants to submit other options
       # these must be passed in arguments like {"option_name"=>value} similar when settin params
+      # opts[:separator] is important not all the applications require a "=" for separating options and values
       # TODO handle output file with program which writes on stdout
       #TODO: refactor mostly due to stdin/out
-      def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil})
+      def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil, :separator=>"="})
         if program.nil?
           warn "WARNING: no program is associated with #{class_name.upcase} task."
           return nil
@@ -131,8 +133,8 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
-#          puts [program, normalize_params, opts[:arguments]].flatten
-          Bio::Command.query_command [program, normalize_params, opts[:arguments]].flatten
+#          puts "#{[program, normalize_params + " " + opts[:arguments].join(" ")].flatten}"
+          Bio::Command.query_command [program, normalize_params(opts[:separator]) + " " + opts[:arguments].join(" ")].flatten
         end #if
       end #run
 
