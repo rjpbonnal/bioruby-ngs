@@ -13,7 +13,7 @@ module Bio
   module Ngs
     class Graphics
       
-        def self.draw_area(data,width,height,out=nil)
+        def self.draw_area(data,width,height,out=nil,title_label="", x_label="", y_label="",x_padding=15, n_ticks=10)
           point = 0
           max = data.max + 10
           data = data.map do |d|
@@ -28,16 +28,17 @@ module Bio
             width width
             height height
             bottom 20
-            left 20
+            left 50
             right 10
             top 5
 
           # Y-axis and ticks
             rule do
-              data y.ticks(10)
+              data y.ticks(n_ticks)
               bottom(y)
               stroke_style {|d| d!=0 ? "#eee" : "#000"}
               label(:anchor=>"left") {
+                puts y.inspect
                 text y.tick_format
               }
             end
@@ -69,17 +70,17 @@ module Bio
           
           # panel legend and title
           panel = vis.add(Rubyvis::Panel).
-            width(width-15).
+            width(width-x_padding).
             height(height)
             
           panel.anchor('top').add(Rubyvis::Label).
             font("20px sans-serif").
-            text("FastQ Qualities")
+            text(title_label)
           
-          panel.anchor('bottom').add(Rubyvis::Label).text("Nucleotide")
+          panel.anchor('bottom').add(Rubyvis::Label).text(x_label)
           panel.anchor('left').add(Rubyvis::Label).
             text_angle(1.5*Math::PI).
-            text("Quality Score")
+            text(y_label)
           
           
           vis.render();
