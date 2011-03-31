@@ -44,10 +44,11 @@ module Bio
       # a key on the options hash. Sort of validation.
       # ONLY the valid options are taken into account.
       # It like a third level of configuration
+      #TODO: check :aliases in options as well, not that now only the main option name is verified
       def params=(opts={})
         #add the parameters only if in options
         opts.each_pair do |parameter, value|
-          @params[parameter] = value if options.has_key? parameter
+          @params[parameter] = value if options.has_key? parameter 
         end        
       end
 
@@ -93,7 +94,6 @@ module Bio
             end
           end
         end
-        args.empty? ? []  : args.join(" ")
       end
 
       def output
@@ -120,7 +120,7 @@ module Bio
           file_stdlog = File.open(opts[:output_file], 'w')
           file_errlog = File.open(opts[:output_file]+".err",'w')
 
-          Bio::Command.call_command_open3([program, normalize_params, opts[:arguments]].flatten) do |pin, pout, perr|
+          Bio::Command.call_command_open3([program, normalize_params(opts[:separator]), opts[:arguments]].flatten) do |pin, pout, perr|
             pout.sync = true
             perr.sync = true           
             t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
@@ -133,8 +133,7 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
-#          puts "#{[program, normalize_params + " " + opts[:arguments].join(" ")].flatten}"
-          Bio::Command.query_command [program, normalize_params(opts[:separator]) + " " + opts[:arguments].join(" ")].flatten
+          Bio::Command.query_command([program, normalize_params(opts[:separator]), opts[:arguments]].flatten)
         end #if
       end #run
 
