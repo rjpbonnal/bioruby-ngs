@@ -20,7 +20,7 @@ module Convert
         buffers = [first] if first.kind_of? String
         buffers = first if first.kind_of? Array
         buffers.each do |file_name|
-          qseq.buffer = File.open(file_name,'r')
+          qseq.buffer = File.open(File.join(options.dir,file_name),'r')
           fastq_file = File.open(File.join(options.dir,"#{output}.fastq"), (options.append ? 'a' : 'w'))
           qseq.to_fastq do |fastq|
             fastq_file.puts fastq if fastq
@@ -112,13 +112,18 @@ module Convert
       module Illumina
         class Fastq < Thor
 
-          # Trim fastq sequences (Illumina format 1.5+) starting from the first B in the quality sequence.
+          # Trim fastq sequences (Illumina format 1.5+):
+          # ------------------BBBBBBBBBBBBBBBBB
+          # ------------------
+          # First step trailing Bs are removed and if the remaining sequence is length enough
+          # The user can specify the minimum length of the sequnce and the number of Bs to search in the middle.
           # If user passes an output file name that witll be used as suffix for the other output files.
           # If no file name is passed the input file name will be used as suffix.
-          # Output: 3 files
-          # 1) xxx.fastq_trim the trimmed sequences in fastq format
-          # 2) xxx.fastq_profile the length distribution of the trimmed sequnces
-          # 3) xxx.fastq_report statistics on processed reads as total number of reads in input,
+          # Output: 4 files
+          # 1) xxx_trim.fastq the trimmed sequences in fastq format
+          # 2) xxx_rejected.fastq
+          # 3) xxx_profile.csv the length distribution of the trimmed sequnces
+          # 4) xxx_report.csv statistics on processed reads as total number of reads in input,
           #    trimmed, removed, untouched ( not trimmed)
           # Note: removed reads are the ones which start with a B
           # IMPORTANT: Data in FastQ formant MUST NOT BE WRAPPED sequence and quality MUST BE ON 1 LINE EACH
@@ -127,14 +132,10 @@ module Convert
           #TODO: implement different strategies for trimming, N consecutive Bs ?
           #TODO: implement min length for a trimmed sequnce to be reported as valid.
           method_option :fileout, :type => :string
-          method_options :min_size => 20, :aliases => '-s', :desc => 'minimum length to consider a trimmed sequence as valid, otherwise it will be discarded'
-          method_options :b_number => 3, :aliases => '-b', :desc => 'number of Bs character to detect a trimming candidate'
+          method_option :min_size, :type =>:numeric, :default => 20, :aliases => '-s', :desc => 'minimum length to consider a trimmed sequence as valid, otherwise it will be discarded'
           def trim_b(fastq)
-            #reads = Bio::Ngs::FastQuality.new(fastq, :fastq_illumina)
+            reads = File.open(fastq,'r')            
             output_filename_base = options[:fileout].nil? ? fastq : options.fileout
-
-            #            reads = Bio::FlatFile.auto(fastq)
-
             count_total = 0
             count_trimmed = 0
             count_removed = 0
@@ -145,11 +146,11 @@ module Convert
             qual=""
             min_size = (options[:min_size] > 1) ? (options[:min_size]-1) : 0
             
-            trimming_pattern = options[:b_number]>1 ? /#{"B"*options[:b_number]}/ : /B/
+            trimming_tail_patter = /B*$/
             
+            r_rejected = File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim_rejected","fastq"), 'w')
+
             File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim", "fastq"), 'w') do |f|
-              #              reads.each do |read|
-              reads = File.open(fastq,'r')
               reads.lines do |line|
                 case (fastq % 4 )
                 when 0 then
@@ -158,44 +159,20 @@ module Convert
                 when 1 then seq=line
                   #2 is the plus sign
                 when 3 then 
-                  #                   qual=line
-                  if (b_index=(line=~trimming_pattern))
-                    if (b_index > min_size )
-                      b_index-1
-                      count_trimmed+=1
-                      sequences_profile[b_index]+=1
-                      f.puts "@#{head}#{seq[0..(b_index)]}\n+\n#{$`}"
-                    else
-                      count_removed+=1
-                    end
+                  b_tail_idx=(line=~trimming_tail_patter)
+                  if (b_tail_idx > min_size )
+                         count_trimmed+=1
+                    f.puts "#{head}#{seq[0..b_tail_idx-1]}\n+\n#{$`}" #remaining_line}"#line[0..b_tail_idx]
                   else
-                    f.puts "@#{head}#{seq}+\n#{qual}"
+                    count_removed+=1
+                    r_rejected.puts "#{head}#{seq}+\n#{line}"                    
                   end
                 end #case
                 fastq+=1                
-
-                #                read.format = :fastq_illumina
-                #                 if (b_index=read.quality_scores.find_index {|quality| quality == 2})
-                #                   if (b_index > 0)
-                #                     count_trimmed+=1
-                #                     sequences_profile[b_index]+=1
-                # #                    f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)].scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string[0..(b_index-1)].scan(/.{1,70}/).join("\n")}"
-                #                     f.puts "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
-                #                                         # fastq_string = "@#{read.entry_id}\n#{read.seq[0..(b_index-1)]}\n+\n#{read.quality_string[0..(b_index-1)]}"
-                #                                         # trim_read = Bio::Fastq.new(fastq_string)
-                #                                         # trim_read.format = :fastq_illumina
-                #                                         # f.puts trim_read.to_biosequence.output(:fastq_illumina)
-                #                   else
-                #                     count_removed+=1
-                #                   end
-                #                 else
-                #                   sequences_profile[read.seq.length]+=1
-                # #                  f.puts "@#{read.entry_id}\n#{read.seq.scan(/.{1,70}/).join("\n")}\n+\n#{read.quality_string.scan(/.{1,70}/).join("\n")}"
-                #                   f.puts "@#{read.entry_id}\n#{read.seq}\n+\n#{read.quality_string}"
-                #                                     # f.puts read.to_biosequence.output(:fastq_illumina)
-                #                 end #find sequence to trim
               end#read
             end #Write fastq
+            r_rejected.close
+            #Profile
             File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim_profile", "csv"), 'w') do |f_profile|
               f_profile.puts "Sequnce length,count"
               sequences_profile.sort.each do |profile|
@@ -204,6 +181,7 @@ module Convert
                 f_profile.puts "#{read_size},#{read_number}"
               end
             end #Write profile
+            #Report
             File.open(Bio::Ngs::Utils.tag_filename(output_filename_base, "trim_report", "csv"), 'w') do |report|
               report.puts "Reads processed,Reads trimmed,Reads removed,Reads untouched"
               report.puts "#{count_total},#{count_trimmed},#{count_removed},#{count_total-count_trimmed-count_removed}"
