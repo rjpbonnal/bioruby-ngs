@@ -34,6 +34,35 @@ module Bio
         end
       end
       
+      def self.download_with_progress(opts = {:url => nil, :mode => "", :filename => nil})
+        require "open-uri"
+        require "progressbar"
+        filename = (opts[:filename]) ? opts[:filename] : opts[:url].split('/')[-1]
+        pbar = nil
+        open(opts[:url],"r"+opts[:mode],
+            :content_length_proc => lambda {|t|
+               if t && 0 < t
+                 pbar = ProgressBar.new('', t)
+                 pbar.file_transfer_mode
+               end
+             },
+             :progress_proc => lambda {|s|
+               pbar.set s if pbar
+             }) do |remote|
+                open(filename,"w"+opts[:mode]) {|file| file.write remote.read(16384) until remote.eof?}
+             end
+      end
+      
+      def self.uncompress_gz_file(file_in)
+        require 'zlib'
+        file_out = file_in.gsub(/.gz/,"") 
+        Zlib::GzipReader.open(file_in) {|gz|
+            open(file_out,"w") do |file|
+              file.write gz.read
+            end
+          }
+      end     
+      
     end # end Utils
   end # end NGS
 end # end Bio
