@@ -43,6 +43,19 @@ module Bio
         end
       end #tag_filename
       
+      def self.extend_system_path
+        path = File.expand_path(File.dirname(__FILE__))
+        common_dir= File.join(path,"ext","bin","common")
+        os_dir = File.join(path,"ext","bin",self.os_type)
+        sub_dirs = Dir[os_dir+"/*"].select do |file|
+          File.directory?(file)
+        end.map do |dir|
+          ":"+dir
+        end.join
+        ENV["PATH"]+=":"+common_dir+":"+os_dir + sub_dirs
+      end #extend_system_path
+        
+      
     end # end Utils
   end # end NGS
 end # end Bio

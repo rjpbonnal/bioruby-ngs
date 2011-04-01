@@ -35,3 +35,5 @@ require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
+Bio::Ngs::Utils.extend_system_path
+puts ENV["PATH"]
