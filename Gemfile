@@ -22,4 +22,7 @@ group :development do
   gem "rubyvis", ">= 0.5.0"
   gem "rspec", ">= 2.5.0"
   gem "daemons", ">= 1.1.0"
+  gem "activerecord",">= 3.0.5"
+  gem "sqlite3", ">= 1.3.3"
+  gem "bio-blastxmlparser"
 end
