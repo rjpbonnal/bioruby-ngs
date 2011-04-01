@@ -5,11 +5,11 @@ Bio-NGS is an official BioRuby Plugin for Next Generation Sequencing data analys
 
 == Description ==
 
-This is an automatically generated directory tree for the '<%= project_name %>' project.
+This is an automatically generated directory tree for the '<%= name %>' project.
 
 Here is a tree description:
 
-<%= project_name %>
+<%= name %>
  |
  |-- data	# the place to store all your raw data and output files
  |
@@ -20,6 +20,8 @@ Here is a tree description:
  |-- tasks 	# your custom tasks and workflows for NGS data analyses should go here
  |
  |-- conf 	# the place for configuration files
+ |
+ |-- db		# database and migration files
 	
 		
 To view the full list of tasks and analyses available, simply type:
