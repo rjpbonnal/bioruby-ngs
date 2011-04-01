@@ -1,0 +1,15 @@
+class CreateUniprot < ActiveRecord::Migration
+	
+	def self.up
+		create_table :uniprots do |t|
+			t.string :uniprot_id
+			t.string :description
+			t.text	:seq
+		end
+	end
+	
+	def self.down
+		drop_table :uniprots
+	end
+	
+end

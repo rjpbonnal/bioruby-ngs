@@ -1,0 +1,3 @@
+class Uniprot < ActiveRecord::Base; end
+class GoAnnotation < ActiveRecord::Base; end
+class BlastOutput < ActiveRecord::Base; end
