@@ -13,11 +13,17 @@
 require 'yaml'
 require 'daemons'
 
-require 'bio-bwa'
+# External gems
 require 'thor'
 require 'thor/group'
 require 'thor/runner'
+require 'bio-blastxmlparser'
 require 'bio'
+require 'bio-bwa'
+require 'active_record'
+require 'sqlite3'
+
+# NGS classes
 require 'wrapper'
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
