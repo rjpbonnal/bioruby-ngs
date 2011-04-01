@@ -7,29 +7,51 @@
 #
 #
 
-class Project < Thor::Group
+class Project < Thor
   include Thor::Actions
-  # the project name
-  argument :name
-  
+
   def self.source_root
      File.expand_path(File.dirname(__FILE__))
-  end
+   end
+    
+  attr_accessor :name
   
-  def create_project_dir
+  desc "new [NAME]","Create a new NGS project directory"
+  method_option :type => :string
+  def new(name)
     empty_directory name
-  end
-  
-  def create_sub_dirs
     empty_directory File.join("#{name}","data")
-    empty_directory File.join("#{name}","log")
     empty_directory File.join("#{name}","tasks")
     empty_directory File.join("#{name}","scripts")
-    empty_directory File.join("#{name}","conf")
+    self.name = name # for template to take the correct values
+    template(File.join("..","templates","README.tt"), "#{name}/README.txt")    
+    
+    if options[:type] == "annotation"
+        invoke "project:update:annotation"
+    else    
+      empty_directory File.join("#{name}","log")
+      empty_directory File.join("#{name}","conf")
+    end
+      
   end
   
-  def create_readme
-    template(File.join("..","templates","README.erb"), "#{name}/README.txt")
+  class Update < Project
+    
+    attr_accessor :type
+    
+    desc "annotation", "Update the working dir to an Annotation project"
+    def annotation
+      empty_directory "log"
+      empty_directory "conf"
+      empty_directory "db"
+      self.type = "annotation" # for template to take the correct values
+      template(File.join("..","templates/annotation","annotation_db.tt"), "conf/annotation_db.yml")
+      FileUtils.rm Dir.glob("db/migrate/*.rb")
+      template(File.join("..","templates/annotation","create_uniprot.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M10")}_create_uniprot.rb")
+      template(File.join("..","templates/annotation","create_go.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M11")}_create_go.rb")
+      template(File.join("..","templates/annotation","create_blastout.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M12")}_create_blastout.rb")
+      template(File.join("..","templates/annotation","annotation_models.tt"), "db/models/annotation_models.rb")
+    end
   end
   
 end
