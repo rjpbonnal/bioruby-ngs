@@ -19,22 +19,19 @@ We want wrap a TopHat the famous tool for NGS analyses.
  * set the name of the binary to call. Note: if you avid to set the program name it would not be possible to create a thor task and/or run the program
  * add the options that the binary accepts, usually if preferred to declare all the options, discover them typing 'your_program_name -h'
 
-module Bio
-  module Ngs    
-    class Tophat
-
-      include Bio::Command::Wrapper
-
-      set_program Bio::Ngs::Utils.binary("tophat/tophat")
-
-      add_option "output-dir",:type => :string, :aliases => '-o'
-      add_option "min-anchor", :type => :numeric, :aliases => '-a'
-      add_option "splice-mismatches", :type => :numeric, :aliases => '-m'
-      #all other options that you want to expose with the wrapping
-
-    end #Tophat
- end #Ngs
-end #Bio
+    module Bio
+      module Ngs    
+        class Tophat
+          include Bio::Command::Wrapper
+          
+          set_program Bio::Ngs::Utils.binary("tophat/tophat")
+          add_option "output-dir",:type => :string, :aliases => '-o'
+          add_option "min-anchor", :type => :numeric, :aliases => '-a'
+          add_option "splice-mismatches", :type => :numeric, :aliases => '-m'
+          #all other options that you want to expose with the wrapping
+        end #Tophat
+      end #Ngs
+    end #Bio
 
 This step is very similar to define a Thor task, add_option is grabbed/inspired from Thor.
 Then you can user this binary also from a bioruby script just calling:
@@ -47,14 +44,14 @@ tophat.run :arguments=>[index, "#{fastqs}" ]
 === Define the Task
 With our new wrapper, let's define a Thor task on the fly 
 
-class MyTasks < Thor
-
-desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors"
-Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, dist, index, outputdir, fastqs|
-    wrapper.params = {"mate-inner-dist"=>dist, "output-dir"=>outputdir, "num-threads"=>1, "solexa1.3-quals"=>true}
-    wrapper.run :arguments=>[index, "#{fastqs}" ], :separator=>"="
-    #you tasks here
-end
+    class MyTasks < Thor
+      desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors"
+      Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, dist, index, outputdir, fastqs|
+        wrapper.params = {"mate-inner-dist"=>dist, "output-dir"=>outputdir, "num-threads"=>1, "solexa1.3-quals"=>true}
+        wrapper.run :arguments=>[index, "#{fastqs}" ], :separator=>"="
+        #you tasks here
+      end
+    end
 
 Now is you list the tasks with 'thor -T' you will see the new task.
 
