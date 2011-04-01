@@ -10,6 +10,50 @@ Provides a framework for handling NGS data with Bioruby.
 * Reporting: text and graphs
 * SGE? 
 
+== Tasks
+We'll try to keep this list updated but just in case type 'biongs -T' to get the most updated list
+NOTE: We are working on these and other tasks, if you find some bugs, please open an issue on Github. 
+=== bwa
+
+* biongs bwa:aln:long [FASTQ] --file-out=FILE_OUT --prefix=PREFIX                                      # Run the aligment for LONG query sequences
+* biongs bwa:aln:short [FASTQ] --file-out=FILE_OUT --prefix=PREFIX                                     # Run the aligment for SHORT query sequences
+* biongs bwa:index:long [FASTA]                                                                        # Make the BWT index for a LONG FASTA database
+* biongs bwa:index:short [FASTA]                                                                       # Make the BWT index for a SHORT FASTA database
+* biongs bwa:sam:paired --fastq=one two three --file-out=FILE_OUT --prefix=PREFIX --sai=one two three  # Convert SAI alignment output into SAM format (paired ends)
+* biongs bwa:sam:single [SAI] --fastq=FASTQ --file-out=FILE_OUT --prefix=PREFIX                        # Convert SAI alignment output into SAM format (single end)
+
+=== convert
+Most of this tasks create sub-processes to speed up conversions
+
+* biongs convert:bcl:qseq:convert RUN OUTPUT [JOBS]              # Convert a bcl dataset in qseq
+* biongs convert:illumina:fastq:trim_b FASTQ                     # perform a trim on all the sequences on B qualities with Illumina's criteria. Ref to CASAVA manual.
+* biongs convert:qseq:fastq:by_file FIRST OUTPUT                 # Convert a qseq file into fastq
+* biongs convert:qseq:fastq:by_lane LANE OUTPUT                  # Convert all the file in the current and descendant directories belonging to the specified lane in fastq. This command is specific for Illum...
+* biongs convert:qseq:fastq:by_lane_index LANE INDEX OUTPUT      # Convert the qseq from a line and index in a fastq file
+* biongs convert:qseq:fastq:samples_by_lane SAMPLES LANE OUTPUT  # Convert the qseqs for each sample in a specific lane. SAMPLES is an array of index codes separated by commas lane is an integer
+
+=== quality
+
+* biongs quality:illumina_b_profile_raw FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+ and write the report in a txt file
+* biongs quality:illumina_b_profile_svg FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+
+* biongs quality:reads FASTQ                                   # perform quality check for NGS reads
+
+=== rna
+
+* biongs rna:idx2fasta INDEX FASTA               # Create a fasta file from an indexed genome, using bowtie-inspect
+* biongs rna:tophat DIST INDEX OUTPUTDIR FASTQS  # run tophat as from command line, default 6 processors
+
+=== root
+
+* biongs project NAME  
+
+=== sff
+
+* biongs sff:extract [FILE]  # Run sff_extract on a SFF file
+
+
+= ForDevelopers
+
 == Wrapper
 Bio-Ngs comes with a build-in wrapper to map binary software directly in BioRuby as objects. From this wrapper object is possible to create Thor task as well, with a lot of sugar.
 === Wrapping a binary
@@ -59,13 +103,13 @@ Now is you list the tasks with 'thor -T' you will see the new task.
 * It's possible to add more sugar and we are working hard on it
 * aliases are not well supported at this time. ToDo
 
-== TODO
+= TODO
 * Report the version of every software installed/used from bio-ngs 
 * Develop fastq quality reports with RibuVis ?
 * Write documentation
 * Wraper: better support for aliases and Wrapper#params
 
-== Contributing to bio-ngs
+= Contributing to bio-ngs
 
 Please do not hesitate to contact us:
 
