@@ -46,7 +46,7 @@ class Annotation < Thor
       BlastOutput.transaction {inserts.each {|i| db.connection.execute(i)}} if inserts.size > 0
     end
     
-    desc "Export [TABLE]","export the data from a table to a tab-separated file"
+    desc "export [TABLE]","Export the data from a table to a tab-separated file"
     method_option :fileout, :type => :string, :desc => "file used to save the output"
     def export(table)
       db = ActiveRecord::Base
