@@ -12,12 +12,12 @@ class Project < Thor
 
   def self.source_root
      File.expand_path(File.dirname(__FILE__))
-   end
+  end
     
   attr_accessor :name
   
   desc "new [NAME]","Create a new NGS project directory"
-  method_option :type => :string
+  method_option :type, :type => :string, :desc => "The project type (e.g. annotation)"
   def new(name)
     empty_directory name
     empty_directory File.join("#{name}","data")
@@ -27,31 +27,31 @@ class Project < Thor
     template(File.join("..","templates","README.tt"), "#{name}/README.txt")    
     
     if options[:type] == "annotation"
-        invoke "project:update:annotation"
+        invoke "project:update:annotation", [],{:dir => name}
     else    
       empty_directory File.join("#{name}","log")
       empty_directory File.join("#{name}","conf")
     end
-      
   end
   
   class Update < Project
     
-    attr_accessor :type
-    
     desc "annotation", "Update the working dir to an Annotation project"
+    method_option :dir, :type => :string
     def annotation
-      empty_directory "log"
-      empty_directory "conf"
-      empty_directory "db"
-      self.type = "annotation" # for template to take the correct values
-      template(File.join("..","templates/annotation","annotation_db.tt"), "conf/annotation_db.yml")
+      dir = (options[:dir]) ? options[:dir]+"/" : ""
+      empty_directory "#{dir}log"
+      empty_directory "#{dir}conf"
+      empty_directory "#{dir}db"
+      template(File.join("..","templates/annotation","annotation_db.tt"), "#{dir}conf/annotation_db.yml")
       FileUtils.rm Dir.glob("db/migrate/*.rb")
-      template(File.join("..","templates/annotation","create_uniprot.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M10")}_create_uniprot.rb")
-      template(File.join("..","templates/annotation","create_go.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M11")}_create_go.rb")
-      template(File.join("..","templates/annotation","create_blastout.tt"), "db/migrate/#{Time.now.strftime("%Y%m%d%M12")}_create_blastout.rb")
-      template(File.join("..","templates/annotation","annotation_models.tt"), "db/models/annotation_models.rb")
+      template(File.join("..","templates/annotation","create_uniprot.tt"), "#{dir}db/migrate/#{Time.now.strftime("%Y%m%d%M10")}_create_uniprot.rb")
+      template(File.join("..","templates/annotation","create_go.tt"), "#{dir}db/migrate/#{Time.now.strftime("%Y%m%d%M11")}_create_go.rb")
+      template(File.join("..","templates/annotation","create_blastout.tt"), "#{dir}db/migrate/#{Time.now.strftime("%Y%m%d%M12")}_create_blastout.rb")
+      template(File.join("..","templates/annotation","annotation_models.tt"), "#{dir}db/models/annotation_models.rb")
     end
+  
   end
+
   
 end
