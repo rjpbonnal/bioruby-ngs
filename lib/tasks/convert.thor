@@ -8,6 +8,28 @@
 #
 
 module Convert
+  
+  class Bam < Thor 
+    # Sort and index the input bam filename
+    # the sorted/indexed output is created in the same directory of the input file
+    desc "sort BAM [PREFIX]", "Sort and create and index for the BAM file name"
+    def sort(bam_fn, prefix=nil)
+      if File.exists?(bam_fn)
+        dirname = File.dirname(bam_fn)
+        prefix = File.basename(bam_fn).gsub(/\.bam/,'_sort') if prefix.nil?
+        bam_sort_fn = File.join(dirname, prefix)
+        #bam sort
+        Bio::DB::SAM::Tools.bam_sort(bam_fn, bam_sort_fn)
+        bam_sort_fn += ".bam"
+        #bam index sorted file
+        Bio::DB::SAM::Tools.bam_index_build(bam_sort_fn)
+      else
+        warn "[#{Time.now}] There was an error, tophat did not create any accepted_hit file "
+      end
+      #you tasks here
+    end #sort
+  end # Bam
+  
   module Qseq
     class Fastq < Thor
       desc "by_file FIRST OUTPUT", "Convert a qseq file into fastq"
@@ -253,3 +275,4 @@ module Convert
             end #Illumina
 
           end #Convert
+

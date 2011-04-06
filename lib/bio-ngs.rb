@@ -14,6 +14,7 @@ require 'yaml'
 require 'daemons'
 
 require 'bio-bwa'
+require 'bio-samtools'
 require 'thor'
 require 'thor/group'
 require 'thor/runner'

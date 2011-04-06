@@ -4,10 +4,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/tophat')
 
 class Rna < Thor
 
-  #TODO : 
-  # tophat alignment
-  # check for required tools tophat, cufflinks, bowtie, bwa, ....
-  # convert bcl for illumina data
   # you'll end up with 3 accepted file, regular, sorted, sorted-indexed
   desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors and then create a sorted bam indexed."
   method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
@@ -17,17 +13,15 @@ class Rna < Thor
       fastq_files = task.options[:paired] ? ["#{fastqs}_forward.fastq","#{fastqs}_reverse.fastq"]  : ["#{fastqs}"]
       wrapper.run :arguments=>[index, fastq_files ].flatten, :separator=>"="
 
-
-      accepted_hits_bam_fn = File.join(outputdir, "accepted_hit.bam")
-      if File.exists?(accepted_hits_bam_fn)
-        #bam sort
-        Bio::DB::SAM::Tools.bam_sort(accepted_hits_bam_fn, "accepted_hist_sort")
-        #bam index sorted file
-        Bio::DB::SAM::Tools.bam_index_build(File.join(outputdir,"accepted_hits_sort.bam"))
-      else
-        warn "[#{Time.now}] There was an error, tophat did not create any accepted_hit file "
-      end
+      accepted_hits_bam_fn = File.join(outputdir, "accepted_hits.bam")
+      invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
       #you tasks here
+  end
+
+  desc "quant GTF BAM OUTPUT", "Genes and transcripts quantification"
+  def quant(gtf, bam, output)
+    #TODO: finish
+    cufflinks = Bio::Ngs::Cufflinks.new
   end
 
 #TODO: write test to verify the behaviour

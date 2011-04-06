@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = %q{2011-03-23}
+  s.date = %q{2011-04-06}
   s.default_executable = %q{biongs}
   s.description = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.email = %q{francesco.strozzi@gmail.com}
@@ -324,9 +324,11 @@ Gem::Specification.new do |s|
     "lib/wrapper.rb",
     "spec/converter_qseq_spec.rb",
     "spec/fixture/s_1_1_1108_qseq.txt",
+    "spec/quality_spec.rb",
     "spec/sff_extract_spec.rb",
     "spec/spec_helper.rb",
     "spec/tophat_spec.rb",
+    "spec/utils_spec.rb",
     "test/helper.rb",
     "test/test_bio-ngs.rb",
     "test/test_ngs.rb",
@@ -339,9 +341,11 @@ Gem::Specification.new do |s|
   s.summary = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.test_files = [
     "spec/converter_qseq_spec.rb",
+    "spec/quality_spec.rb",
     "spec/sff_extract_spec.rb",
     "spec/spec_helper.rb",
     "spec/tophat_spec.rb",
+    "spec/utils_spec.rb",
     "test/helper.rb",
     "test/test_bio-ngs.rb",
     "test/test_ngs.rb",
@@ -353,7 +357,8 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_runtime_dependency(%q<bio-bwa>, [">= 0.0.0"])
+      s.add_runtime_dependency(%q<bio-bwa>, [">= 0.2.1"])
+      s.add_runtime_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_runtime_dependency(%q<thor>, [">= 0.14.6"])
       s.add_runtime_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_runtime_dependency(%q<daemons>, [">= 1.1.0"])
@@ -364,13 +369,15 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bio>, [">= 1.4.1"])
       s.add_development_dependency(%q<thor>, [">= 0.14.6"])
       s.add_development_dependency(%q<ffi>, [">= 1.0.6"])
-      s.add_development_dependency(%q<bio-bwa>, [">= 0.0.0"])
+      s.add_development_dependency(%q<bio-bwa>, [">= 0.2.1"])
       s.add_development_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_development_dependency(%q<rspec>, [">= 2.5.0"])
       s.add_development_dependency(%q<daemons>, [">= 1.1.0"])
+      s.add_development_dependency(%q<bio-samtools>, [">= 0.0.0"])
     else
       s.add_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.0.0"])
+      s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
+      s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
@@ -381,14 +388,16 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bio>, [">= 1.4.1"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<ffi>, [">= 1.0.6"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.0.0"])
+      s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<rspec>, [">= 2.5.0"])
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
+      s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
     end
   else
     s.add_dependency(%q<bio>, [">= 1.4.1"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.0.0"])
+    s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
+    s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
@@ -399,10 +408,11 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bio>, [">= 1.4.1"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<ffi>, [">= 1.0.6"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.0.0"])
+    s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<rspec>, [">= 2.5.0"])
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
+    s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
   end
 end
 

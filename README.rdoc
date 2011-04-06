@@ -107,7 +107,8 @@ Now is you list the tasks with 'thor -T' you will see the new task.
 * Report the version of every software installed/used from bio-ngs 
 * Develop fastq quality reports with RibuVis ?
 * Write documentation
-* Wraper: better support for aliases and Wrapper#params
+* Wrapper: better support for aliases and Wrapper#params
+* Convert: re factor code to use ::Daemons
 
 = Contributing to bio-ngs
 
