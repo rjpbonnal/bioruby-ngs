@@ -8,13 +8,27 @@ class Rna < Thor
   # tophat alignment
   # check for required tools tophat, cufflinks, bowtie, bwa, ....
   # convert bcl for illumina data
-  desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors"
+  # you'll end up with 3 accepted file, regular, sorted, sorted-indexed
+  desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors and then create a sorted bam indexed."
+  method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, dist, index, outputdir, fastqs|
-      wrapper.params = {"mate-inner-dist"=>dist, "output-dir"=>outputdir, "num-threads"=>1, "solexa1.3-quals"=>true}
-      wrapper.run :arguments=>[index, "#{fastqs}" ], :separator=>"="
+      wrapper.params = task.options #merge passed options to the wrapper.
+      wrapper.params = {"mate-inner-dist"=>dist, "output-dir"=>outputdir, "num-threads"=>6, "solexa1.3-quals"=>true}
+      fastq_files = task.options[:paired] ? ["#{fastqs}_forward.fastq","#{fastqs}_reverse.fastq"]  : ["#{fastqs}"]
+      wrapper.run :arguments=>[index, fastq_files ].flatten, :separator=>"="
+
+
+      accepted_hits_bam_fn = File.join(outputdir, "accepted_hit.bam")
+      if File.exists?(accepted_hits_bam_fn)
+        #bam sort
+        Bio::DB::SAM::Tools.bam_sort(accepted_hits_bam_fn, "accepted_hist_sort")
+        #bam index sorted file
+        Bio::DB::SAM::Tools.bam_index_build(File.join(outputdir,"accepted_hits_sort.bam"))
+      else
+        warn "[#{Time.now}] There was an error, tophat did not create any accepted_hit file "
+      end
       #you tasks here
   end
-
 
 #TODO: write test to verify the behaviour
    desc "idx2fasta INDEX FASTA", "Create a fasta file from an indexed genome, using bowtie-inspect"
