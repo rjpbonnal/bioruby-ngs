@@ -61,7 +61,7 @@ module Bio
       
       add_option "num-threads", :type => :numeric, :aliases => '-p', :default => 1
       add_option "label", :type => :string, :aliases => '-L', :default => "CUFF"
-      add_option "GTF", :type => :boolean, :aliases => '-G'
+      add_option "GTF", :type => :string, :aliases => '-G'
       add_option "min-isoform-fraction", :type => :numeric, :aliases => '-F', :default => 0.15
       add_option "min-intron-fraction", :type => :numeric, :aliases => '-f', :default => 0.05
       add_option "pre-mrna-fraction", :type => :numeric, :aliases => '-j', :default => 0.15
@@ -75,15 +75,16 @@ module Bio
       add_option "quartile-normalization", :type => :boolean, :aliases => '-N'
       add_option "junc-alpha", :type => :numeric, :aliases => '-a', :default => 0.01
       add_option "small-anchor-fraction", :type => :numeric, :aliases => '-A', :default => 0.12
-      add_option "farg-len-mean", :type => :numeric, :aliases => '-m', :default => 200
-      add_option "frag-len-std-dev", :type => :numeric, :aliases => '-s', :default => 80
-      add_option "min-frags-per-transfrag", :type => :numeric, :default => 10
-      add_option "overhang-tolerance", :type => :numeric, :default => 8
-      add_option "num-importance-samples", :type => :numeric, :default => 1000
-      add_option "max-mle-iterations", :type => :numeric, :default => 5000
+      #TODO Check why with these defaults is not working properly
+      add_option "farg-len-mean", :type => :numeric, :aliases => '-m'#, :default => 200
+      add_option "frag-len-std-dev", :type => :numeric, :aliases => '-s'#, :default => 80
+      add_option "min-frags-per-transfrag", :type => :numeric#, :default => 10
+      add_option "overhang-tolerance", :type => :numeric#, :default => 8
+      add_option "num-importance-samples", :type => :numeric#, :default => 1000
+      add_option "max-mle-iterations", :type => :numeric#, :default => 5000
       add_option "library-type", :type => :string
-      add_option "max-bundle-length", :type => :numeric, :default => 3500000
-      add_option "min-intron-length", :type => :numeric, :default => 50
+      add_option "max-bundle-length", :type => :numeric#, :default => 3500000
+      add_option "min-intron-length", :type => :numeric#, :default => 50
     end #That
   end #Ngs
 end #Bio

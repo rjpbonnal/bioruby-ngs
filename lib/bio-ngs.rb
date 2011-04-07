@@ -33,6 +33,7 @@ require 'bio/appl/ngs/tophat'
 require 'bio/appl/ngs/bowtie-inspect'
 require 'bio/appl/ngs/sff_extract'
 require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
+require 'bio/appl/ngs/cufflinks'
 
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"

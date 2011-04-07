@@ -14,14 +14,24 @@ class Rna < Thor
       wrapper.run :arguments=>[index, fastq_files ].flatten, :separator=>"="
 
       accepted_hits_bam_fn = File.join(outputdir, "accepted_hits.bam")
-      invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
+      task.invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
       #you tasks here
   end
 
-  desc "quant GTF BAM OUTPUT", "Genes and transcripts quantification"
-  def quant(gtf, bam, output)
-    #TODO: finish
-    cufflinks = Bio::Ngs::Cufflinks.new
+  desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
+  Bio::Ngs::Cufflinks.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
+    wrapper.params = task.options
+    wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF" => gtf }
+    wrapper.run :arguments=>[bam], :separator => "="
+  end
+  
+  desc "mapquant DIST INDEX OUTPUTDIR FASTQS", "map and quantify"
+  method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
+  def mapquant(dist, index, outputdir, fastqs)
+    #tophat
+    invoke :tophat, [dist, index, outputdir, fastqs], :paired=>options.paired
+    #cufflinks quantification on gtf
+    invoke :quant, ["#{index}.gtf", File.join(outputdir,"quant"), File.join(outputdir,"accepted_hits_sort.bam")]
   end
 
 #TODO: write test to verify the behaviour
