@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = %q{2011-04-06}
+  s.date = %q{2011-04-08}
   s.default_executable = %q{biongs}
   s.description = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.email = %q{francesco.strozzi@gmail.com}
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/bio-ngs.rb",
     "lib/bio/appl/ngs/bcl2qseq.rb",
     "lib/bio/appl/ngs/bowtie-inspect.rb",
+    "lib/bio/appl/ngs/cufflinks.rb",
     "lib/bio/appl/ngs/sff_extract.rb",
     "lib/bio/appl/ngs/tophat.rb",
     "lib/bio/ngs/converter.rb",
@@ -316,6 +317,7 @@ Gem::Specification.new do |s|
     "lib/tasks/bwa.thor",
     "lib/tasks/convert.thor",
     "lib/tasks/history.thor",
+    "lib/tasks/misc.thor",
     "lib/tasks/project.thor",
     "lib/tasks/quality.thor",
     "lib/tasks/rna.thor",

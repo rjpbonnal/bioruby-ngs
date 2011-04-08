@@ -11,6 +11,7 @@ Provides a framework for handling NGS data with Bioruby.
 * SGE? 
 
 == Tasks
+
 We'll try to keep this list updated but just in case type 'biongs -T' to get the most updated list
 NOTE: We are working on these and other tasks, if you find some bugs, please open an issue on Github. 
 === bwa
@@ -109,6 +110,9 @@ Now is you list the tasks with 'thor -T' you will see the new task.
 * Write documentation
 * Wrapper: better support for aliases and Wrapper#params
 * Convert: re factor code to use ::Daemons
+
+= ChangeLog
+* 2011-04-08: Tasks for filtering Ensembl annotation and create classifications.
 
 = Contributing to bio-ngs
 
