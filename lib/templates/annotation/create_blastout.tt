@@ -9,6 +9,9 @@ class CreateBlastout < ActiveRecord::Migration
 		t.float	:identity
 		t.float :positive
 	end
+	
+	add_index :blast_outputs, :query_id
+	
  end
 
  def self.down
