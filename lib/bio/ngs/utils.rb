@@ -38,8 +38,9 @@ module Bio
         require "open-uri"
         require "progressbar"
         filename = (opts[:filename]) ? opts[:filename] : opts[:url].split('/')[-1]
+        mode = (opts[:mode]) ? opts[:mode] : ""
         pbar = nil
-        open(opts[:url],"r"+opts[:mode],
+        open(opts[:url],"r"+mode,
             :content_length_proc => lambda {|t|
                if t && 0 < t
                  pbar = ProgressBar.new('', t)
@@ -49,7 +50,7 @@ module Bio
              :progress_proc => lambda {|s|
                pbar.set s if pbar
              }) do |remote|
-                open(filename,"w"+opts[:mode]) {|file| file.write remote.read(16384) until remote.eof?}
+                open(filename,"w"+mode) {|file| file.write remote.read(16384) until remote.eof?}
              end
       end
       
