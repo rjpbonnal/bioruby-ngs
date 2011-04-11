@@ -91,6 +91,46 @@ module Bio
           end
 
       end
+      
+      def self.bubble_chart(fileout,dataset = {}, panel_w = 600, panel_h = 800)
+        puts dataset.inspect
+        colors=Rubyvis::Colors.category10()
+        c=Rubyvis::Colors.category10().by(lambda {|n| n.parent_node})
+
+        vis = Rubyvis::Panel.new
+        .width(panel_w-10)
+        .height(panel_h-10)
+        .bottom(5)
+        .left(5)
+        .right(5)
+        .top(5)
+
+        root=Rubyvis::Dom::Node.new
+        dataset.each_pair do |name,value|
+          child = Rubyvis::Dom::Node.new(value)
+          child.node_name = name
+          root.append_child(child)
+        end
+        root = root.nodes()
+
+        pack=vis.add(pv.Layout.Pack).
+        nodes(root).
+        size(lambda {|n| n.node_value})
+
+        pack.node.add(Rubyvis::Dot).
+        visible( lambda {|n| n.parent_node}).
+        fill_style(lambda {|n|
+          colors.scale(n.parent_node).
+          brighter((n.node_value) / 5.0)
+          }).
+          stroke_style(c)
+
+          pack.node_label.add(Rubyvis::Label).
+          visible( lambda {|n| n.parent_node}).
+          text(lambda {|n| n.node_name})
+        vis.render()
+        File.open(fileout,"w") {|f| f.write vis.to_svg+"\n"}
+      end
   
     end
   end
