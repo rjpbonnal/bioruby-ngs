@@ -1,4 +1,20 @@
 class Annotation < Thor
+  
+  class Run < Annotation
+    desc "blastn", "Run BlastN"
+    Bio::Ngs::Blast::BlastN.new.thor_task(:blastn) do |wrapper, task|
+      wrapper.params = task.options
+      puts wrapper.run :arguments => [file]
+    end
+    
+    desc "blastx", "Run BlastX"
+    Bio::Ngs::Blast::BlastX.new.thor_task(:blastx) do |wrapper, task|
+      wrapper.params = task.options
+      puts wrapper.run :arguments => [file]
+    end
+    
+  end
+  
 
   class Db < Annotation
   
@@ -12,37 +28,6 @@ class Annotation < Thor
         puts "No db, conf and log directories found! Please run 'biongs project:update:annotation'"
         exit
       end
-    end
-    
-  end
-
-
-  class Data < Annotation
-    
-    desc "blast [FILE]","Parse Blast XML output and load the results into Annotation DB"
-    def blast(file)      
-      db = db_connect
-      inserts = []
-      Bio::Blast::XmlIterator.new(file).to_enum.each do |iter|
-        iter.each do |hit|
-          identity = []
-          positive = []
-          evalue = []
-          hit.each do |hsp|
-            identity << (hsp.identity.to_f/hsp.align_len)*100
-            positive << (hsp.positive.to_f/hsp.align_len)*100
-            evalue << hsp.evalue
-          end
-          identity = identity.inject{ |sum, el| sum + el }.to_f / identity.size
-          positive = positive.inject{ |sum, el| sum + el }.to_f / positive.size
-          evalue = evalue.inject{ |sum, el| sum + el }.to_f / evalue.size
-          sql = db.send(:sanitize_sql_array,["INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",iter.query_def,hit.hit_id.split("|")[1],hit.hit_def,evalue,identity,positive])
-          inserts << sql
-          BlastOutput.transaction {inserts.each {|i| db.connection.execute(i)}; inserts = []} if inserts.size == 1000
-        end
-      end
-      BlastOutput.transaction {inserts.each {|i| db.connection.execute(i)}} if inserts.size > 0
-      puts "Parising completed. All the data are now stored into the db.\n"
     end
     
     desc "export [TABLE]","Export the data from a table to a tab-separated file"
@@ -69,6 +54,37 @@ class Annotation < Thor
           puts values.join("\t")
         end
       end
+    end
+    
+  end
+
+
+  class Import < Annotation
+    
+    desc "blast [FILE]","Parse Blast XML output and load the results into Annotation DB"
+    def blast(file)      
+      db = db_connect
+      inserts = []
+      Bio::Blast::XmlIterator.new(file).to_enum.each do |iter|
+        iter.each do |hit|
+          identity = []
+          positive = []
+          evalue = []
+          hit.each do |hsp|
+            identity << (hsp.identity.to_f/hsp.align_len)*100
+            positive << (hsp.positive.to_f/hsp.align_len)*100
+            evalue << hsp.evalue
+          end
+          identity = identity.inject{ |sum, el| sum + el }.to_f / identity.size
+          positive = positive.inject{ |sum, el| sum + el }.to_f / positive.size
+          evalue = evalue.inject{ |sum, el| sum + el }.to_f / evalue.size
+          sql = db.send(:sanitize_sql_array,["INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",iter.query_def,hit.hit_id.split("|")[1],hit.hit_def,evalue,identity,positive])
+          inserts << sql
+          BlastOutput.transaction {inserts.each {|i| db.connection.execute(i)}; inserts = []} if inserts.size == 1000
+        end
+      end
+      BlastOutput.transaction {inserts.each {|i| db.connection.execute(i)}} if inserts.size > 0
+      puts "Parising completed. All the data are now stored into the db.\n"
     end
     
     desc "goa","Import GO Annotations file for Uniprot into the db"
@@ -140,10 +156,6 @@ class Annotation < Thor
         ontologies.flatten!
         Bio::Ngs::Graphics.bubble_chart(namespace+"_go.svg",Hash[*ontologies[0..39]])
       end
-    end
-    
-    def blast
-      
     end
     
   end
