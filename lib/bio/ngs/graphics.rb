@@ -13,7 +13,7 @@ module Bio
   module Ngs
     class Graphics
       
-        def self.draw_area(data,width,height,out=nil)
+        def self.draw_area(data,width,height,out=nil,xlabel,ylabel)
           point = 0
           max = data.max + 10
           data = data.map do |d|
@@ -76,10 +76,10 @@ module Bio
             font("20px sans-serif").
             text("FastQ Qualities")
           
-          panel.anchor('bottom').add(Rubyvis::Label).text("Nucleotide")
+          panel.anchor('bottom').add(Rubyvis::Label).text(xlabel)
           panel.anchor('left').add(Rubyvis::Label).
             text_angle(1.5*Math::PI).
-            text("Quality Score")
+            text(ylabel)
           
           
           vis.render();
@@ -130,6 +130,58 @@ module Bio
           text(lambda {|n| n.node_name})
         vis.render()
         File.open(fileout,"w") {|f| f.write vis.to_svg+"\n"}
+      end
+  
+  
+      def self.bar_charts(labels, data, fileout, width = 500, height = 300)
+        
+        x = pv.Scale.linear(0, data.max).range(0, width)
+        y = pv.Scale.ordinal(pv.range(data.size)).split_banded(0, height, 4/5.0)
+
+        #/* The root panel. */
+        vis = pv.Panel.new()
+            .width(width)
+            .height(height)
+            .bottom(20)
+            .left(100)
+            .right(10)
+            .top(5);
+
+        #/* The bars. */
+        bar = vis.add(pv.Bar)
+            .data(data)
+            .top(lambda {y.scale(self.index)})
+            .height(y.range_band)
+            .left(0)
+            .width(x)
+
+        #/* The value label. */
+        bar.anchor("right").add(pv.Label)
+            .text_style("white")
+            .text(lambda {|d| "%0.1f" % d})
+
+        #/* The variable label. */
+        bar.anchor("left").add(pv.Label)
+            .text_margin(5)
+            .text_align("right")
+            .text(lambda { labels[self.index]});
+
+        #/* X-axis ticks. */
+        vis.add(pv.Rule)
+            .data(x.ticks(5))
+            .left(x)
+            .stroke_style(lambda {|d|  d!=0 ? "rgba(255,255,255,.3)" : "#000"})
+          .add(pv.Rule)
+            .bottom(0)
+            .height(5)
+            .stroke_style("#000")
+          .anchor("bottom").add(pv.Label).text(x.tick_format)
+        
+        # X-axis Labels
+        vis.anchor("top").add(Rubyvis::Label).text("Number of sequences")
+        
+        vis.render();
+        File.open(fileout,"w") {|out| out.write vis.to_svg+"\n"}
       end
   
     end
