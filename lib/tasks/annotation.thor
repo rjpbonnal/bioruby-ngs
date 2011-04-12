@@ -1,14 +1,14 @@
 class Annotation < Thor
-  
+    
   class Run < Annotation
     desc "blastn", "Run BlastN"
-    Bio::Ngs::Blast::BlastN.new.thor_task(:blastn) do |wrapper, task|
+    Bio::Ngs::Blast::BlastN.new.thor_task(self,:blastn) do |wrapper, task|
       wrapper.params = task.options
       puts wrapper.run :arguments => [file]
     end
     
     desc "blastx", "Run BlastX"
-    Bio::Ngs::Blast::BlastX.new.thor_task(:blastx) do |wrapper, task|
+    Bio::Ngs::Blast::BlastX.new.thor_task(self,:blastx) do |wrapper, task|
       wrapper.params = task.options
       puts wrapper.run :arguments => [file]
     end
@@ -67,16 +67,18 @@ class Annotation < Thor
       inserts = []
       Bio::Blast::XmlIterator.new(file).to_enum.each do |iter|
         iter.each do |hit|
-          identity = []
-          positive = []
+          identity = 0.0
+          positive = 0.0
           evalue = []
+          length = 0
           hit.each do |hsp|
-            identity << (hsp.identity.to_f/hsp.align_len)*100
-            positive << (hsp.positive.to_f/hsp.align_len)*100
+            identity += hsp.identity.to_f
+            positive += hsp.positive.to_f
             evalue << hsp.evalue
+            length += hsp.align_len
           end
-          identity = identity.inject{ |sum, el| sum + el }.to_f / identity.size
-          positive = positive.inject{ |sum, el| sum + el }.to_f / positive.size
+          identity =  (identity / length)*100
+          positive = (positive / length)*100
           evalue = evalue.inject{ |sum, el| sum + el }.to_f / evalue.size
           sql = db.send(:sanitize_sql_array,["INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",iter.query_def,hit.hit_id.split("|")[1],hit.hit_def,evalue,identity,positive])
           inserts << sql
@@ -156,6 +158,23 @@ class Annotation < Thor
         ontologies.flatten!
         Bio::Ngs::Graphics.bubble_chart(namespace+"_go.svg",Hash[*ontologies[0..39]])
       end
+    end
+    
+    desc "blast","Output a graphical report on the Blast homology search"
+    method_option :file, :type => :string, :desc => "Read the results from a file and not from the db"
+    method_option :fileout, :type => :string, :desc => "File to write the SVG", :default => "blast_report.svg"
+    def blast
+      db = db_connect
+      evalues = []
+      positive_70 = 0
+      total = BlastOutput.count(:all)
+      positive_70 = BlastOutput.count(:conditions => "positive >= 70")
+      evalue_5 = BlastOutput.count(:conditions => "evalue <= 1e-5")
+      BlastOutput.find(:all).each do |result|
+        evalues << result.evalue
+      end
+      Bio::Ngs::Graphics.bar_charts(["Total mapped","Positive (>=70)","E-value (<=1-e5)"],[total,positive_70,evalue_5],options[:fileout])
+      
     end
     
   end
