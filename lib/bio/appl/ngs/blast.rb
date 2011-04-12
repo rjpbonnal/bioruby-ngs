@@ -4,7 +4,7 @@ module Bio
       
       include Bio::Command::Wrapper
       
-      class BlastN
+      class BlastN < Blast
         set_program Bio::Ngs::Utils.binary("blastn")
         add_option "evalue", :type => :string, :desc => "E-value cutoff"
         add_option "query", :type => :string, :desc => "Query sequence"
@@ -19,7 +19,7 @@ module Bio
         add_option "num_threads", :type => :numeric, :desc => "Number of threads", :default => 1
       end
       
-      class BlastX
+      class BlastX < Blast
         set_program Bio::Ngs::Utils.binary("blastx")
         add_option "evalue", :type => :string, :desc => "E-value cutoff"
         add_option "query", :type => :string, :desc => "Query sequence"
