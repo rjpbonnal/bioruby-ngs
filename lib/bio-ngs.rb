@@ -8,12 +8,9 @@
 #
 #
 
-
-#require 'rubygems'
+# External gems
 require 'yaml'
 require 'daemons'
-
-# External gems
 require 'thor'
 require 'thor/group'
 require 'thor/runner'
@@ -32,6 +29,8 @@ require 'bio/ngs/graphics'
 require 'bio/ngs/task'
 require 'bio/ngs/core_ext'
 require 'bio/ngs/converter'
+require 'bio/ngs/db'
+require 'bio/ngs/annotation'
 
 #tools
 require 'bio/appl/ngs/tophat'
@@ -42,3 +41,4 @@ require 'bio/appl/ngs/blast'
 
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
+
