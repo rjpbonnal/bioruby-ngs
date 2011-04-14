@@ -16,8 +16,8 @@ module Bio
         require models_file if models_file
       end
     
-      def create_tables(migrations_path)
-        ActiveRecord::Migration.verbose = true
+      def create_tables(migrations_path,verbose=false)
+        ActiveRecord::Migration.verbose = verbose
         ActiveRecord::Migrator.migrate(migrations_path,nil)
       end
       
