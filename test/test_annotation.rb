@@ -49,5 +49,44 @@ class TestAnnotation < Test::Unit::TestCase
     
   end
   
+  context "Annotation import tasks" do
+    
+    setup do 
+      FileUtils.cp("lib/templates/annotation/annotation_models.tt","test/data/annotation_models.rb")
+      FileUtils.mkdir "test/data/migrate" unless Dir.exists? "test/data/migrate"
+      Dir.glob("lib/templates/annotation/create_*.tt").each_with_index do |migration,index|
+        file = migration.split("/")[-1]
+        FileUtils.cp(migration,"test/data/migrate/"+"#{Time.now.strftime("%Y%m%d%M0#{index}")}_"+file.gsub(/.tt/,'.rb'))
+      end
+      db = Bio::Ngs::Db.new("test/conf/test_annotation.yml",Dir.pwd+"/test/data/annotation_models.rb")
+      db.create_tables("test/data/migrate")
+    end
+    
+    teardown do
+      FileUtils.rm "test/data/test_annotation.sqlite3" if File.exists? "test/data/test_annotation.sqlite3"
+      FileUtils.rm "test/data/annotation_models.rb"
+      Dir.glob("test/data/migrate/*").each do |file|
+        FileUtils.rm file
+      end
+    end
+    
+    
+    should "take a GO OBO file and store it into go table" do
+      Bio::Ngs::Annotation.go_import("test/fixture/gene_ontology.obo","test/conf/test_annotation.yml",Dir.pwd+"/test/data/annotation_models.rb")
+      r = Go.find(:first)
+      assert_equal("GO:0000003",r.go_id)
+      assert_equal("reproduction",r.name)
+      assert_equal("biological_process",r.namespace)
+      assert_equal("GO:0008150 ",r.is_a)
+      go = Go.find(:all)
+      assert_equal("GO:0071941",go[-1].go_id)
+      assert_equal("nitrogen cycle metabolic process",go[-1].name)
+      assert_equal("biological_process",go[-1].namespace)
+      total = Go.count
+      assert_equal(106,total)
+    end
+    
+  end
+  
   
 end
