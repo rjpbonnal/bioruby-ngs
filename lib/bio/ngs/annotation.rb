@@ -2,8 +2,8 @@ module Bio
   module Ngs
     class Annotation
       
-      def self.blast_import(file,yaml_file)
-        db = Bio::Ngs::Db.new(yaml_file,Dir.pwd+"/db/models/annotation_models.rb")
+      def self.blast_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
+        db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
         Bio::Blast::XmlIterator.new(file).to_enum.each do |iter|
           iter.each do |hit|
@@ -31,8 +31,8 @@ module Bio
         puts "Parising completed. All the data are now stored into the db.\n"
       end
       
-      def self.goa_import(file,yaml_file)
-        db = Bio::Ngs::Db.new(yaml_file,Dir.pwd+"/db/models/annotation_models.rb")
+      def self.goa_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
+        db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
         File.open(file).each do |line|
           next if line.start_with? "!"
@@ -47,8 +47,8 @@ module Bio
         puts "Import completed.\n"
       end
       
-      def self.go_import(file,yaml_file)
-        db = Bio::Ngs::Db.new(yaml_file,Dir.pwd+"/db/models/annotation_models.rb")
+      def self.go_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
+        db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
         file = File.open(file)
         file.each do |line|
