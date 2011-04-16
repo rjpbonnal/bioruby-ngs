@@ -16,7 +16,7 @@ GEM
     bio-blastxmlparser (0.6.0)
       bio-logger (> 0.8.0)
       nokogiri (>= 1.4.4)
-    bio-bwa (0.2.1)
+    bio-bwa (0.2.2)
     bio-logger (0.9.0)
       log4r (>= 1.1.9)
     builder (2.1.2)
@@ -55,7 +55,7 @@ DEPENDENCIES
   activerecord (>= 3.0.5)
   bio (>= 1.4.1)
   bio-blastxmlparser
-  bio-bwa (>= 0.2.1)
+  bio-bwa (>= 0.2.2)
   bundler (~> 1.0.0)
   daemons (>= 1.1.0)
   ffi (>= 1.0.6)
