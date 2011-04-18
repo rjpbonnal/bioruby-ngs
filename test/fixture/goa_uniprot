@@ -1,0 +1,30 @@
+!gaf-version: 2.0
+!Project_name: GO Annotation @ EBI (GOA)
+!URL: http://www.ebi.ac.uk/GOA/index.html
+!Contact Email: goa@ebi.ac.uk
+UniProtKB	A0A8M2	lsm14a-a		GO:0003723	PMID:17074753	IDA		F	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0005737	PMID:17074753	IDA		C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0017148	PMID:17074753	IMP		P	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0017151	PMID:17074753	IPI	UniProtKB:P54824	F	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0030529	PMID:17074753	IPI	UniProtKB:P21574	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0030529	PMID:17074753	IPI	UniProtKB:P54824	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
+UniProtKB	A0A8M2	lsm14a-a		GO:0043234	PMID:17074753	IPI	UniProtKB:Q8AV13	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091214	UniProtKB		
+UniProtKB	A0AAR7	CCAMK		GO:0004683	PMID:16810257	IDA		F	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
+UniProtKB	A0AAR7	CCAMK		GO:0009608	PMID:16810257	IDA		P	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
+UniProtKB	A0AAR7	CCAMK		GO:0009931	PMID:16810257	IDA		F	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
+UniProtKB	A0AAR7	CCAMK		GO:0046777	PMID:16810257	IDA		P	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
+UniProtKB	A0AQ71	bai		GO:0009953	GO_REF:0000024	ISS	UniProtKB:Q8SXY6	P	Transmembrane emp24 domain-containing protein bai	TMEDA_DROSI|GD21160|bai	protein	taxon:7240	20100329	UniProtKB		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0001664	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0003924	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0004871	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0005834	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0006184	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110305	GOC		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0007188	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0031234	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0031683	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0ASJ9	A0ASJ9		GO:0060158	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN4	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0B5U4	glyS		GO:0004820	GO_REF:0000024	ISS	UniProtKB:P41250	F	Glycyl-tRNA synthetase	SYG_METTP|glyS|Mthe_0271	protein	taxon:349307	20091123	UniProtKB		
+UniProtKB	A0B5U4	glyS		GO:0046983	GO_REF:0000024	ISS	UniProtKB:P41250	F	Glycyl-tRNA synthetase	SYG_METTP|glyS|Mthe_0271	protein	taxon:349307	20091123	UniProtKB		
+UniProtKB	A0EJE5	A0EJE5		GO:0003924	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0EJE5	A0EJE5		GO:0004871	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	A0EJE5	A0EJE5		GO:0005834	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
