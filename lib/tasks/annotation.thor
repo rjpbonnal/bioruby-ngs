@@ -49,17 +49,20 @@ class Annotation < Thor
     desc "blast [FILE]","Parse Blast XML output and load the results into Annotation DB"
     def blast(file)      
       Bio::Ngs::Annotation.blast_import(file,"conf/annotation_db.yml")
+      puts "Parising completed. All the data are now stored into the db.\n"
     end
     
     desc "goa","Import GO Annotations file for Uniprot into the db"
     method_option :file, :type => :string, :default => "data/goa_uniprot"
     def goannotation
       Bio::Ngs::Annotation.goa_import(options[:file],"conf/annotation_db.yml")
+      puts "Import completed.\n"
     end
     
     desc "go [FILE]", "Import GO definition file"
     def go(file)
       Bio::Ngs::Annotation.go_import(file,"conf/annotation_db.yml")
+      puts "Import completed.\n"
     end
     
     
