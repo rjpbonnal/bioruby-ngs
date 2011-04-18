@@ -28,7 +28,6 @@ module Bio
           end
         end
         db.insert_many("blast_outputs","INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts) if inserts.size > 0
-        puts "Parising completed. All the data are now stored into the db.\n"
       end
       
       def self.goa_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
@@ -44,7 +43,6 @@ module Bio
           end
         end
         db.insert_many("go_annotations","INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts) if inserts.size > 0
-        puts "Import completed.\n"
       end
       
       def self.go_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
@@ -76,7 +74,6 @@ module Bio
           end
         end
         db.insert_many("go","INSERT INTO go(go_id,name,namespace,is_a) VALUES(?,?,?,?)",inserts) if inserts.size > 0
-        puts "Import completed.\n"
       end
       
     end
