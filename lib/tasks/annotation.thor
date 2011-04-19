@@ -104,7 +104,6 @@ class Annotation < Thor
       end
       Bio::Ngs::Graphics.bar_charts(["Total mapped","Positive (>=70)","E-value (<=1-e5)"],[total,positive_70,evalue_5],options[:fileout])
     end
-    
   end
   
   

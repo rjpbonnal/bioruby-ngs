@@ -6,6 +6,7 @@ module Bio
       
       attr_reader :connection
       
+      # Open a connection to a database using ActiveRecord
       def initialize(yaml_file="conf/database.yml",models_file=nil)
         @yaml_file = yaml_file
         @db = ActiveRecord::Base
@@ -16,11 +17,13 @@ module Bio
         require models_file if models_file
       end
     
+      # Runs AR migrations and create database tables
       def create_tables(migrations_path,verbose=false)
         ActiveRecord::Migration.verbose = verbose
         ActiveRecord::Migrator.migrate(migrations_path,nil)
       end
       
+      # Export a database table into a tab-separated file
       def export(table,fileout)
         klass = @db.const_get(table.singularize.camelize)
         columns = klass.column_names
@@ -34,6 +37,8 @@ module Bio
         end
       end
       
+      # Wrapper for DB transaction to execute many INSERT queries into a single transaction
+      # This can speed up things espectially for SQLite databases.
       def insert_many(table,query,values=[])
         klass = @db.const_get(table.singularize.camelize)
         klass.transaction do 

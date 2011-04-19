@@ -2,6 +2,9 @@ module Bio
   module Ngs
     class Annotation
       
+      
+      # Method to import a Blast XML output file into a BlastOuput table created according to ActiveRecord model
+      # Params: XML Blast file, YAML file for db connection, optional ActiveRecord models file
       def self.blast_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
         db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
@@ -30,6 +33,8 @@ module Bio
         db.insert_many("blast_outputs","INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts) if inserts.size > 0
       end
       
+      # Method to import a GO Annotation file into GoAnnotation table created according to ActiveRecord model
+      # Params: GOA file, YAML file for db connection, optional ActiveRecord models file
       def self.goa_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
         db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
@@ -44,7 +49,9 @@ module Bio
         end
         db.insert_many("go_annotations","INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts) if inserts.size > 0
       end
-      
+
+      # Method to import a GO OBO file into Go table created according to ActiveRecord model
+      # Params: GO OBO file, YAML file for db connection, optional ActiveRecord models file
       def self.go_import(file,yaml_file,models=Dir.pwd+"/db/models/annotation_models.rb")
         db = Bio::Ngs::Db.new(yaml_file,models)
         inserts = []
