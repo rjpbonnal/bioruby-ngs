@@ -23,7 +23,7 @@ module Bio
             identity =  (identity / length)*100
             positive = (positive / length)*100
             evalue = evalue.inject{ |sum, el| sum + el }.to_f / evalue.size
-            inserts << [iter.query_def,hit.hit_id.split("|")[1],hit.hit_def,evalue,identity,positive]
+            inserts << [iter.query_def,hit.hit_id,hit.hit_def,evalue,identity,positive]
             if inserts.size == 1000
               db.insert_many("blast_outputs","INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts)
               inserts = []
