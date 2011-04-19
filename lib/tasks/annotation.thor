@@ -20,7 +20,7 @@ class Annotation < Thor
   
     desc "init", "Initialize Annotation DB"
     def init
-      if Dir.exitst? "db" and Dir.exists? "conf"
+      if Dir.exists? "db" and Dir.exists? "conf"
         db = Bio::Ngs::Db.new("conf/annotation_db.yml")
         db.create_tables("db/migrate/annotation")
       else
