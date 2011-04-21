@@ -36,7 +36,7 @@ class Annotation < Thor
         db = Bio::Ngs::Db.new("conf/annotation_db.yml",Dir.pwd+"/db/models/annotation_models.rb")
         db.export(table,options[:fileout])
       else
-        puts "No conf directory found!"
+        puts "No conf directory found! Can't load database connection information"
         exit
       end  
     end
