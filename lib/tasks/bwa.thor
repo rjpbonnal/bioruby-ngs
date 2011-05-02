@@ -36,7 +36,8 @@ class Bwa < Thor
   class Aln < Bwa
     
     desc "short [FASTQ]", "Run the aligment for SHORT query sequences"
-    method_option :prefix, :type => :string, :desc => "Database prefix", :required => true    
+    method_option :file_out, :type => :string, :desc => "file to write output to instead of stdout", :required => true    
+    method_option :prefix, :type => :string, :desc => "Database prefix", :required => true  
     method_option :n, :type => :numeric, :desc => "max #diff (int) or missing prob under 0.02 err rate (float) [0.04]"
     method_option :o, :type => :numeric, :desc => "maximum number or fraction of gap opens [1]"
     method_option :e, :type => :numeric, :desc => "maximum number of gap extensions, -1 for disabling long gaps [-1]"
@@ -51,7 +52,6 @@ class Bwa < Thor
     method_option :E, :type => :numeric, :desc => "gap extension penalty [4]"
     method_option :R, :type => :numeric, :desc => "stop searching when there are >INT equally best hits [30]"
     method_option :q, :type => :numeric, :desc => "quality threshold for read trimming down to 35bp [0]"
-    method_option :file_out, :type => :string, :desc => "file to write output to instead of stdout", :required => true
     method_option :B, :type => :numeric, :desc => "length of barcode"
     method_option :c, :type => :boolean, :desc => "input sequences are in the color space"
     method_option :L, :type => :boolean, :desc => "log-scaled gap penalty for long deletions"
@@ -62,8 +62,9 @@ class Bwa < Thor
     method_option :first, :type => :boolean, :desc => "use the 1st read in a pair (effective with -b)"
     method_option :second, :type => :boolean, :desc => "use the 2nd read in a pair (effective with -b)"
     def short(fastq)
-      options[:file_in] = fastq
-      Bio::BWA.short_read_alignment(options.symbolize_keys)
+      bwa_options = options.dup
+      bwa_options[:file_in] = fastq
+      Bio::BWA.short_read_alignment(bwa_options.symbolize_keys)
     end
     
     desc "long [FASTQ]", "Run the aligment for LONG query sequences"
@@ -83,8 +84,9 @@ class Bwa < Thor
     method_option :c, :type => :numeric, :desc => "coefficient of length-threshold adjustment [5.5]"
     method_option :H, :type => :boolean, :desc => "in SAM output, use hard clipping rather than soft"
     def long(fastq)
-      options[:file_in] = fastq
-      Bio::BWA.long_read_alignment(options.symbolize_keys)
+      bwa_options = options.dup
+      bwa_options[:file_in] = fastq
+      Bio::BWA.long_read_alignment(bwa_options.symbolize_keys)
     end
     
   end
@@ -98,8 +100,9 @@ class Bwa < Thor
     method_option :file_out, :type => :string, :required => true, :desc => "File to save the output"
     method_options :n => :numeric, :r => :string
     def single(sai)
-      options[:sai] = sai
-      Bio::BWA.sai_to_sam_single(options.symbolize_keys)
+      bwa_options = options.dup
+      bwa_options[:sai] = sai
+      Bio::BWA.sai_to_sam_single(bwa_options.symbolize_keys)
     end
     
     desc "paired", "Convert SAI alignment output into SAM format (paired ends)"
@@ -117,7 +120,7 @@ class Bwa < Thor
     method_option :s, :type => :boolean, :desc => "disable Smith-Waterman for the unmapped mate"
     method_option :A, :type => :boolean, :desc => "disable insert size estimate (force -s)"
     def paired
-      Bio::BWA.sai_to_sam_paired(options.symbolize_keys)
+      Bio::BWA.sai_to_sam_paired(options.dup.symbolize_keys)
     end
     
   end

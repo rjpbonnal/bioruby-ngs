@@ -110,6 +110,14 @@ Now is you list the tasks with 'thor -T' you will see the new task.
 * Write documentation
 * Wrapper: better support for aliases and Wrapper#params
 * Convert: re factor code to use ::Daemons
+* Extract genes/regions of interest from a bam file and create a smaller bam
+* Explore possibility to user DelayedJobs
+* biongs ann:ensembl:gtf:features:categorize GTF GTF categorize also by chromosome not only by BioType
+* configuration file input,output, experimental design
+ 
+= ChangeLog
+ * 2011-04-08: Tasks for filtering Ensembl annotation and create classifications. (misk_tasks branch)
+
 
 = ChangeLog
 * 2011-04-08: Tasks for filtering Ensembl annotation and create classifications.

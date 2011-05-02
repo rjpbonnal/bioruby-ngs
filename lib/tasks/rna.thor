@@ -31,7 +31,7 @@ class Rna < Thor
     #tophat
     invoke :tophat, [dist, index, outputdir, fastqs], :paired=>options.paired
     #cufflinks quantification on gtf
-    invoke :quant, ["#{index}.gtf", File.join(outputdir,"quant"), File.join(outputdir,"accepted_hits_sort.bam")]
+    invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits_sort.bam")]
   end
 
 #TODO: write test to verify the behaviour
