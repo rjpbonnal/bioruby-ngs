@@ -36,14 +36,14 @@ module Convert
     method_option :ensembl_release, :type => :numeric, :desc => "ensembl release", :required => true 
     Bio::Ngs::Samtools::View.new.thor_task(self, :extract_genes) do |wrapper, task, bam_fn, gene_names|
       require 'ensembl'
-     begin
+#     begin
         ::Ensembl::Core::DBConnection.connect(task.options.ensembl_specie, task.options.ensembl_release)
         genes_str=gene_names.split(',').map do |gene|
           g = ::Ensembl::Core::Gene.find_by_name(gene)
           if g
             coords = "#{g.seq_region.name}:#{g.seq_region_start}-#{g.seq_region_end}"
           else
-            warn "Can't find gene #{gene} in Ensembl #{ensembl_kind}, version #{ensembl_release} "
+            warn "Can't find gene #{gene} in Ensembl #{task.options.ensembl_specie}, release #{task.options.ensembl_release} "
           end
         end.compact
         if File.exists?(bam_fn) && !genes_str.empty?          
@@ -52,9 +52,9 @@ module Convert
           task.invoke :sort, [output_name]
          puts "Find your data in #{output_name} and #{output_name.gsub(/\.bam/,"_sort.bam")}"
         end        
-      rescue Exception => e
-        warn "Bam file #{bam_fn} does not exsist or you don't have the rights to open it.#{e}"
-      end
+      # rescue Exception => e
+      #   warn "Bam file #{bam_fn} does not exsist or you don't have the rights to open it.#{e}"
+      # end
     end
   end # Bam
   
