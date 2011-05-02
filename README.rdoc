@@ -24,7 +24,8 @@ NOTE: We are working on these and other tasks, if you find some bugs, please ope
 
 === convert
 Most of this tasks create sub-processes to speed up conversions
-
+* biongs convert:bam:extract_genes BAM GENES --ensembl-release=N  # Extract GENES from bam. It connects to Ensembl Humnan, release 61
+* biongs convert:bam:sort BAM [PREFIX]
 * biongs convert:bcl:qseq:convert RUN OUTPUT [JOBS]              # Convert a bcl dataset in qseq
 * biongs convert:illumina:fastq:trim_b FASTQ                     # perform a trim on all the sequences on B qualities with Illumina's criteria. Ref to CASAVA manual.
 * biongs convert:qseq:fastq:by_file FIRST OUTPUT                 # Convert a qseq file into fastq
@@ -50,6 +51,11 @@ Most of this tasks create sub-processes to speed up conversions
 === sff
 
 * biongs sff:extract [FILE]  # Run sff_extract on a SFF file
+
+
+== TasksExamples
+
+   biongs convert:bam:extract_genes your_original.bam BLID,GATA3,PTPRC --ensembl_release=61 --ensembl_specie=homo_sapiens
 
 
 = ForDevelopers
@@ -98,6 +104,27 @@ With our new wrapper, let's define a Thor task on the fly
     end
 
 Now is you list the tasks with 'thor -T' you will see the new task.
+
+=== Override the run command when the binary dosn't behave normally
+    module Bio
+      module Ngs    
+        module Samtools
+          class View
+            include Bio::Command::Wrapper
+            set_program Bio::Ngs::Utils.binary("samtools")
+            add_option "output", :type => :string, :aliases => '-o'
+
+            alias :original_run :run
+            def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil, :separator=>"="})
+              opts[:arguments].insert(0,"view")
+              opts[:arguments].insert(1,"-b")
+              opts[:arguments].insert(2,"-o")
+              original_run(opts)
+            end
+          end #View
+        end #Samtools
+      end #Ngs
+    end #Bio
 
 === Notes
 * It's possible to add more sugar and we are working hard on it

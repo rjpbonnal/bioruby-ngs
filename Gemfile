@@ -9,6 +9,8 @@ gem "bio-samtools", ">= 0.0.0"
 gem "thor", ">= 0.14.6"
 gem "rubyvis", ">= 0.5.0"
 gem "daemons", ">= 1.1.0"
+gem "ruby-ensembl-api", ">= 1.0.1"
+
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
@@ -24,4 +26,5 @@ group :development do
   gem "rspec", ">= 2.5.0"
   gem "daemons", ">= 1.1.0"
   gem "bio-samtools", ">= 0.0.0"
+  gem "ruby-ensembl-api", ">= 1.0.1"
 end

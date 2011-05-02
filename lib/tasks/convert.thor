@@ -28,6 +28,34 @@ module Convert
       end
       #you tasks here
     end #sort
+    
+    
+    desc "extract_genes BAM GENES", "Extract GENES from bam. It connects to Ensembl Humnan, release 61 and download the coordinates for the inserted genes"
+    method_option :output, :type => :string, :desc => "output file name"
+    method_option :ensembl_specie, :type => :string, :desc => "default homo_sapiens", :default => 'homo_sapiens'
+    method_option :ensembl_release, :type => :numeric, :desc => "ensembl release", :required => true 
+    Bio::Ngs::Samtools::View.new.thor_task(self, :extract_genes) do |wrapper, task, bam_fn, gene_names|
+      require 'ensembl'
+     begin
+        ::Ensembl::Core::DBConnection.connect(task.options.ensembl_specie, task.options.ensembl_release)
+        genes_str=gene_names.split(',').map do |gene|
+          g = ::Ensembl::Core::Gene.find_by_name(gene)
+          if g
+            coords = "#{g.seq_region.name}:#{g.seq_region_start}-#{g.seq_region_end}"
+          else
+            warn "Can't find gene #{gene} in Ensembl #{ensembl_kind}, version #{ensembl_release} "
+          end
+        end.compact
+        if File.exists?(bam_fn) && !genes_str.empty?          
+          output_name = task.options.output || bam_fn.gsub(/\.bam/, "_subset.bam")
+          wrapper.run :arguments => [output_name, bam_fn, genes_str]
+          task.invoke :sort, [output_name]
+         puts "Find your data in #{output_name} and #{output_name.gsub(/\.bam/,"_sort.bam")}"
+        end        
+      rescue Exception => e
+        warn "Bam file #{bam_fn} does not exsist or you don't have the rights to open it.#{e}"
+      end
+    end
   end # Bam
   
   module Qseq
