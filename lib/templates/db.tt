@@ -1,6 +1,6 @@
 # SQLite version 3.x
 #   gem install sqlite3
 adapter: sqlite3
-database: db/annotation.sqlite3
+database: db/<%= type %>.sqlite3
 pool: 5
 timeout: 5000
