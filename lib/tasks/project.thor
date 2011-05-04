@@ -34,23 +34,17 @@ class Project < Thor
     end
   end
   
-  class Update < Project
-    
-    desc "annotation", "Update the working dir to an Annotation project"
-    method_option :dir, :type => :string
-    def annotation
-      dir = (options[:dir]) ? options[:dir]+"/" : ""
-      empty_directory "#{dir}log"
-      empty_directory "#{dir}conf"
-      empty_directory "#{dir}db"
-      template(File.join("..","templates/annotation","annotation_db.tt"), "#{dir}conf/annotation_db.yml")
-      FileUtils.rm Dir.glob("db/migrate/*.rb")
-      template(File.join("..","templates/annotation","create_goannotation.tt"), "#{dir}db/migrate/annotation/#{Time.now.strftime("%Y%m%d%M11")}_create_goannotation.rb")
-      template(File.join("..","templates/annotation","create_blastout.tt"), "#{dir}db/migrate/annotation/#{Time.now.strftime("%Y%m%d%M12")}_create_blastout.rb")
-      template(File.join("..","templates/annotation","create_go.tt"), "#{dir}db/migrate/annotation/#{Time.now.strftime("%Y%m%d%M13")}_create_go.rb")
-      template(File.join("..","templates/annotation","annotation_models.tt"), "#{dir}db/models/annotation_models.rb")
-    end
-  
+  attr_accessor :type
+
+  desc "update [TYPE]", "Update the working dir to a new type of project"
+  method_option :dir, :type => :string
+  def update(type)
+    self.type = type
+    dir = (options[:dir]) ? options[:dir]+"/" : ""
+    empty_directory "#{dir}log"
+    empty_directory "#{dir}conf"
+    empty_directory "#{dir}db"
+    template(File.join("..","templates","db.tt"), "#{dir}conf/#{type}_db.yml")
   end
 
   
