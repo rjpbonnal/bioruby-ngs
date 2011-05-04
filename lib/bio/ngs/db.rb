@@ -3,24 +3,22 @@ module Bio
     class Db
       
       require 'active_support/inflector'
-      
-      attr_reader :connection
-      
+            
       # Open a connection to a database using ActiveRecord
-      def initialize(yaml_file="conf/database.yml",models_file=nil)
-        @yaml_file = yaml_file
+      def initialize(db_type,yaml_file=Dir.pwd+"/conf/#{db_type}_db.yml")
+        @db_type = db_type
         @db = ActiveRecord::Base
-        @db.establish_connection YAML.load_file(@yaml_file)
+        @db.establish_connection YAML.load_file(yaml_file)
         # ONLY FOR DEBUG
         #require 'logger'
         #ActiveRecord::Base.logger = Logger.new 'log/db.log'
-        require models_file if models_file
+        require File.expand_path(File.dirname(__FILE__)+"/db/models/#{@db_type}.rb")
       end
     
       # Runs AR migrations and create database tables
-      def create_tables(migrations_path,verbose=false)
+      def create_tables(verbose=false)
         ActiveRecord::Migration.verbose = verbose
-        ActiveRecord::Migrator.migrate(migrations_path,nil)
+        ActiveRecord::Migrator.migrate(File.expand_path(File.dirname(__FILE__)+"/db/migrate/#{@db_type}"),nil)
       end
       
       # Export a database table into a tab-separated file
