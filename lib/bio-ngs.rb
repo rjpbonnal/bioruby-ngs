@@ -30,7 +30,8 @@ require 'bio/ngs/task'
 require 'bio/ngs/core_ext'
 require 'bio/ngs/converter'
 require 'bio/ngs/db'
-require 'bio/ngs/annotation'
+require 'bio/ngs/homology'
+require 'bio/ngs/ontology'
 
 #tools
 require 'bio/appl/ngs/tophat'
