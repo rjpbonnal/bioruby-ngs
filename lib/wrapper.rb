@@ -75,22 +75,27 @@ module Bio
       # TODO: make a test because it should not return an empty string.
       # TODO: refactor is not beauty
       def normalize_params(separator="=")
+        use_aliases?
         args=params.to_a.map do |option|
           option_name = option[0]
           option_values = option[1]
+          #deprecated I'm not sure this code is good (at least the one with kind_of?)
           if option_values.kind_of? Hash
+            puts "pippo"
             #TODO: refactor this code and verify that the boolean needs a specific options setting.
             #"--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
             if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
               "--#{option_name}"
             else
-              "--#{option_name}#{separator}#{option_values[:default]}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values}" : "--#{option_name}#{separator}#{option_values}"
             end
+            #deprecated up to here
           else #is a value of the main hash. (mostly a parameter)
+
             if option_values == true
-              "--#{option_name}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? options[option_name][:aliases] : "--#{option_name}"
             elsif option_values != false
-              "--#{option_name}#{separator}#{option_values}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values}" : "--#{option_name}#{separator}#{option_values}"
             end
           end
         end
@@ -98,6 +103,10 @@ module Bio
 
       def output
         self.class.output || :file
+      end
+
+      def use_aliases?
+        self.class.aliases
       end
 
 
@@ -184,7 +193,7 @@ module Bio
         OUTPUT = [:file, :stdout, :stdin]
 
         # output = {:file=>true, :stdout=>}
-        attr_accessor :output
+        attr_accessor :output, :program, :options, :aliases
 
         #TODO I don't like this way, Is it possible to configure the variable as global and default ?
         def set_output(output_type=:file)
@@ -195,12 +204,14 @@ module Bio
           end
         end
 
-        attr_accessor :program, :options        
+        def use_aliases
+          @aliases = true
+        end
 
         # external_parameter can be an array a string or an hash
         # def validate_parameters(external_parameters)
         def add_option(name, opt={})
-          @options = (@options || {}).merge(name=>opt)
+          @options = (@options || {}).merge(name.to_s=>opt)
         end
 
         alias set_program program=
