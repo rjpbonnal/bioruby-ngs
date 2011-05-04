@@ -6,8 +6,8 @@ class Ontology < Thor
     desc "init", "Initialize Ontology DB"
     def init
       if Dir.exists? "db" and Dir.exists? "conf"
-        db = Bio::Ngs::Db.new("conf/ontology_db.yml")
-        db.create_tables("db/migrate/annotation")
+        db = Bio::Ngs::Db.new :ontology
+        db.create_tables
       else
         puts "No db or conf directory found! Please run 'biongs project:update:annotation'"
         exit
@@ -18,7 +18,7 @@ class Ontology < Thor
     method_option :fileout, :type => :string, :desc => "file used to save the output", :required => true
     def export(table)
       if Dir.exists? "db"
-        db = Bio::Ngs::Db.new("conf/ontology_db.yml")
+        db = Bio::Ngs::Db.new :ontology
         db.export(table,options[:fileout])
       else
         puts "No conf directory found! Can't load database connection information"
@@ -33,7 +33,7 @@ class Ontology < Thor
     
     desc "go [FILE]", "Import GO definition file"
     def go(file)
-      Bio::Ngs::Annotation.go_import(file,"conf/ontology_db.yml")
+      Bio::Ngs::Ontology.go_import file
       puts "Import completed.\n"
     end
     
@@ -64,8 +64,6 @@ class Ontology < Thor
   end
   
   class Download < Ontology
-    
-
     
     desc "goslim", "Download the GeneOntology file"
     def goslim
