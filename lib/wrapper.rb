@@ -31,11 +31,15 @@ module Bio
       end
 
       def program
-        @program || self.class.program
+        @program
+      end
+      
+      def sub_program
+        self.class.sub_program
       end
 
       def initialize(binary=nil, options={})
-        @program = binary || program
+        @program = binary || self.class.program
         @options = options
         @params = {}
       end
@@ -81,7 +85,6 @@ module Bio
           option_values = option[1]
           #deprecated I'm not sure this code is good (at least the one with kind_of?)
           if option_values.kind_of? Hash
-            puts "pippo"
             #TODO: refactor this code and verify that the boolean needs a specific options setting.
             #"--#{option_name}" + ((option_values.has_key?(:type) && option_values[:type]==:boolean) ? ("="+ (option_values[:default] ? "true": "false")) :"=#{option_values[:default]}")
             if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
@@ -129,7 +132,7 @@ module Bio
           file_stdlog = File.open(opts[:output_file], 'w')
           file_errlog = File.open(opts[:output_file]+".err",'w')
 
-          Bio::Command.call_command_open3([program, normalize_params(opts[:separator]), opts[:arguments]].flatten) do |pin, pout, perr|
+          Bio::Command.call_command_open3([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact) do |pin, pout, perr|
             pout.sync = true
             perr.sync = true           
             t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
@@ -142,7 +145,7 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
-          Bio::Command.query_command([program, normalize_params(opts[:separator]), opts[:arguments]].flatten)
+          Bio::Command.query_command([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact)
         end #if
       end #run
 
@@ -176,11 +179,6 @@ module Bio
         end #klass
       end #thor_task
 
-      def thor_test(klass, name)
-        puts klass.inspect
-        puts klass.options.inspect1
-      end
-
       #Return the class name
       def class_name
         self.class.name.split("::").last.downcase
@@ -193,7 +191,7 @@ module Bio
         OUTPUT = [:file, :stdout, :stdin]
 
         # output = {:file=>true, :stdout=>}
-        attr_accessor :output, :program, :options, :aliases
+        attr_accessor :output, :program, :options, :aliases, :sub_program
 
         #TODO I don't like this way, Is it possible to configure the variable as global and default ?
         def set_output(output_type=:file)
@@ -215,6 +213,7 @@ module Bio
         end
 
         alias set_program program=
+        alias set_sub_program sub_program=
 
       end #ClassMethods
 
