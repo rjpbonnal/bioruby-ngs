@@ -29,9 +29,12 @@ module Convert
       #you tasks here
     end #sort
     
-    desc "merge OUTPUT" ,"Merge multiple bams in a single one"
-    Bio::Ngs::Samtools::Merge.new.thor_task(self, :merge) do |wrapper, task, output|
-      wrapper.run :arguments => [output, task.options.bams].flatten
+    desc "merge" ,"Merge multiple bams in a single one, BAMS separated by commmas"
+    method_option :input_bams, :type => :array, :required => true, :aliases => '-i'
+    method_option :output, :type => :string, :require => true, :aliases => '-o'
+    Bio::Ngs::Samtools::Merge.new.thor_task(self, :merge) do |wrapper, task|
+      wrapper.params = task.options
+      wrapper.run :arguments => [task.options.output, task.options.input_bams].flatten
     end
      
     desc "extract_genes BAM GENES", "Extract GENES from bam. It connects to Ensembl Humnan, release 61 and download the coordinates for the inserted genes"
