@@ -3,16 +3,21 @@ module Bio
     class Db
       
       require 'active_support/inflector'
-            
+      DB_TYPES = [:ontology, :homology]      
       # Open a connection to a database using ActiveRecord
-      def initialize(db_type,yaml_file=Dir.pwd+"/conf/#{db_type}_db.yml")
-        @db_type = db_type
-        @db = ActiveRecord::Base
-        @db.establish_connection YAML.load_file(yaml_file)
-        # ONLY FOR DEBUG
-        #require 'logger'
-        #ActiveRecord::Base.logger = Logger.new 'log/db.log'
-        require File.expand_path(File.dirname(__FILE__)+"/db/models/#{@db_type}.rb")
+      def initialize(*args)
+        @db_type = args[0]
+        if DB_TYPES.include? @db_type
+          yaml_file=(args[1]) ? args[1] : Dir.pwd+"/conf/#{db_type}_db.yml"
+          @db = ActiveRecord::Base
+          @db.establish_connection YAML.load_file(yaml_file)
+          # ONLY FOR DEBUG
+          #require 'logger'
+          #ActiveRecord::Base.logger = Logger.new 'log/db.log'
+          require File.expand_path(File.dirname(__FILE__)+"/db/models/#{@db_type}.rb")
+        else
+          raise ArgumentError, "Invalid database type: #{@db_type}"
+        end
       end
     
       # Runs AR migrations and create database tables
