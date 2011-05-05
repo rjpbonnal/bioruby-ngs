@@ -5,8 +5,8 @@ module Bio
       
       # Method to import a Blast XML output file into a BlastOuput table created according to ActiveRecord model
       # Params: XML Blast file, YAML file for db connection, optional ActiveRecord models file
-      def self.blast_import(file)
-        db = Bio::Ngs::Db.new :homology
+      def self.blast_import(file,yaml_file=nil)
+        db = Bio::Ngs::Db.new :homology,yaml_file
         inserts = []
         Bio::Blast::XmlIterator.new(file).to_enum.each do |iter|
           iter.each do |hit|
@@ -58,9 +58,9 @@ module Bio
 
       
       # Method to import a GO Annotation file into GoAnnotation table created according to ActiveRecord model
-      # Params: GOA file, YAML file for db connection, optional ActiveRecord models file
-      def self.goa_import(file)
-        db = Bio::Ngs::Db.new :homology
+      # Params: GOA file, YAML file for db connection (optional)
+      def self.goa_import(file,yaml_file=nil)
+        db = Bio::Ngs::Db.new :homology, yaml_file
         inserts = []
         File.open(file).each do |line|
           next if line.start_with? "!"
