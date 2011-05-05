@@ -4,8 +4,8 @@ module Bio
 
       # Method to import a GO OBO file into Go table created according to ActiveRecord model
       # Params: GO OBO file, YAML file for db connection, optional ActiveRecord models file
-      def self.go_import(file)
-        db = Bio::Ngs::Db.new :ontology
+      def self.go_import(file,yaml_file=nil)
+        db = Bio::Ngs::Db.new :homology,yaml_file
         inserts = []
         file = File.open(file)
         file.each do |line|
