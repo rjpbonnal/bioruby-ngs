@@ -83,6 +83,17 @@ We want wrap a TopHat the famous tool for NGS analyses.
       end #Ngs
     end #Bio
 
+is possible to use specify
+    use_aliases
+if you want to give a priority to short notation or if your program has only the short notation but you want to extend the task with the long one as well.
+
+In case you program work like git which has a main program and the sub_programs for each feature you can use specify the sub program name with
+    set_sub_program "sub_name"
+The wrapper will run the command composing:
+    set_program set_sub_program options arguments
+A practical example of this behavior is samtools which has multiple sub programs view, merge, sort, ....
+SamTools is a particular case becau	se in biongs we are using bio-samtools a binding with FFI and the wrapper because the merge function was too complicated for the binding or at least we do not spent enough time on it, so we make the wrapping for this functionality.
+
 This step is very similar to define a Thor task, add_option is grabbed/inspired from Thor.
 Then you can user this binary also from a bioruby script just calling:
 tophat = Bio::Ngs::Tophat.new
@@ -105,7 +116,7 @@ With our new wrapper, let's define a Thor task on the fly
 
 Now is you list the tasks with 'thor -T' you will see the new task.
 
-=== Override the run command when the binary dosn't behave normally
+=== Override the run command when the binary dosen't behave normally
     module Bio
       module Ngs    
         module Samtools
