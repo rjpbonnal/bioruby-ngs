@@ -35,6 +35,10 @@ module Bio
         db.insert_many("go","INSERT INTO go(go_id,name,namespace,is_a) VALUES(?,?,?,?)",inserts) if inserts.size > 0
       end   
       
+      def self.load_go_gene_data(file)
+        
+      end
+      
       
     end
   end
