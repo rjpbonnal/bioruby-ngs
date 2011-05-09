@@ -1,5 +1,5 @@
 #
-#  bio-ngs.rb - Mian bio-ngs clas
+#  bio-ngs.rb - Main bio-ngs class
 #
 # Copyright:: Copyright (C) 2011
 #     Raoul Bonnal <r@bioruby.org>,
