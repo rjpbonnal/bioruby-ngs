@@ -35,7 +35,7 @@ class TestHomology < Test::Unit::TestCase
   context "Homology import tasks" do
     
     should "take a GO Annotation file and store it into a go_annotations table" do
-      Bio::Ngs::Homology.goa_import("test/fixture/goa_uniprot","test/conf/test_db.yml")
+      Bio::Ngs::Homology.goa_import("test/data/goa_uniprot","test/conf/test_db.yml")
       goa = GoAnnotation.find(:first)
       assert_equal("UniProtKB",goa.db)
       assert_equal("A0A8M2",goa.entry_id)
@@ -51,7 +51,7 @@ class TestHomology < Test::Unit::TestCase
     end
     
     should "take a Blast XML file and store the results into a blast_outputs table" do
-      Bio::Ngs::Homology.blast_import("test/fixture/blastoutput.xml","test/conf/test_db.yml")
+      Bio::Ngs::Homology.blast_import("test/data/blastoutput.xml","test/conf/test_db.yml")
       b = BlastOutput.find(:first)
       assert_equal("ENSBTAG00000025113_499_35",b.query_id)
       assert_equal("sp|Q6U7Q0|Z322A_HUMAN",b.target_id)
