@@ -1,3 +1,11 @@
+#
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 module Bio
   module Ngs
     class Homology
@@ -25,12 +33,12 @@ module Bio
             evalue = evalue.inject{ |sum, el| sum + el }.to_f / evalue.size
             inserts << [iter.query_def,hit.hit_id,hit.hit_def,evalue,identity,positive]
             if inserts.size == 1000
-              db.insert_many("blast_outputs","INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts)
+              db.insert_many(:blast_outputs,"INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts)
               inserts = []
             end  
           end
         end
-        db.insert_many("blast_outputs","INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts) if inserts.size > 0
+        db.insert_many(:blast_outputs,"INSERT INTO blast_outputs(query_id,target_id,target_description,evalue,identity,positive) VALUES(?,?,?,?,?,?)",inserts) if inserts.size > 0
       end
       
       def self.blast2text(file_in,file_out)
@@ -67,11 +75,11 @@ module Bio
           line.chomp!
           inserts << line.split("\t")
           if inserts.size == 1000
-            db.insert_many("go_annotations","INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts)
+            db.insert_many(:go_annotations,"INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts)
             inserts = []
           end
         end
-        db.insert_many("go_annotations","INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts) if inserts.size > 0
+        db.insert_many(:go_annotations,"INSERT INTO go_annotations(db,entry_id,symbol,qualifier,go_id,db_ref,evidence,additional_identifier,aspect,name,synonym,molecule_type,taxon_id,date,assigned_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",inserts) if inserts.size > 0
       end
       
     end
