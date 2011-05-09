@@ -1,9 +1,18 @@
+#
+#
+# Copyright:: Copyright (C) 2011
+#     Francesco Strozzi <francesco.strozzi@gmail.com>
+# License:: The Ruby License
+#
+#
+
 module Bio
   module Ngs
     class Db
       
       require 'active_support/inflector'
-      DB_TYPES = [:ontology, :homology]      
+      DB_TYPES = [:ontology, :homology]
+           
       # Open a connection to a database using ActiveRecord
       def initialize(*args)
         @db_type = args[0]
@@ -41,9 +50,9 @@ module Bio
       end
       
       # Wrapper for DB transaction to execute many INSERT queries into a single transaction
-      # This can speed up things espectially for SQLite databases.
+      # This can speed up things particularly for SQLite databases.
       def insert_many(table,query,values=[])
-        klass = @db.const_get(table.singularize.camelize)
+        klass = @db.const_get(table.to_s.singularize.camelize)
         klass.transaction do 
           values.each do |v|
             sql = @db.send(:sanitize_sql_array,[query]+v)
