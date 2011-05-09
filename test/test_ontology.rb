@@ -13,9 +13,10 @@ class TestOntology < Test::Unit::TestCase
   
   context "Ontology database" do
     
-    should "have a set of empty tables created according to models" do
-      assert_equal(0,GoCount.count)
+    should "have a set of empty tables created according to migrations" do
+      assert_equal(0,Gene.count)
       assert_equal(0,Go.count)
+      assert_equal(0,GeneGo.count)
     end
     
     should "have a table go" do
@@ -29,7 +30,7 @@ class TestOntology < Test::Unit::TestCase
   context "Ontology import tasks" do
     
     should "take a GO OBO file and store it into go table" do
-      Bio::Ngs::Ontology.go_import("test/fixture/gene_ontology.obo","test/conf/test_db.yml")
+      Bio::Ngs::Ontology.go_import("test/data/goslim_goa.obo","test/conf/test_db.yml")
       r = Go.find(:first)
       assert_equal("GO:0000003",r.go_id)
       assert_equal("reproduction",r.name)
@@ -41,6 +42,36 @@ class TestOntology < Test::Unit::TestCase
       assert_equal("biological_process",go[-1].namespace)
       total = Go.count
       assert_equal(106,total)
+    end
+    
+  end
+  
+  
+  context "Bio::Ngs::Ontology" do
+    
+    should "store into the db the GO terms associated to Genes" do
+      Bio::Ngs::Ontology.go_import("test/data/goslim_goa.obo","test/conf/test_db.yml")
+      go = JSON.load File.read "test/data/gene-GO.json"
+      go.each do |gene|
+        ontology = Bio::Ngs::Ontology.new gene["gene_id"]
+        ontology.go = gene["go"]
+        ontology.library = gene["library"]
+        ontology.to_db "test/conf/test_db.yml"
+      end
+
+      db = Bio::Ngs::Db.new :ontology, "test/conf/test_db.yml"
+      assert_equal(2,Gene.count)
+      assert_equal(14,GeneGo.count)
+      ontology = %w(GO:0005622 GO:0005634 GO:0005654 GO:0005737 GO:0007049 GO:0007059 GO:0043234)
+      terms = Gene.find(1).go.map {|g| g.go_id}
+      assert_equal(ontology,terms)
+      ontology = %w(GO:0005634 GO:0005654 GO:0005737 GO:0007049 GO:0008283 GO:0043234 GO:0051276)
+      terms = Gene.find(2).go.map {|g| g.go_id}
+      assert_equal(ontology,terms)
+      
+      assert_equal("BRCA1",Gene.find(1).library)
+      assert_equal("BRCA2",Gene.find(2).library)
+      
     end
     
   end
