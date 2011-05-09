@@ -37,6 +37,12 @@ class Ontology < Thor
       puts "Import completed.\n"
     end
     
+    desc "genego [FILE]", "Import Gene-GO file (JSON)"
+    def genego(file)
+      Bio::Ngs::Ontology.load_go_genes file
+      puts "Import completed"
+    end
+    
     
   end
   
@@ -65,18 +71,14 @@ class Ontology < Thor
   
   class Download < Ontology
     
-    desc "goslim", "Download the GeneOntology file"
-    def goslim
-      puts "Downloading from http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo"
+    desc "go", "Download the GeneOntology file"
+    def go
       Bio::Ngs::Utils.download_with_progress(:url => "http://www.geneontology.org/ontology/obo_format_1_2/gene_ontology.1_2.obo", :filename => "data/gene_ontology.1_2.obo")
-      puts "\nDone."
     end
     
-    desc "go", "Download the Uniprot GeneOntology Slim file"
-    def go
-      puts "Downloading from http://www.geneontology.org/GO_slims/goslim_goa.obo"
+    desc "goslim", "Download the Uniprot GeneOntology Slim file"
+    def goslim
       Bio::Ngs::Utils.download_with_progress(:url => "http://www.geneontology.org/GO_slims/goslim_goa.obo", :filename => "data/goslim_goa.obo")
-      puts "\nDone."
     end
     
     desc "all", "Download the GO files"
