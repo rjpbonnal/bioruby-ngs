@@ -11,6 +11,8 @@ gem "daemons", ">= 1.1.0"
 gem "activerecord",">= 3.0.5"
 gem "sqlite3", ">= 1.3.3"
 gem "bio-blastxmlparser"
+gem "progressbar",">= 0.9.0"
+
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
@@ -28,4 +30,6 @@ group :development do
   gem "activerecord",">= 3.0.5"
   gem "sqlite3", ">= 1.3.3"
   gem "bio-blastxmlparser"
+  gem "progressbar",">= 0.9.0"
+  gem "json"
 end
