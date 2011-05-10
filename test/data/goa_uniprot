@@ -1,30 +1,27 @@
-!gaf-version: 2.0
-!Project_name: GO Annotation @ EBI (GOA)
-!URL: http://www.ebi.ac.uk/GOA/index.html
-!Contact Email: goa@ebi.ac.uk
-UniProtKB	A0A8M2	lsm14a-a		GO:0003723	PMID:17074753	IDA		F	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0005737	PMID:17074753	IDA		C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0017148	PMID:17074753	IMP		P	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0017151	PMID:17074753	IPI	UniProtKB:P54824	F	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0030529	PMID:17074753	IPI	UniProtKB:P21574	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0030529	PMID:17074753	IPI	UniProtKB:P54824	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091215	UniProtKB		
-UniProtKB	A0A8M2	lsm14a-a		GO:0043234	PMID:17074753	IPI	UniProtKB:Q8AV13	C	Protein LSM14 homolog A-A	L14AA_XENLA|lsm14a|lsm14a-a|rap55a-a|Q68F15	protein	taxon:8355	20091214	UniProtKB		
-UniProtKB	A0AAR7	CCAMK		GO:0004683	PMID:16810257	IDA		F	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
-UniProtKB	A0AAR7	CCAMK		GO:0009608	PMID:16810257	IDA		P	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
-UniProtKB	A0AAR7	CCAMK		GO:0009931	PMID:16810257	IDA		F	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
-UniProtKB	A0AAR7	CCAMK		GO:0046777	PMID:16810257	IDA		P	Calcium and calcium/calmodulin-dependent serine/threonine-protein kinase	CCAMK_LOTJA|CCAMK	protein	taxon:34305	20100923	UniProtKB		
-UniProtKB	A0AQ71	bai		GO:0009953	GO_REF:0000024	ISS	UniProtKB:Q8SXY6	P	Transmembrane emp24 domain-containing protein bai	TMEDA_DROSI|GD21160|bai	protein	taxon:7240	20100329	UniProtKB		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0001664	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0003924	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0004871	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0005834	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0006184	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110305	GOC		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0007188	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0031234	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0031683	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0ASJ9	A0ASJ9		GO:0060158	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN4	P	G protein alpha subunit AgGq6	A0ASJ9_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0B5U4	glyS		GO:0004820	GO_REF:0000024	ISS	UniProtKB:P41250	F	Glycyl-tRNA synthetase	SYG_METTP|glyS|Mthe_0271	protein	taxon:349307	20091123	UniProtKB		
-UniProtKB	A0B5U4	glyS		GO:0046983	GO_REF:0000024	ISS	UniProtKB:P41250	F	Glycyl-tRNA synthetase	SYG_METTP|glyS|Mthe_0271	protein	taxon:349307	20091123	UniProtKB		
-UniProtKB	A0EJE5	A0EJE5		GO:0003924	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0EJE5	A0EJE5		GO:0004871	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	F	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
-UniProtKB	A0EJE5	A0EJE5		GO:0005834	GO_REF:0000033	ISS	PANTHER:PTHR10218_AN0	C	G(Alpha)c	A0EJE5_ANOGA	protein	taxon:7165	20110125	RefGenome		
+UniProtKB	Q5TM25	AIF1	colocalizes_with	GO:0032587	GO_REF:0000024	ISS	UniProtKB:P55008	C	Allograft inflammatory factor 1	AIF1_MACMU|AIF1	protein	taxon:9544	20090922	UniProtKB		
+UniProtKB	Q5TM59	GNL1		GO:0005525	GO_REF:0000033	ISS	PANTHER:PTHR11089_AN0	F	Guanine nucleotide-binding protein-like 1	GNL1_MACMU|GNL1	protein	taxon:9544	20110218	RefGenome		
+UniProtKB	Q5TM61	PPP1R10		GO:0000785	GO_REF:0000024	ISS	UniProtKB:Q80W00	C	Serine/threonine-protein phosphatase 1 regulatory subunit 10	PP1RA_MACMU|PPP1R10|CAT53	protein	taxon:9544	20101116	UniProtKB		
+UniProtKB	Q5TM61	PPP1R10		GO:0072357	GO_REF:0000024	ISS	UniProtKB:Q80W00	C	Serine/threonine-protein phosphatase 1 regulatory subunit 10	PP1RA_MACMU|PPP1R10|CAT53	protein	taxon:9544	20101118	UniProtKB		
+UniProtKB	Q5TM67	NRM		GO:0005635	GO_REF:0000024	ISS	UniProtKB:Q8IXM6	C	Nurim	NRM_MACMU|NRM	protein	taxon:9544	20070914	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0004342	GO_REF:0000024	ISS	UniProtKB:P46926	F	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0005737	GO_REF:0000024	ISS	UniProtKB:O88958	C	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0006043	GO_REF:0000024	ISS	UniProtKB:P46926	P	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0006091	GO_REF:0000024	ISS	UniProtKB:P46926	P	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289		GO:0005829	GO_REF:0000024	ISS	UniProtKB:O96033	C	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289		GO:0006777	GO_REF:0000024	ISS	UniProtKB:O96033	P	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289	contributes_to	GO:0030366	GO_REF:0000024	ISS	UniProtKB:O96033	F	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0003674	GO_REF:0000015	ND		F	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0005575	GO_REF:0000015	ND		C	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0008150	GO_REF:0000015	ND		P	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TU55	p		GO:0006622	GO_REF:0000024	ISS	UniProtKB:Q9VHN9	P	Hermansky-Pudlak syndrome 5 protein homolog	HPS5_ANOGA|p	protein	taxon:7165	20070824	UniProtKB		
+UniProtKB	Q5TU55	p		GO:0006726	GO_REF:0000024	ISS	UniProtKB:Q9VHN9	P	Hermansky-Pudlak syndrome 5 protein homolog	HPS5_ANOGA|p	protein	taxon:7165	20070824	UniProtKB		
+UniProtKB	Q5TUF1	Ars2		GO:0005654	GO_REF:0000024	ISS	UniProtKB:Q99MR6	C	Serrate RNA effector molecule homolog	SRRT_ANOGA|AGAP010382|Ars2	protein	taxon:7165	20090811	UniProtKB		
+UniProtKB	Q5TUF1	Ars2		GO:0031053	GO_REF:0000024	ISS	UniProtKB:Q99MR6	P	Serrate RNA effector molecule homolog	SRRT_ANOGA|AGAP010382|Ars2	protein	taxon:7165	20090811	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0003674	GO_REF:0000015	ND		F	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0005615	PMID:18353100	IDA		C	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0042742	PMID:18353100	IMP		P	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0003674	GO_REF:0000015	ND		F	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0005515	PMID:15855230	IPI	UniProtKB:O93309	F	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20110307	IntAct		
+UniProtKB	Q5U241	pds5b-b		GO:0005634	GO_REF:0000024	ISS	UniProtKB:Q6TRW4	C	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0007064	GO_REF:0000024	ISS	UniProtKB:Q498H0	P	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0008285	GO_REF:0000024	ISS	UniProtKB:Q6TRW4	P	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
