@@ -1,7 +1,6 @@
 
 class GoAnnotation < ActiveRecord::Base
   belongs_to :blast_output
-  has_one :go, :foreign_key => "go_id", :primary_key => "go_id"
 end
 
 class BlastOutput < ActiveRecord::Base
