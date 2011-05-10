@@ -10,6 +10,7 @@
 
 # External gems
 require 'yaml'
+require 'json'
 require 'daemons'
 require 'thor'
 require 'thor/group'
