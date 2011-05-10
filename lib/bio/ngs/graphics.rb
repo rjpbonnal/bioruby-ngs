@@ -93,7 +93,6 @@ module Bio
       end
       
       def self.bubble_chart(fileout,dataset = {}, panel_w = 600, panel_h = 800)
-        puts dataset.inspect
         colors=Rubyvis::Colors.category10()
         c=Rubyvis::Colors.category10().by(lambda {|n| n.parent_node})
 
