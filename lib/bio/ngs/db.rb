@@ -17,7 +17,7 @@ module Bio
       def initialize(*args)
         @db_type = args[0]
         if DB_TYPES.include? @db_type
-          yaml_file=(args[1]) ? args[1] : Dir.pwd+"/conf/#{db_type}_db.yml"
+          yaml_file=(args[1]) ? args[1] : Dir.pwd+"/conf/#{@db_type}_db.yml"
           @db = ActiveRecord::Base
           @db.establish_connection YAML.load_file(yaml_file)
           # ONLY FOR DEBUG
