@@ -11,7 +11,7 @@ module Bio
     class Ontology
 
       # Method to import a GO OBO file into Go table created according to ActiveRecord model
-      # Params: GO OBO file, YAML file for db connection, optional ActiveRecord models file
+      # Params: GO OBO file, YAML file for db connection
       def self.go_import(file,yaml_file=nil)
         db = Bio::Ngs::Db.new :ontology,yaml_file
         inserts = []
@@ -43,27 +43,30 @@ module Bio
         db.insert_many(:go,"INSERT INTO go(go_id,name,namespace,is_a) VALUES(?,?,?,?)",inserts) if inserts.size > 0
       end   
       
+      # Method to lood the Gene-GO associations from a JSON file into the Ontology db
+      # Params: JSON file name, YAML file for db connection (optional)
       def self.load_go_genes(file,yaml_file=nil)
-        db = Bio::Ngs::Db.new :ontology,yaml_file
+        db = Bio::Ngs::Db.new :ontology, yaml_file
         list = JSON.load File.read(file)
-        list.each do |gene|
-          ontology = Bio::Ngs::Ontology.new(gene["gene_id"])
-          ontology.go = gene["go"]
-          ontology.library = gene["library"]
+        ontologies = Bio::Ngs::OntologyCollection.new
+        list.each_with_index do |gene,index|
+          ontologies << Bio::Ngs::Ontology.new(gene["gene_id"],gene["go"],gene["library"])
         end
+        ontologies.to_db(yaml_file)
       end
       
       
       attr_accessor :gene_id, :go, :library
-      
-      def initialize(gene_id)
+      # Constructor for Bio::Ngs::Ontology instances
+      def initialize(gene_id,go=[],library=nil)
         @gene_id = gene_id
-        @go = []
-        @library = nil
+        @go = go
+        @library = library
       end
       
+      # Method to store a single Bio::Ngs::Ontology object into the Ontology db
       def to_db(yaml_file=nil)
-        raise RuntimeError,"You must initialize the Ontolgy db with biongs:ontology:init" if Go.count == 0
+        raise RuntimeError,"You must initialize the Ontolgy db with biongs ontology:db:init" if Go.count == 0
         db = Bio::Ngs::Db.new :ontology,yaml_file
         g = Gene.create(:gene_id => @gene_id, :library => @library)
         Go.where({:go_id => @go}).all.each do |go|
@@ -73,5 +76,28 @@ module Bio
       
       
     end
+    
+    # Class to handle collection of Bio::Ngs::Ontology objects. 
+    # It provides a method to store all the gene-GO associations into the Ontology db
+    class OntologyCollection < Array
+      
+      def to_db(yaml_file=nil)
+        db = Bio::Ngs::Db.new :ontology, yaml_file
+        genes = []
+        ontologies = []
+        go = {}
+        Go.find_by_sql("SELECT id, go_id FROM go").each {|g| go[g.go_id] = g.id}
+        self.each_with_index do |gene,index|
+          raise ArgumentError "OntologyCollection can store only Bio::Ngs::Ontology objects!" if gene.class != Bio::Ngs::Ontology
+          genes << [index+1,gene.gene_id,gene.library]
+          gene.go.each {|o| ontologies << [index+1,go[o]] if go[o]}
+        end
+        db.insert_many(:genes,"INSERT INTO genes(id,gene_id,library) VALUES(?,?,?)",genes)
+        db.insert_many(:gene_gos,"INSERT INTO gene_gos(gene_id,go_id) VALUES(?,?)",ontologies)        
+      end
+      
+    end
+    
+    
   end
 end
