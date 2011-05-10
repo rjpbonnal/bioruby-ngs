@@ -8,6 +8,8 @@ class Ontology < Thor
       if Dir.exists? "db" and Dir.exists? "conf"
         db = Bio::Ngs::Db.new :ontology
         db.create_tables
+        invoke "ontology:download:go"
+        invoke "ontology:load:go" ["data/gene_ontology.1_2.obo"]
       else
         puts "No db or conf directory found! Please run 'biongs project:update:annotation'"
         exit
@@ -50,20 +52,18 @@ class Ontology < Thor
     
     desc "go","Output a graphical report on the GO for the sequences annotated in the db"
     def go
-      db = db_connect
-      dataset = Hash.new()
-      BlastOutput.find(:all).each do |bo|
-        bo.go_annotations.each do |go_ann|
-          if (go = go_ann.go)
-            dataset[go.namespace] = Hash.new(0) unless dataset.has_key? go.namespace
-            dataset[go.namespace][go.name] += 1
-          end
+      db = Bio::Ngs::Db.new :ontology
+      ontologies = {}
+      Gene.find(:all).each do |gene|
+        gene.go.each do |ontology|
+          ontologies[ontology.namespace] = Hash.new(0) unless ontologies.has_key? ontology.namespace
+          ontologies[ontology.namespace][ontology.name] += 1
         end
       end
-      dataset.each_pair do |namespace,ontologies|
-        ontologies = ontologies.sort {|a,b| b[1] <=> a[1]}
-        ontologies.flatten!
-        Bio::Ngs::Graphics.bubble_chart(namespace+"_go.svg",Hash[*ontologies[0..39]])
+      ontologies.each_pair do |namespace,terms|
+         terms = terms.sort {|a,b| b[1] <=> a[1]}
+         terms.flatten!
+         Bio::Ngs::Graphics.bubble_chart(namespace+"_go.svg",Hash[*terms[0..39]])
       end
     end
     
