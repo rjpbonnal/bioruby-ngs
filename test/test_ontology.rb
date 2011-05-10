@@ -51,23 +51,17 @@ class TestOntology < Test::Unit::TestCase
     
     should "store into the db the GO terms associated to Genes" do
       Bio::Ngs::Ontology.go_import("test/data/goslim_goa.obo","test/conf/test_db.yml")
-      go = JSON.load File.read "test/data/gene-GO.json"
-      go.each do |gene|
-        ontology = Bio::Ngs::Ontology.new gene["gene_id"]
-        ontology.go = gene["go"]
-        ontology.library = gene["library"]
-        ontology.to_db "test/conf/test_db.yml"
-      end
+      Bio::Ngs::Ontology.load_go_genes("test/data/gene-GO.json","test/conf/test_db.yml")
 
       db = Bio::Ngs::Db.new :ontology, "test/conf/test_db.yml"
       assert_equal(2,Gene.count)
       assert_equal(14,GeneGo.count)
       ontology = %w(GO:0005622 GO:0005634 GO:0005654 GO:0005737 GO:0007049 GO:0007059 GO:0043234)
       terms = Gene.find(1).go.map {|g| g.go_id}
-      assert_equal(ontology,terms)
+      assert_equal(ontology,terms.sort)
       ontology = %w(GO:0005634 GO:0005654 GO:0005737 GO:0007049 GO:0008283 GO:0043234 GO:0051276)
       terms = Gene.find(2).go.map {|g| g.go_id}
-      assert_equal(ontology,terms)
+      assert_equal(ontology,terms.sort)
       
       assert_equal("BRCA1",Gene.find(1).library)
       assert_equal("BRCA2",Gene.find(2).library)
