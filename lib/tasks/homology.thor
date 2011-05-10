@@ -46,7 +46,7 @@ class Homology < Thor
 
   class Load < Homology
     
-    desc "blast [FILE]","Parse Blast XML output and load the results into Annotation DB"
+    desc "blast [FILE]","Parse Blast XML output and load the results into Homology DB"
     def blast(file)      
       Bio::Ngs::Homology.blast_import file
       puts "Parising completed. All the data are now stored into the db.\n"
@@ -54,7 +54,7 @@ class Homology < Thor
     
     desc "goa","Import GO Annotation file"
     method_option :file, :type => :string, :default => "data/goa_uniprot"
-    def goannotation
+    def goa
       Bio::Ngs::Homology.goa_import options[:file]
       puts "Import completed.\n"
     end
@@ -84,10 +84,17 @@ class Homology < Thor
   class Convert < Homology
     
     
-    desc "blast [XML FILE]","Convert Blast output to tab-separated file"
+    desc "blast2text [XML FILE]","Convert Blast output to tab-separated file"
     method_option :file_out, :type => :string, :required => true, :desc => "File name for report"
     def blast(file)
       Bio::Ngs::Homology.blast2text(file,options[:file_out])
+    end
+    
+    desc "go2json", "Convert the GO annotations from the db into a JSON file"
+    method_option :file_out, :type => :string, :default => "data/go_annotations.json", :desc => "File name for JSON"
+    method_option :library, :type => :string, :desc => "Library identifier for the dataset"
+    def go2json
+      Bio::Ngs::Homology.go_annotation_to_json(options[:file_out],options[:library])
     end
     
   end
