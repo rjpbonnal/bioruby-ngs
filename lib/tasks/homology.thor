@@ -92,7 +92,6 @@ class Homology < Thor
     
     desc "go2json", "Convert the GO annotations from the db into a JSON file"
     method_option :file_out, :type => :string, :default => "data/go_annotations.json", :desc => "File name for JSON"
-    method_option :library, :type => :string, :desc => "Library identifier for the dataset"
     def go2json
       Bio::Ngs::Homology.go_annotation_to_json(options[:file_out],options[:library])
     end
