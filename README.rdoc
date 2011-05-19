@@ -24,6 +24,7 @@ NOTE: We are working on these and other tasks, if you find some bugs, please ope
 
 === convert
 Most of this tasks create sub-processes to speed up conversions
+
 * biongs convert:bam:extract_genes BAM GENES --ensembl-release=N  # Extract GENES from bam. It connects to Ensembl Humnan, release 61
 * biongs convert:bam:sort BAM [PREFIX]
 * biongs convert:bcl:qseq:convert RUN OUTPUT [JOBS]              # Convert a bcl dataset in qseq
@@ -35,9 +36,15 @@ Most of this tasks create sub-processes to speed up conversions
 
 === quality
 
+* biongs quality:boxplot FASTQ_QUALITY_STATS                   # plot reads quality as boxplot
+* biongs quality:fastq_stats FASTQ                             # Reports quality of FASTQ file
 * biongs quality:illumina_b_profile_raw FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+ and write the report in a txt file
 * biongs quality:illumina_b_profile_svg FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+
 * biongs quality:reads FASTQ                                   # perform quality check for NGS reads
+* biongs quality:reads_coverage FASTQ_QUALITY_STATS            # plot reads coverage in bases
+* biongs quality:trim FASTQ                                    # trim all the sequences
+
+
 
 === rna
 
@@ -116,6 +123,18 @@ With our new wrapper, let's define a Thor task on the fly
 
 Now is you list the tasks with 'thor -T' you will see the new task.
 
+You can create a new wrapper and configure it and run it from inside a Thor's tasks, like in 'biongs quality:boxplot'
+
+    desc "boxplot FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
+    method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
+    method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
+    def boxplot(fastq_quality_stats)
+      output_file = options.output || "#{fastq_quality_stats}.png"
+      boxplot = Bio::Ngs::Fastx::ReadsBoxPlot.new
+      boxplot.params={input:fastq_quality_stats, output:output_file}
+      boxplot.run
+    end
+
 === Override the run command when the binary dosen't behave normally
     module Bio
       module Ngs    
@@ -140,6 +159,12 @@ Now is you list the tasks with 'thor -T' you will see the new task.
 === Notes
 * It's possible to add more sugar and we are working hard on it
 * aliases are not well supported at this time. ToDo
+
+= REQUIREMENTS
+* http://hannonlab.cshl.edu/fastx_toolkit/
+* http://www.gnuplot.info/
+
+Pleas follow the instruction for your own distribution/operating system
 
 = TODO
 * Report the version of every software installed/used from bio-ngs 
