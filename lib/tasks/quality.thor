@@ -19,6 +19,64 @@ class Quality < Thor
     Bio::Ngs::Graphics.draw_area(qual,options[:width],options[:height],options[:fileout])
   end
 
+  desc "trim FASTQ", "trim all the sequences"
+  #TODO: create a wrapper
+  method_option :min_size, :type=>:numeric, :default=>20, :aliases => "-l", :desc=>"Minimum length - sequences shorter than this (after trimming)
+                    will be discarded. Default = 0 = no minimum length."
+  method_option :min_quality, :type=>:numeric, :default=>10, :aliases => "-t", :desc=>"Quality threshold - nucleotides with lower 
+                                      quality will be trimmed (from the end of the sequence)."
+  method_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name"
+  def trim(fastq)
+    output_file = options.output || fastq.gsub(/(.*)_(forward|reverse)(.*)/,'\1_trim_\2\3')
+    if output_file==fastq
+      output_file+="_trim"
+    end
+    
+    #TODO check the file in input exists
+    trim = Bio::Ngs::Fastx::Trim.new
+    trim.params={min_size:options.min_size, min_quality:options.min_quality, input:fastq, output:output_file}
+    trim.run
+    invoke :fastq_stats, [output_file]
+  end
+  
+  
+  desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
+  method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
+  def fastq_stats(fastq)
+    output_file = options.output || "#{fastq}.txt"
+    stats = Bio::Ngs::Fastx::FastqStats.new
+    stats.parmas = {input:fastq_quality_stats, output:output_file}
+    stats.run
+#DEPRECATED    system "fastx_quality_stats -i #{fastq} -o #{output_file}"
+    invoke :boxplot, [output_file]
+    invoke :reads_coverage, [output_file]
+  end
+  
+  desc "boxplot FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
+  method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
+  method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
+  def boxplot(fastq_quality_stats)
+    output_file = options.output || "#{fastq_quality_stats}.png"
+    boxplot = Bio::Ngs::Fastx::ReadsBoxPlot.new
+    boxplot.params={input:fastq_quality_stats, output:output_file}
+    boxplot.run
+#DEPRECATED    system "fastq_quality_boxplot_graph.sh -i #{fastq_quality_stats} -o #{output_file}"
+
+  end
+  
+  desc "reads_coverage FASTQ_QUALITY_STATS", "plot reads coverage in bases"
+  method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
+  method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
+  def reads_coverage(fastq_quality_stats)
+    #TODO: port this script to biongs now is only on my server
+    output_file = options.output || "#{fastq_quality_stats}_coverage.png"
+#DEPRECATED    system "fastq_coverage_graph.sh -i #{fastq_quality_stats} -o #{output_file}"
+    coverage = Bio::Ngs::Fastx::ReadsCoverage.new
+    coverage.params={input:fastq_quality_stats, output:output_file}
+    coverage.run
+  end
+  
+
   desc "illumina_b_profile_raw FASTQ", "perform a profile for reads coming fom Illumina 1.5+ and write the report in a txt file"
   method_option :read_length, :type => :numeric, :required => true
   method_option :width, :type => :numeric, :default => 500
