@@ -2,7 +2,7 @@
 #   samtools.rb - description
 #
 # Copyright:: Copyright (C) 2011
-#     Raoul Bonnal <@bioruby.org>
+#     Raoul Bonnal <r@bioruby.org>
 # License:: The Ruby License
 #
 #
