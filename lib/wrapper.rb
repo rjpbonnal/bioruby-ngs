@@ -27,6 +27,8 @@ module Bio
       end
 
       def options=(option={})
+        #convert all keys symbols in strings
+        option = option.inject({}){|h,item| h[item[0].to_s]=item[1]; h}
         @options.merge!(option)
       end
 
@@ -79,7 +81,7 @@ module Bio
       # TODO: make a test because it should not return an empty string.
       # TODO: refactor is not beauty
       def normalize_params(separator="=")
-        use_aliases?
+        #use_aliases?
         args=params.to_a.map do |option|
           option_name = option[0]
           option_values = option[1]
@@ -90,11 +92,10 @@ module Bio
             if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
               "--#{option_name}"
             else
-              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values}" : "--#{option_name}#{separator}#{option_values}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values[:default]}" : "--#{option_name}#{separator}#{option_values[:default]}"
             end
             #deprecated up to here
           else #is a value of the main hash. (mostly a parameter)
-
             if option_values == true
               use_aliases? && options[option_name].has_key?(:aliases) ? options[option_name][:aliases] : "--#{option_name}"
             elsif option_values != false
