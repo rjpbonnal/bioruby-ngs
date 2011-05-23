@@ -16,7 +16,7 @@ class Quality < Thor
   def reads(fastq)
     reads = Bio::Ngs::FastQuality.new(fastq)
     qual = reads.quality_profile
-    Bio::Ngs::Graphics.draw_area(qual,options[:width],options[:height],options[:fileout])
+    Bio::Ngs::Graphics.draw_area(qual,options[:width],options[:height],options[:fileout],"Nucleotide","Quality Score")
   end
 
   desc "trim FASTQ", "trim all the sequences"

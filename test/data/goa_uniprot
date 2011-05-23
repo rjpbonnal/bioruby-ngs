@@ -1,0 +1,27 @@
+UniProtKB	Q5TM25	AIF1	colocalizes_with	GO:0032587	GO_REF:0000024	ISS	UniProtKB:P55008	C	Allograft inflammatory factor 1	AIF1_MACMU|AIF1	protein	taxon:9544	20090922	UniProtKB		
+UniProtKB	Q5TM59	GNL1		GO:0005525	GO_REF:0000033	ISS	PANTHER:PTHR11089_AN0	F	Guanine nucleotide-binding protein-like 1	GNL1_MACMU|GNL1	protein	taxon:9544	20110218	RefGenome		
+UniProtKB	Q5TM61	PPP1R10		GO:0000785	GO_REF:0000024	ISS	UniProtKB:Q80W00	C	Serine/threonine-protein phosphatase 1 regulatory subunit 10	PP1RA_MACMU|PPP1R10|CAT53	protein	taxon:9544	20101116	UniProtKB		
+UniProtKB	Q5TM61	PPP1R10		GO:0072357	GO_REF:0000024	ISS	UniProtKB:Q80W00	C	Serine/threonine-protein phosphatase 1 regulatory subunit 10	PP1RA_MACMU|PPP1R10|CAT53	protein	taxon:9544	20101118	UniProtKB		
+UniProtKB	Q5TM67	NRM		GO:0005635	GO_REF:0000024	ISS	UniProtKB:Q8IXM6	C	Nurim	NRM_MACMU|NRM	protein	taxon:9544	20070914	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0004342	GO_REF:0000024	ISS	UniProtKB:P46926	F	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0005737	GO_REF:0000024	ISS	UniProtKB:O88958	C	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0006043	GO_REF:0000024	ISS	UniProtKB:P46926	P	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TNH5	Gnpda1		GO:0006091	GO_REF:0000024	ISS	UniProtKB:P46926	P	Glucosamine-6-phosphate isomerase	GNPI_ANOGA|Gnpda1|AGAP009305	protein	taxon:7165	20080312	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289		GO:0005829	GO_REF:0000024	ISS	UniProtKB:O96033	C	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289		GO:0006777	GO_REF:0000024	ISS	UniProtKB:O96033	P	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TT27	AGAP004289	contributes_to	GO:0030366	GO_REF:0000024	ISS	UniProtKB:O96033	F	Molybdopterin synthase sulfur carrier subunit	MOC2A_ANOGA|AGAP004289	protein	taxon:7165	20090529	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0003674	GO_REF:0000015	ND		F	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0005575	GO_REF:0000015	ND		C	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TTP0	WDY		GO:0008150	GO_REF:0000015	ND		P	WD repeat-containing protein on Y chromosome	WDY_ANOGA|WDY|AGAP002309	protein	taxon:7165	20090508	UniProtKB		
+UniProtKB	Q5TU55	p		GO:0006622	GO_REF:0000024	ISS	UniProtKB:Q9VHN9	P	Hermansky-Pudlak syndrome 5 protein homolog	HPS5_ANOGA|p	protein	taxon:7165	20070824	UniProtKB		
+UniProtKB	Q5TU55	p		GO:0006726	GO_REF:0000024	ISS	UniProtKB:Q9VHN9	P	Hermansky-Pudlak syndrome 5 protein homolog	HPS5_ANOGA|p	protein	taxon:7165	20070824	UniProtKB		
+UniProtKB	Q5TUF1	Ars2		GO:0005654	GO_REF:0000024	ISS	UniProtKB:Q99MR6	C	Serrate RNA effector molecule homolog	SRRT_ANOGA|AGAP010382|Ars2	protein	taxon:7165	20090811	UniProtKB		
+UniProtKB	Q5TUF1	Ars2		GO:0031053	GO_REF:0000024	ISS	UniProtKB:Q99MR6	P	Serrate RNA effector molecule homolog	SRRT_ANOGA|AGAP010382|Ars2	protein	taxon:7165	20090811	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0003674	GO_REF:0000015	ND		F	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0005615	PMID:18353100	IDA		C	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5TWR9	Def3		GO:0042742	PMID:18353100	IMP		P	Antimicrobial peptide defensin 3	DEF3_ANOGA|AGAP007199|Def3|Q2KM07	protein	taxon:7165	20100201	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0003674	GO_REF:0000015	ND		F	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0005515	PMID:15855230	IPI	UniProtKB:O93309	F	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20110307	IntAct		
+UniProtKB	Q5U241	pds5b-b		GO:0005634	GO_REF:0000024	ISS	UniProtKB:Q6TRW4	C	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0007064	GO_REF:0000024	ISS	UniProtKB:Q498H0	P	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		
+UniProtKB	Q5U241	pds5b-b		GO:0008285	GO_REF:0000024	ISS	UniProtKB:Q6TRW4	P	Sister chromatid cohesion protein PDS5 homolog B-B	PD5BB_XENLA|pds5b-b|aprin-b	protein	taxon:8355	20070417	UniProtKB		

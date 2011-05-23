@@ -13,7 +13,7 @@ module Bio
   module Ngs
     class Graphics
       
-        def self.draw_area(data,width,height,out=nil,title_label="", x_label="", y_label="",x_padding=15, n_ticks=10)
+        def self.draw_area(data,width,height,out=nil,xlabel,ylabel)
           point = 0
           max = data.max + 10
           data = data.map do |d|
@@ -77,10 +77,10 @@ module Bio
             font("20px sans-serif").
             text(title_label)
           
-          panel.anchor('bottom').add(Rubyvis::Label).text(x_label)
+          panel.anchor('bottom').add(Rubyvis::Label).text(xlabel)
           panel.anchor('left').add(Rubyvis::Label).
             text_angle(1.5*Math::PI).
-            text(y_label)
+            text(ylabel)
           
           
           vis.render();
@@ -91,6 +91,97 @@ module Bio
             puts vis.to_svg
           end
 
+      end
+      
+      def self.bubble_chart(fileout,dataset = {}, panel_w = 600, panel_h = 800)
+        colors=Rubyvis::Colors.category10()
+        c=Rubyvis::Colors.category10().by(lambda {|n| n.parent_node})
+
+        vis = Rubyvis::Panel.new
+        .width(panel_w-10)
+        .height(panel_h-10)
+        .bottom(5)
+        .left(5)
+        .right(5)
+        .top(5)
+
+        root=Rubyvis::Dom::Node.new
+        dataset.each_pair do |name,value|
+          child = Rubyvis::Dom::Node.new(value)
+          child.node_name = name
+          root.append_child(child)
+        end
+        root = root.nodes()
+
+        pack=vis.add(pv.Layout.Pack).
+        nodes(root).
+        size(lambda {|n| n.node_value})
+
+        pack.node.add(Rubyvis::Dot).
+        visible( lambda {|n| n.parent_node}).
+        fill_style(lambda {|n|
+          colors.scale(n.parent_node).
+          brighter((n.node_value) / 5.0)
+          }).
+          stroke_style(c)
+
+          pack.node_label.add(Rubyvis::Label).
+          visible( lambda {|n| n.parent_node}).
+          text(lambda {|n| n.node_name})
+        vis.render()
+        File.open(fileout,"w") {|f| f.write vis.to_svg+"\n"}
+      end
+  
+  
+      def self.bar_charts(labels, data, fileout, width = 500, height = 300)
+        
+        x = pv.Scale.linear(0, data.max).range(0, width)
+        y = pv.Scale.ordinal(pv.range(data.size)).split_banded(0, height, 4/5.0)
+
+        #/* The root panel. */
+        vis = pv.Panel.new()
+            .width(width)
+            .height(height)
+            .bottom(20)
+            .left(100)
+            .right(10)
+            .top(5);
+
+        #/* The bars. */
+        bar = vis.add(pv.Bar)
+            .data(data)
+            .top(lambda {y.scale(self.index)})
+            .height(y.range_band)
+            .left(0)
+            .width(x)
+
+        #/* The value label. */
+        bar.anchor("right").add(pv.Label)
+            .text_style("white")
+            .text(lambda {|d| "%0.1f" % d})
+
+        #/* The variable label. */
+        bar.anchor("left").add(pv.Label)
+            .text_margin(5)
+            .text_align("right")
+            .text(lambda { labels[self.index]});
+
+        #/* X-axis ticks. */
+        vis.add(pv.Rule)
+            .data(x.ticks(5))
+            .left(x)
+            .stroke_style(lambda {|d|  d!=0 ? "rgba(255,255,255,.3)" : "#000"})
+          .add(pv.Rule)
+            .bottom(0)
+            .height(5)
+            .stroke_style("#000")
+          .anchor("bottom").add(pv.Label).text(x.tick_format)
+        
+        # X-axis Labels
+        vis.anchor("top").add(Rubyvis::Label).text("Number of sequences")
+        
+        vis.render();
+        File.open(fileout,"w") {|out| out.write vis.to_svg+"\n"}
       end
   
     end

@@ -9,8 +9,6 @@
 
 
 class Bwa < Thor
-
-  require 'bio-bwa'
   
   class Index < Bwa
 	  

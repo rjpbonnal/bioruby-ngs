@@ -55,7 +55,45 @@ module Bio
         ENV["PATH"]+=":"+common_dir+":"+os_dir + sub_dirs
       end #extend_system_path
         
+      def self.download_with_progress(opts = {:url => nil, :mode => "", :filename => nil})
+        require "open-uri"
+        require "progressbar"
+        puts "Downloading from #{opts[:url]}"
+        filename = (opts[:filename]) ? opts[:filename] : opts[:url].split('/')[-1]
+        mode = (opts[:mode]) ? opts[:mode] : ""
+        pbar = nil
+        open(opts[:url],"r"+mode,
+            :content_length_proc => lambda {|t|
+               if t && 0 < t
+                 pbar = ProgressBar.new('', t)
+                 pbar.file_transfer_mode
+               end
+             },
+             :progress_proc => lambda {|s|
+               pbar.set s if pbar
+             }) do |remote|
+                open(filename,"w"+mode) {|file| file.write remote.read(16384) until remote.eof?}
+             end
+        puts "\nDone"     
+      end
       
+      def self.uncompress_gz_file(file_in)
+        require 'zlib'
+        puts "Uncompressing file #{file_in}"
+        file_out = file_in.gsub(/.gz/,"") 
+        Zlib::GzipReader.open(file_in) {|gz|
+            open(file_out,"w") do |file|
+              file.write gz.read
+            end
+          }
+        puts "Done\n"          
+      end
+      
+      
+      def self.download_and_uncompress(url,fileout)
+        self.download_with_progress(:url => url,:mode => "b",:filename => fileout)
+        self.uncompress_gz_file(fileout)
+      end        
     end # end Utils
   end # end NGS
 end # end Bio

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE BlastOutput PUBLIC "-//NCBI//NCBI BlastOutput/EN" "http://www.ncbi.nlm.nih.gov/dtd/NCBI_BlastOutput.dtd">
+<BlastOutput>
+  <BlastOutput_program>blastx</BlastOutput_program>
+  <BlastOutput_version>blastx 2.2.19 [Nov-02-2008]</BlastOutput_version>
+  <BlastOutput_reference>~Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, ~Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), ~&quot;Gapped BLAST and PSI-BLAST: a new generation of protein database search~programs&quot;,  Nucleic Acids Res. 25:3389-3402.</BlastOutput_reference>
+  <BlastOutput_db>uniprot_sprot</BlastOutput_db>
+  <BlastOutput_query-ID>lcl|1_0</BlastOutput_query-ID>
+  <BlastOutput_query-def>ENSBTAG00000025113_499_35</BlastOutput_query-def>
+  <BlastOutput_query-len>1221</BlastOutput_query-len>
+  <BlastOutput_param>
+    <Parameters>
+      <Parameters_matrix>BLOSUM62</Parameters_matrix>
+      <Parameters_expect>10</Parameters_expect>
+      <Parameters_gap-open>11</Parameters_gap-open>
+      <Parameters_gap-extend>1</Parameters_gap-extend>
+      <Parameters_filter>F</Parameters_filter>
+    </Parameters>
+  </BlastOutput_param>
+  <BlastOutput_iterations>
+    <Iteration>
+      <Iteration_iter-num>239</Iteration_iter-num>
+      <Iteration_query-ID>lcl|239_0</Iteration_query-ID>
+      <Iteration_query-def>ENSBTAG00000031386_1906_35</Iteration_query-def>
+      <Iteration_query-len>2107</Iteration_query-len>
+      <Iteration_hits>
+        <Hit>
+          <Hit_num>1</Hit_num>
+          <Hit_id>sp|Q5TTP0|WDY_ANOGA</Hit_id>
+          <Hit_def>WD repeat-containing protein on Y chromosome OS=Anopheles gambiae GN=WDY PE=4 SV=4</Hit_def>
+          <Hit_accession>Q5TTP0</Hit_accession>
+          <Hit_len>1059</Hit_len>
+          <Hit_hsps>
+            <Hsp>
+              <Hsp_num>1</Hsp_num>
+              <Hsp_bit-score>224.172</Hsp_bit-score>
+              <Hsp_score>570</Hsp_score>
+              <Hsp_evalue>2.55108e-57</Hsp_evalue>
+              <Hsp_query-from>1</Hsp_query-from>
+              <Hsp_query-to>1641</Hsp_query-to>
+              <Hsp_hit-from>347</Hsp_hit-from>
+              <Hsp_hit-to>897</Hsp_hit-to>
+              <Hsp_query-frame>1</Hsp_query-frame>
+              <Hsp_identity>167</Hsp_identity>
+              <Hsp_positive>271</Hsp_positive>
+              <Hsp_gaps>19</Hsp_gaps>
+              <Hsp_align-len>566</Hsp_align-len>
+              <Hsp_qseq>KGILCFDYCPDRNVLVTGGYDPLIRLWNPFFSRKPVWMMKGHQTSVTHIVVNSKDSSILLSVSKDKNIRVWDMQDYQCLQSFCGFSEV-IKGTWICALGLKWGHGFGIGILKGYLETQGPGRAEEKTT--TYSTPLCAVLYSKVFKQVVSGCLSGMVSVWEVVTGRRLMEFSVTGDQ-------QVELTAMSLDESEGCLLTGLRDGTVKMWNYSVGECLLTFPKADQLEISGIVHMNKVFYTTGWSKRIT-YYTFHKIKPVLLCHHWQTFHTEDVLSMAKYQNQ--FIATSSYNGDILFWNVGTFRPTQRALASDPQPRRPLSPVRGLRDQLKGKKQTSRRSCCCSPMHR--WRRLAMFSQPSGC-HIEVLTFFLIIFLQTRPRLPHSAALLSSCMDGYIYAWSIHGSGGLLGKFPXXXXXXXXXXXXAMATDQNDWILVTGDCKGCIKIWDIKD-YCAHSDK-QTNHPSEINKFRFLISERIQVSLPNYSPPEEKKVEAGQTISLIPPQLLISWKAHLDSVADILYVDSLQLVISAGQDRDVKAWKLSGDAIGTFGLSV-WKRL</Hsp_qseq>
+              <Hsp_hseq>RGVTCFAFEPSNELLVSGGPDCDLRLWDIHRPEKPSVVLVGHTSSITFLFLQDAGEKIY-SLDQRKIIKVWDVRNRVLLQTFGQFSTVLVKGVPACAYYNKRARELVVASNKLFVTACCPEIALDRTDGESHTKPVSVLLYNGLYRLVVSCGFDSFIIVWDHRVNRKMTIITEAHTQIRNGVLEPVEITAACFDGKEQMLLTGARNGSLKIWNIGGRTCMRTIQIEEDCEVTGVFWQANRILAMGWNHRVVEFAAFAEQDEYPRGLQWRKQHSDDILCAAVSGSEPGVMATCSYAGELVFWMLETGQPYRRYDATNPRTRLPISFREGRADLMKPRKLTPRRSLFQMPPGQLAHRRLTRILMPSGLEQMRQLSIQALLFLAMRKMLPDRGTLFGSLDNGMVQVWSHHPDGGFKGQF--NGIHMAGDRIITLATDKANRFLFTGTALGYVKTWYIENCWIPNEDKFHVNKPALRILFPFLLNDVV--------PGRAKRSARAQ----VKPWLLNSYQAHRACVTGLTYLDDTGLLLSCSSDRTVRLWTLGGRYIGLLGSPVNWQPL</Hsp_hseq>
+              <Hsp_midline>+G+ CF + P   +LV+GG D  +RLW+     KP  ++ GH +S+T + +      I  S+ + K I+VWD+++   LQ+F  FS V +KG   CA   K      +   K ++    P  A ++T   +++ P+  +LY+ +++ VVS      + VW+    R++   +    Q        VE+TA   D  E  LLTG R+G++K+WN     C+ T    +  E++G+          GW+ R+  +  F +         W+  H++D+L  A   ++   +AT SY G+++FW + T +P +R  A++P+ R P+S   G  D +K +K T RRS    P  +   RRL     PSG   +  L+   ++FL  R  LP    L  S  +G +  WS H  GG  G+F              +ATD+ +  L TG   G +K W I++ +  + DK   N P+    F FL+++ +        P   K+    Q    + P LL S++AH   V  + Y+D   L++S   DR V+ W L G  IG  G  V W+ L</Hsp_midline>
+            </Hsp>
+          </Hit_hsps>
+        </Hit>
+      </Iteration_hits>
+      <Iteration_stat>
+        <Statistics>
+          <Statistics_db-num>525997</Statistics_db-num>
+          <Statistics_db-len>185874894</Statistics_db-len>
+          <Statistics_hsp-len>0</Statistics_hsp-len>
+          <Statistics_eff-space>0</Statistics_eff-space>
+          <Statistics_kappa>0.041</Statistics_kappa>
+          <Statistics_lambda>0.267</Statistics_lambda>
+          <Statistics_entropy>0.14</Statistics_entropy>
+        </Statistics>
+      </Iteration_stat>
+    </Iteration>
+ </BlastOutput_iterations>
+</BlastOutput>
+
