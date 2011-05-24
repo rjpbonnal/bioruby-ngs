@@ -50,7 +50,6 @@ class Quality < Thor
     stats = Bio::Ngs::Fastx::FastqStats.new
     stats.parmas = {input:fastq_quality_stats, output:output_file}
     stats.run
-#DEPRECATED    system "fastx_quality_stats -i #{fastq} -o #{output_file}"
     invoke :boxplot, [output_file]
     invoke :reads_coverage, [output_file]
   end
@@ -63,8 +62,6 @@ class Quality < Thor
     boxplot = Bio::Ngs::Fastx::ReadsBoxPlot.new
     boxplot.params={input:fastq_quality_stats, output:output_file}
     boxplot.run
-#DEPRECATED    system "fastq_quality_boxplot_graph.sh -i #{fastq_quality_stats} -o #{output_file}"
-
   end
   
   desc "reads_coverage FASTQ_QUALITY_STATS", "plot reads coverage in bases"
@@ -73,7 +70,6 @@ class Quality < Thor
   def reads_coverage(fastq_quality_stats)
     #TODO: port this script to biongs now is only on my server
     output_file = options.output || "#{fastq_quality_stats}_coverage.png"
-#DEPRECATED    system "fastq_coverage_graph.sh -i #{fastq_quality_stats} -o #{output_file}"
     coverage = Bio::Ngs::Fastx::ReadsCoverage.new
     coverage.params={input:fastq_quality_stats, output:output_file}
     coverage.run
