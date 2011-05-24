@@ -31,7 +31,10 @@ class Quality < Thor
     if output_file==fastq
       output_file+="_trim"
     end
-    
+    raise "Input file #{fastq} dosen't exist." unless File.exists?(fastq)
+    unless File.exists?("#{fastq}.txt") #suppose there is a stat file for the input file
+      invoke :fastq_stats, [fastq]
+    end
     #TODO check the file in input exists
     trim = Bio::Ngs::Fastx::Trim.new
     trim.params={min_size:options.min_size, min_quality:options.min_quality, input:fastq, output:output_file}
