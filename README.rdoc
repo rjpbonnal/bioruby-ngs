@@ -170,14 +170,19 @@ Pleas follow the instruction for your own distribution/operating system
 * Report the version of every software installed/used from bio-ngs 
 * Develop fastq quality reports with RibuVis ?
 * Write documentation
-* Wrapper: better support for aliases and Wrapper#params
+* DONE: Wrapper: better support for aliases and Wrapper#params
 * Convert: re factor code to use ::Daemons
-* Extract genes/regions of interest from a bam file and create a smaller bam
-* Explore possibility to user DelayedJobs
+* DONE:misk_tasks? Extract genes/regions of interest from a bam file and create a smaller bam
+* BRANCH:misk_tasks Explore possibility to user DelayedJobs
 * biongs ann:ensembl:gtf:features:categorize GTF GTF categorize also by chromosome not only by BioType
 * configuration file input,output, experimental design
+* include fastx toolkit, download and compile
+* how to put in background tasks that can be run in parallel
+* is it possible to establish a relation between input data and output data ? like fastq task_selected output/s
+* 
  
 = ChangeLog
+ * 2011-05-25: Bump to version 0.1.0. Update Cufflinks toolkit 1.0.2. Added initial support to fastx tool kit (binaries not included)
  * 2011-04-08: Tasks for filtering Ensembl annotation and create classifications. (misk_tasks branch)
 
 
