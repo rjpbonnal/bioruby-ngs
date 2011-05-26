@@ -161,7 +161,7 @@ You can create a new wrapper and configure it and run it from inside a Thor's ta
 * aliases are not well supported at this time. ToDo
 
 = REQUIREMENTS
-* http://hannonlab.cshl.edu/fastx_toolkit/
+* http://hannonlab.cshl.edu/fastx_toolkit/ (the gem tries to install this tool by itself)
 * http://www.gnuplot.info/
 
 Pleas follow the instruction for your own distribution/operating system
@@ -179,10 +179,11 @@ Pleas follow the instruction for your own distribution/operating system
 * include fastx toolkit, download and compile
 * how to put in background tasks that can be run in parallel
 * is it possible to establish a relation between input data and output data ? like fastq task_selected output/s
-* 
+* add description for developers on howto include news external tool with versions.yaml
  
 = ChangeLog
- * 2011-05-25: Bump to version 0.1.0. Update Cufflinks toolkit 1.0.2. Added initial support to fastx tool kit (binaries not included)
+ * 2011.05-26: Bump to version 0.2.0 Complete support for installing fastx and possibly other downloadable tool, inside the gem 
+ * 2011-05-25: Bump to version 0.1.0 Update Cufflinks toolkit 1.0.2. Added initial support to fastx tool kit (binaries not included)
  * 2011-04-08: Tasks for filtering Ensembl annotation and create classifications. (misk_tasks branch)
 
 
