@@ -1,3 +1,10 @@
+libgtextutils:
+    version:  0.6
+    url:      http://hannonlab.cshl.edu/fastx_toolkit/
+    basename: libgtextutils-
+    suffix:   tar.bz2
+    desc:     ""
+    
 fastx:
     version:  0.0.13
     url:      http://hannonlab.cshl.edu/fastx_toolkit/
