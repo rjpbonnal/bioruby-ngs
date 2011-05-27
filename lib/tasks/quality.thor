@@ -113,5 +113,30 @@ class Quality < Thor
     end
 
     Bio::Ngs::Graphics.draw_area(profile,options[:width],options[:height],options[:fileout], "B distribution", "Nucleotides", "Counts", n_ticks=30)
-  end
+  end  
+
+  desc "scatterplot EXPR1 EXPR2 OUTPUT", "plot quantification values as scatterplot in png format"
+  method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title plotted on the graph."
+  def scatterplot (expr1, expr2, output)
+                                                                                                  
+    [expr1, expr2].each do |file_name|                                                            #controllo sul file!
+      unless File.exists?(file_name)
+             raise "Input file #{file_name} doesn't exist, please insert a valid file name."
+      end
+    end
+    
+    system "sort #{expr1} > tmp_1"      #con system richiami la shell
+    system "sort #{expr2} > tmp_2"
+    File.open("tmp_gnuplot",'w') do |f|
+      f.puts "set title '#{options.title || "Scatter plot NGS"}'"
+      f.puts "set terminal png"
+      f.puts "set output '#{output}.png'"
+      f.puts "plot '< join tmp_1 tmp_2 | head -n -1' using 6:14"
+    end                                           
+    puts "gnuplot tmp_gnuplot"
+    system "cat tmp_gnuplot"
+    system "rm tmp_1 tmp_2 tmp_gnuplot"    
+  end 
 end
+
+
