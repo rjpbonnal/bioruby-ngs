@@ -1,0 +1,14 @@
+libgtextutils:
+    version:  0.6
+    url:      http://hannonlab.cshl.edu/fastx_toolkit/
+    basename: libgtextutils-
+    suffix:   tar.bz2
+    desc:     ""
+    
+fastx:
+    version:  0.0.13
+    url:      http://hannonlab.cshl.edu/fastx_toolkit/
+    basename: fastx_toolkit-
+    suffix:   tar.bz2
+    desc:     "Fastx-toolkit version 0.0.13 requires libgtextutils-0.6 (available here for download). A recent g++ compiler (tested with GNU G++ 4.1.2 and later). The fasta_clipping_histogram tool requires two perl modules: PerlIO::gzip and GD::Graph::bars. The fastx_barcode_splitter tool requires GNU sed. The fastq_quality_boxplot tool requires gnuplot version 4.2 or newer."
+    

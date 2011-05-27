@@ -11,18 +11,32 @@
 module Bio
   module Ngs
     class Utils
+      class BinaryNotFound < StandardError
+        def initialize(opts={})
+          @skip_task = opts[:skip_task]
+        end
+        
+        def skip_task?
+          @skip_task
+        end
+      end
       
       def self.binary(name)
         path = File.expand_path(File.dirname(__FILE__))
-        if File.exists?(plugin_binary = File.join(path,"ext","bin","common",name))
-          return plugin_binary
-        elsif File.exists?(plugin_os_binary = File.join(path,"ext","bin",self.os_type,name))
-          return plugin_os_binary
-        elsif (os_binary = Bio::Command.query_command ["which", name]) != ""
-          return os_binary.tr("\n","")
-        else
-          raise ArgumentError, "No binary found with this name: #{name}"
-        end  
+        begin
+          if File.exists?(plugin_binary = File.join(path,"ext","bin","common",name))
+            return plugin_binary
+          elsif File.exists?(plugin_os_binary = File.join(path,"ext","bin",self.os_type,name))
+            return plugin_os_binary
+          elsif (os_binary = Bio::Command.query_command ["which", name]) != ""
+            return os_binary.tr("\n","")
+          else
+            raise BinaryNotFound.new(:skip_task=>true), "No binary found with this name: #{name}"
+          end
+          rescue BinaryNotFound => e
+            warn e.message
+          end
+              
       end
       
       def self.os_type
