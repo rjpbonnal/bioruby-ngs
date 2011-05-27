@@ -19,7 +19,7 @@ class Rna < Thor
   end
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
-  Bio::Ngs::Cufflinks.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
+  Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
     wrapper.params = task.options
     wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF" => gtf }
     wrapper.run :arguments=>[bam], :separator => "="
