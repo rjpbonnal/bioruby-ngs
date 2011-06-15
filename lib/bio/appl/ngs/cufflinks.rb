@@ -88,7 +88,7 @@ module Bio
         add_option "max-bundle-length", :type => :numeric#, :default => 3500000
         add_option "min-intron-length", :type => :numeric#, :default => 50
       end #Quantification  
-      
+
       # cuffdiff v1.0.2 (2336)
       # -----------------------------
       # Usage:   cuffdiff [options] <transcripts.gtf> <sample1_hits.sam> <sample2_hits.sam> [... sampleN_hits.sam]
@@ -131,13 +131,13 @@ module Bio
         include Bio::Command::Wrapper
 
         set_program Bio::Ngs::Utils.binary("cufflinks/cuffdiff")
-        
+
         add_option "output-dir", :type => :string, :aliases => '-o', :default => "./"
         add_option "time-series", :type => :boolean, :aliases => '-T'
         add_option "min-alignment-count", :type => :numeric, :aliases => '-c'
         add_option "FDR", :type => :numeric, :aliases => '-F'
-#TODO:FIX        add_option "mask-file", :type => :string, :aliases => '-M'
-#TODO:FIX        add_option "frag-bias-correct", :type => 
+        #TODO:FIX        add_option "mask-file", :type => :string, :aliases => '-M'
+        #TODO:FIX        add_option "frag-bias-correct", :type => 
         add_option "multi-read-correct", :type => :boolean, :aliases => '-u'
         add_option "upper-quartile-norm", :type => :boolean, :aliases => 'N'
         add_option "labels", :type => :array, :aliases => '-L'
@@ -154,8 +154,68 @@ module Bio
         add_option "quiet", :type => :boolean, :aliases => '-q'
         add_option "no-update-check", :type => :boolean, :aliases => '-j'
         add_option "emit-count-tables", :type => :boolean, :aliases => '-b'
-        
+
       end #Diff
+
+
+      # cuffcompare v1.0.2 (2335)
+      # -----------------------------
+      # Usage:
+      # cuffcompare [-r <reference_mrna.gtf>] [-R] [-T] [-V] [-s <seq_path>] 
+      #     [-o <outprefix>] [-p <cprefix>] 
+      #     {-i <input_gtf_list> | <input1.gtf> [<input2.gtf> .. <inputN.gtf>]}
+      # 
+      #  Cuffcompare provides classification, reference annotation mapping and various
+      #  statistics for Cufflinks transfrags.
+      #  Cuffcompare clusters and tracks transfrags across multiple samples, writing
+      #  matching transcripts (intron chains) into <outprefix>.tracking, and a GTF
+      #  file <outprefix>.combined.gtf containing a nonredundant set of transcripts 
+      #  across all input files (with a single representative transfrag chosen
+      #  for each clique of matching transfrags across samples).
+      # 
+      # Options:
+      # -i provide a text file with a list of Cufflinks GTF files to process instead
+      #    of expecting them as command line arguments (useful when a large number
+      #    of GTF files should be processed)
+      # 
+      # -r  a set of known mRNAs to use as a reference for assessing 
+      #     the accuracy of mRNAs or gene models given in <input.gtf>
+      # 
+      # -R  for -r option, reduce the set of reference transcripts to 
+      #     only those found to overlap any of the input loci
+      # -M  discard (ignore) single-exon transfrags and reference transcripts
+      # -N  discard (ignore) single-exon reference transcripts
+      # 
+      # -s  <seq_path> can be a multi-fasta file with all the genomic sequences or 
+      #     a directory containing multiple single-fasta files (one file per contig);
+      #     lower case bases will be used to classify input transcripts as repeats
+      # 
+      # -d  max distance (range) for grouping transcript start sites (100)
+      # -p  the name prefix to use for consensus transcripts in the 
+      #     <outprefix>.combined.gtf file (default: 'TCONS')
+      # -C  include the "contained" transcripts in the .combined.gtf file
+      # -G  generic GFF input file(s) (do not assume Cufflinks GTF)
+      # -T  do not generate .tmap and .refmap files for each input file
+      # -V  verbose processing mode (showing all GFF parsing warnings)      
+      class Compare
+        include Bio::Command::Wrapper
+
+        set_program Bio::Ngs::Utils.binary("cufflinks/cuffcompare")
+        use_aliases
+        #TODO: add descriptions
+        add_option "outprefix", :type => :string, :aliases => '-o', :default => "Comparison"
+        add_option "gtf_combine_file", :type => :string, :aliases => '-i'
+        add_option "gtf_reference", :type => :string, :aliases => '-r'
+        add_option "only_overlap", :type => :boolean, :aliases => '-R'
+        add_option "discard_transfrags", :type => :boolean, :aliases => '-M'
+        add_option "discard_ref_transcripts", :type => :boolean, :aliases => '-N'
+        add_option "multi_fasta", :type => :string, :aliases => '-s'
+        add_option "distance_tss", :type => :numeric, :aliases => '-d'
+        add_option "prefix_transcripts_consensus", :type => :string, :aliases => '-p'
+        add_option "contained", :type=>:boolean, :aliases => '-C'
+        add_option "GFF", :type => :boolean, :aliases =>'-G'
+        add_option "no_map_files", :type => :boolean, :aliases =>'-T' 
+      end #Compare
     end #Cufflinks
   end #Ngs
 end #Bio
