@@ -48,7 +48,7 @@ class Quality < Thor
   def fastq_stats(fastq)
     output_file = options.output || "#{fastq}.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
-    stats.parmas = {input:fastq_quality_stats, output:output_file}
+    stats.params = {input:fastq, output:output_file}
     stats.run
     invoke :boxplot, [output_file]
     invoke :reads_coverage, [output_file]
