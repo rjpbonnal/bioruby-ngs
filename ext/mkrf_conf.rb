@@ -52,7 +52,7 @@ task :compile do
     #download common libraries or tools
     #download specific OS binaries or libraries    
     versions[kind_software].each do |tool, info|
-        Bio::Ngs::Utils.compile_source(tool, info, "#{path_external}", "#{path_binary}") if info["type"]=="source"
+        Bio::Ngs::Utils.compile_source(tool, info, "#{path_external}", path_binary) if info["type"]=="source"
     end #versions
   end   
 end #compile

@@ -155,7 +155,7 @@ module Bio
               path_binary_tool = File.join(path_binary,tool_name)
               FileUtils.remove_dir(path_binary_tool) if Dir.exists?(path_binary_tool)
               FileUtils.mkdir(path_binary_tool) 
-              FileUtils.mv Dir.glob("#{uncompressed_tool_dir_name}/*"), path_binary_tool, force:true
+              FileUtils.cp_r "#{uncompressed_tool_dir_name}/.", path_binary_tool
             end #uncompress install binary
           end #eiginclass
 
