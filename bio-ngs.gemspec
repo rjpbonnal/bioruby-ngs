@@ -5,15 +5,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bio-ngs}
-  s.version = "0.0.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = %q{2011-04-06}
+  s.date = %q{2011-07-26}
   s.default_executable = %q{biongs}
   s.description = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.email = %q{francesco.strozzi@gmail.com}
   s.executables = ["biongs"]
+  s.extensions = ["ext/mkrf_conf.rb"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -28,84 +29,29 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/biongs",
     "bio-ngs.gemspec",
+    "ext/mkrf_conf.rb",
     "lib/bio-ngs.rb",
     "lib/bio/appl/ngs/bcl2qseq.rb",
+    "lib/bio/appl/ngs/blast.rb",
     "lib/bio/appl/ngs/bowtie-inspect.rb",
+    "lib/bio/appl/ngs/cufflinks.rb",
+    "lib/bio/appl/ngs/fastx.rb",
+    "lib/bio/appl/ngs/samtools.rb",
     "lib/bio/appl/ngs/sff_extract.rb",
     "lib/bio/appl/ngs/tophat.rb",
     "lib/bio/ngs/converter.rb",
     "lib/bio/ngs/core_ext.rb",
+    "lib/bio/ngs/db.rb",
+    "lib/bio/ngs/db/migrate/homology/201105030707_create_blastout.rb",
+    "lib/bio/ngs/db/migrate/homology/201105030709_create_goannotation.rb",
+    "lib/bio/ngs/db/migrate/ontology/201105030708_create_go.rb",
+    "lib/bio/ngs/db/migrate/ontology/201105030710_create_gene_go.rb",
+    "lib/bio/ngs/db/migrate/ontology/201105030711_create_gene.rb",
+    "lib/bio/ngs/db/models.rb",
+    "lib/bio/ngs/db/models/homology.rb",
+    "lib/bio/ngs/db/models/ontology.rb",
+    "lib/bio/ngs/ext/bin/common/fastq_coverage_graph.sh",
     "lib/bio/ngs/ext/bin/common/sff_extract",
-    "lib/bio/ngs/ext/bin/linux/bowtie/AUTHORS",
-    "lib/bio/ngs/ext/bin/linux/bowtie/COPYING",
-    "lib/bio/ngs/ext/bin/linux/bowtie/MANUAL",
-    "lib/bio/ngs/ext/bin/linux/bowtie/MANUAL.markdown",
-    "lib/bio/ngs/ext/bin/linux/bowtie/NEWS",
-    "lib/bio/ngs/ext/bin/linux/bowtie/TUTORIAL",
-    "lib/bio/ngs/ext/bin/linux/bowtie/VERSION",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie-build",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie-build-debug",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie-debug",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie-inspect",
-    "lib/bio/ngs/ext/bin/linux/bowtie/bowtie-inspect-debug",
-    "lib/bio/ngs/ext/bin/linux/bowtie/genomes/NC_008253.fna",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.1.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.2.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.3.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.4.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.README",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.rev.1.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/indexes/e_coli.rev.2.ebwt",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000.fa",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000.fq",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000.raw",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_10000snp.fa",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_10000snp.fq",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000_1.fa",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000_1.fq",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000_2.fa",
-    "lib/bio/ngs/ext/bin/linux/bowtie/reads/e_coli_1000_2.fq",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/best_verify.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/bs_mapability.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/build_test.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/colorize_fasta.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/colorize_fastq.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/convert_quals.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/fastq_to_tabbed.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/gen_2b_occ_lookup.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/gen_dnamasks2colormask.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/gen_occ_lookup.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/gen_solqual_lookup.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_a_thaliana_tair.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_b_taurus_UMD3.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_c_elegans_ws200.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_canFam2.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_d_melanogaster_fb5_22.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_e_coli.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_galGal3.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_h_sapiens_ncbi36.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_h_sapiens_ncbi37.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_hg18.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_hg19.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_m_musculus_ncbi37.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_mm8.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_mm9.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_rn4.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/make_s_cerevisiae.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/mapability.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/pe_verify.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/random_bowtie_tests.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/random_bowtie_tests.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/random_bowtie_tests_p.sh",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/reconcile_alignments.pl",
-    "lib/bio/ngs/ext/bin/linux/bowtie/scripts/reconcile_alignments_pe.pl",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/AUTHORS",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/LICENSE",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/README",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/cuffcompare",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/cuffdiff",
-    "lib/bio/ngs/ext/bin/linux/cufflinks/cufflinks",
     "lib/bio/ngs/ext/bin/linux/samtools",
     "lib/bio/ngs/ext/bin/linux/sra/IMPORTANT_README",
     "lib/bio/ngs/ext/bin/linux/sra/USAGE",
@@ -152,96 +98,6 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/ext/bin/linux/sra/vdb-dump",
     "lib/bio/ngs/ext/bin/linux/sra/vdb-dump.1",
     "lib/bio/ngs/ext/bin/linux/sra/vdb-dump.1.0.3",
-    "lib/bio/ngs/ext/bin/linux/tophat/AUTHORS",
-    "lib/bio/ngs/ext/bin/linux/tophat/COPYING",
-    "lib/bio/ngs/ext/bin/linux/tophat/README",
-    "lib/bio/ngs/ext/bin/linux/tophat/bed_to_juncs",
-    "lib/bio/ngs/ext/bin/linux/tophat/closure_juncs",
-    "lib/bio/ngs/ext/bin/linux/tophat/contig_to_chr_coords",
-    "lib/bio/ngs/ext/bin/linux/tophat/extract_reads",
-    "lib/bio/ngs/ext/bin/linux/tophat/fix_map_ordering",
-    "lib/bio/ngs/ext/bin/linux/tophat/gtf_juncs",
-    "lib/bio/ngs/ext/bin/linux/tophat/juncs_db",
-    "lib/bio/ngs/ext/bin/linux/tophat/library_stats",
-    "lib/bio/ngs/ext/bin/linux/tophat/long_spanning_reads",
-    "lib/bio/ngs/ext/bin/linux/tophat/mask_sam",
-    "lib/bio/ngs/ext/bin/linux/tophat/prep_reads",
-    "lib/bio/ngs/ext/bin/linux/tophat/sam_juncs",
-    "lib/bio/ngs/ext/bin/linux/tophat/segment_juncs",
-    "lib/bio/ngs/ext/bin/linux/tophat/sra_to_solid",
-    "lib/bio/ngs/ext/bin/linux/tophat/tophat",
-    "lib/bio/ngs/ext/bin/linux/tophat/tophat_reports",
-    "lib/bio/ngs/ext/bin/linux/tophat/wiggles",
-    "lib/bio/ngs/ext/bin/osx/bowtie/AUTHORS",
-    "lib/bio/ngs/ext/bin/osx/bowtie/COPYING",
-    "lib/bio/ngs/ext/bin/osx/bowtie/MANUAL",
-    "lib/bio/ngs/ext/bin/osx/bowtie/MANUAL.markdown",
-    "lib/bio/ngs/ext/bin/osx/bowtie/NEWS",
-    "lib/bio/ngs/ext/bin/osx/bowtie/TUTORIAL",
-    "lib/bio/ngs/ext/bin/osx/bowtie/VERSION",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie-build",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie-build-debug",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie-debug",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie-inspect",
-    "lib/bio/ngs/ext/bin/osx/bowtie/bowtie-inspect-debug",
-    "lib/bio/ngs/ext/bin/osx/bowtie/genomes/NC_008253.fna",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.1.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.2.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.3.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.4.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.README",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.rev.1.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/indexes/e_coli.rev.2.ebwt",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000.fa",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000.fq",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000.raw",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_10000snp.fa",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_10000snp.fq",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000_1.fa",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000_1.fq",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000_2.fa",
-    "lib/bio/ngs/ext/bin/osx/bowtie/reads/e_coli_1000_2.fq",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/best_verify.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/bs_mapability.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/build_test.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/colorize_fasta.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/colorize_fastq.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/convert_quals.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/fastq_to_tabbed.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/gen_2b_occ_lookup.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/gen_dnamasks2colormask.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/gen_occ_lookup.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/gen_solqual_lookup.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_a_thaliana_tair.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_b_taurus_UMD3.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_c_elegans_ws200.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_canFam2.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_d_melanogaster_fb5_22.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_e_coli.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_galGal3.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_h_sapiens_ncbi36.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_h_sapiens_ncbi37.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_hg18.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_hg19.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_m_musculus_ncbi37.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_mm8.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_mm9.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_rn4.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/make_s_cerevisiae.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/mapability.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/pe_verify.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/random_bowtie_tests.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/random_bowtie_tests.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/random_bowtie_tests_p.sh",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/reconcile_alignments.pl",
-    "lib/bio/ngs/ext/bin/osx/bowtie/scripts/reconcile_alignments_pe.pl",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/AUTHORS",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/LICENSE",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/README",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/cuffcompare",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/cuffdiff",
-    "lib/bio/ngs/ext/bin/osx/cufflinks/cufflinks",
     "lib/bio/ngs/ext/bin/osx/samtools",
     "lib/bio/ngs/ext/bin/osx/sra/USAGE",
     "lib/bio/ngs/ext/bin/osx/sra/abi-dump",
@@ -287,28 +143,10 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/ext/bin/osx/sra/vdb-dump",
     "lib/bio/ngs/ext/bin/osx/sra/vdb-dump.1",
     "lib/bio/ngs/ext/bin/osx/sra/vdb-dump.1.0.3",
-    "lib/bio/ngs/ext/bin/osx/tophat/AUTHORS",
-    "lib/bio/ngs/ext/bin/osx/tophat/COPYING",
-    "lib/bio/ngs/ext/bin/osx/tophat/README",
-    "lib/bio/ngs/ext/bin/osx/tophat/VERSION",
-    "lib/bio/ngs/ext/bin/osx/tophat/bed_to_juncs",
-    "lib/bio/ngs/ext/bin/osx/tophat/closure_juncs",
-    "lib/bio/ngs/ext/bin/osx/tophat/contig_to_chr_coords",
-    "lib/bio/ngs/ext/bin/osx/tophat/extract_reads",
-    "lib/bio/ngs/ext/bin/osx/tophat/fix_map_ordering",
-    "lib/bio/ngs/ext/bin/osx/tophat/gtf_juncs",
-    "lib/bio/ngs/ext/bin/osx/tophat/juncs_db",
-    "lib/bio/ngs/ext/bin/osx/tophat/library_stats",
-    "lib/bio/ngs/ext/bin/osx/tophat/long_spanning_reads",
-    "lib/bio/ngs/ext/bin/osx/tophat/mask_sam",
-    "lib/bio/ngs/ext/bin/osx/tophat/prep_reads",
-    "lib/bio/ngs/ext/bin/osx/tophat/sam_juncs",
-    "lib/bio/ngs/ext/bin/osx/tophat/segment_juncs",
-    "lib/bio/ngs/ext/bin/osx/tophat/sra_to_solid",
-    "lib/bio/ngs/ext/bin/osx/tophat/tophat",
-    "lib/bio/ngs/ext/bin/osx/tophat/tophat_reports",
-    "lib/bio/ngs/ext/bin/osx/tophat/wiggles",
+    "lib/bio/ngs/ext/versions.yaml",
     "lib/bio/ngs/graphics.rb",
+    "lib/bio/ngs/homology.rb",
+    "lib/bio/ngs/ontology.rb",
     "lib/bio/ngs/quality.rb",
     "lib/bio/ngs/record.rb",
     "lib/bio/ngs/task.rb",
@@ -316,11 +154,14 @@ Gem::Specification.new do |s|
     "lib/tasks/bwa.thor",
     "lib/tasks/convert.thor",
     "lib/tasks/history.thor",
+    "lib/tasks/homology.thor",
+    "lib/tasks/ontology.thor",
     "lib/tasks/project.thor",
     "lib/tasks/quality.thor",
     "lib/tasks/rna.thor",
     "lib/tasks/sff_extract.thor",
-    "lib/templates/README.erb",
+    "lib/templates/README.tt",
+    "lib/templates/db.tt",
     "lib/wrapper.rb",
     "spec/converter_qseq_spec.rb",
     "spec/fixture/s_1_1_1108_qseq.txt",
@@ -329,9 +170,17 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "spec/tophat_spec.rb",
     "spec/utils_spec.rb",
+    "test/conf/test_db.yml",
+    "test/data/blastoutput.xml",
+    "test/data/gene-GO.json",
+    "test/data/goa_uniprot",
+    "test/data/goslim_goa.obo",
     "test/helper.rb",
     "test/test_bio-ngs.rb",
+    "test/test_db.rb",
+    "test/test_homology.rb",
     "test/test_ngs.rb",
+    "test/test_ontology.rb",
     "test/test_utils.rb"
   ]
   s.homepage = %q{http://github.com/helios/bioruby-ngs}
@@ -341,6 +190,7 @@ Gem::Specification.new do |s|
   s.summary = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.test_files = [
     "spec/converter_qseq_spec.rb",
+    "spec/cufflinks_spec.rb",
     "spec/quality_spec.rb",
     "spec/sff_extract_spec.rb",
     "spec/spec_helper.rb",
@@ -348,7 +198,10 @@ Gem::Specification.new do |s|
     "spec/utils_spec.rb",
     "test/helper.rb",
     "test/test_bio-ngs.rb",
+    "test/test_db.rb",
+    "test/test_homology.rb",
     "test/test_ngs.rb",
+    "test/test_ontology.rb",
     "test/test_utils.rb"
   ]
 
@@ -357,11 +210,16 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_runtime_dependency(%q<bio-bwa>, [">= 0.2.1"])
+      s.add_runtime_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_runtime_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_runtime_dependency(%q<thor>, [">= 0.14.6"])
       s.add_runtime_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_runtime_dependency(%q<daemons>, [">= 1.1.0"])
+      s.add_runtime_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 3.0.5"])
+      s.add_runtime_dependency(%q<sqlite3>, [">= 1.3.3"])
+      s.add_runtime_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_runtime_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
@@ -369,18 +227,29 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bio>, [">= 1.4.1"])
       s.add_development_dependency(%q<thor>, [">= 0.14.6"])
       s.add_development_dependency(%q<ffi>, [">= 1.0.6"])
-      s.add_development_dependency(%q<bio-bwa>, [">= 0.2.1"])
       s.add_development_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_development_dependency(%q<rspec>, [">= 2.5.0"])
       s.add_development_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_development_dependency(%q<bio-samtools>, [">= 0.0.0"])
+      s.add_development_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+      s.add_development_dependency(%q<bio-bwa>, [">= 0.2.2"])
+      s.add_development_dependency(%q<activerecord>, [">= 3.0.5"])
+      s.add_development_dependency(%q<sqlite3>, [">= 1.3.3"])
+      s.add_development_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_development_dependency(%q<progressbar>, [">= 0.9.0"])
+      s.add_development_dependency(%q<json>, [">= 0"])
     else
       s.add_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
+      s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
+      s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+      s.add_dependency(%q<activerecord>, [">= 3.0.5"])
+      s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
+      s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
@@ -388,19 +257,30 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bio>, [">= 1.4.1"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<ffi>, [">= 1.0.6"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<rspec>, [">= 2.5.0"])
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
+      s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+      s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
+      s.add_dependency(%q<activerecord>, [">= 3.0.5"])
+      s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
+      s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_dependency(%q<progressbar>, [">= 0.9.0"])
+      s.add_dependency(%q<json>, [">= 0"])
     end
   else
     s.add_dependency(%q<bio>, [">= 1.4.1"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
+    s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
     s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
+    s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+    s.add_dependency(%q<activerecord>, [">= 3.0.5"])
+    s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
+    s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+    s.add_dependency(%q<progressbar>, [">= 0.9.0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
@@ -408,11 +288,17 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bio>, [">= 1.4.1"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<ffi>, [">= 1.0.6"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.2.1"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<rspec>, [">= 2.5.0"])
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
     s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
+    s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
+    s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
+    s.add_dependency(%q<activerecord>, [">= 3.0.5"])
+    s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
+    s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+    s.add_dependency(%q<progressbar>, [">= 0.9.0"])
+    s.add_dependency(%q<json>, [">= 0"])
   end
 end
 
