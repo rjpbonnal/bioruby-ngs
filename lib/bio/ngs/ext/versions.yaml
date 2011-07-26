@@ -1,14 +1,59 @@
-libgtextutils:
-    version:  0.6
-    url:      http://hannonlab.cshl.edu/fastx_toolkit/
-    basename: libgtextutils-
-    suffix:   tar.bz2
-    desc:     ""
-    
-fastx:
-    version:  0.0.13
-    url:      http://hannonlab.cshl.edu/fastx_toolkit/
-    basename: fastx_toolkit-
-    suffix:   tar.bz2
-    desc:     "Fastx-toolkit version 0.0.13 requires libgtextutils-0.6 (available here for download). A recent g++ compiler (tested with GNU G++ 4.1.2 and later). The fasta_clipping_histogram tool requires two perl modules: PerlIO::gzip and GD::Graph::bars. The fastx_barcode_splitter tool requires GNU sed. The fastq_quality_boxplot tool requires gnuplot version 4.2 or newer."
-    
+common:
+    libgtextutils:
+        version:  0.6
+        url:      http://hannonlab.cshl.edu/fastx_toolkit/libgtextutils-0.6.tar.bz2
+        basename: libgtextutils-0.6
+        suffix:   tar.bz2
+        desc:     ""
+        type:     source
+    fastx:
+        version:  0.0.13
+        url:      http://hannonlab.cshl.edu/fastx_toolkit/fastx_toolkit-0.0.13.tar.bz2
+        basename: fastx_toolkit-0.0.13
+        suffix:   tar.bz2
+        desc:     "Fastx-toolkit version 0.0.13 requires libgtextutils-0.6 (available here for download). A recent g++ compiler (tested with GNU G++ 4.1.2 and later). The fasta_clipping_histogram tool requires two perl modules: PerlIO::gzip and GD::Graph::bars. The fastx_barcode_splitter tool requires GNU sed. The fastq_quality_boxplot tool requires gnuplot version 4.2 or newer."
+        type:     source
+linux:
+    cufflinks:
+        version:  1.0.3
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.0.3.Linux_x86_64.tar.gz
+        basename: cufflinks-1.0.3.Linux_x86_64
+        suffix:   tar.gz
+        desc:     ""
+        type:     binary
+    tophat:
+        version:  1.3.1
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.1.Linux_x86_64.tar.gz
+        basename: tophat-1.3.1.Linux_x86_64
+        suffix:   tar.gz
+        desc:     ""
+        type:     binary
+    bowtie:
+        version:  0.12.7
+        url:      http://sourceforge.net/projects/bowtie-bio/files/bowtie/0.12.7/bowtie-0.12.7-linux-x86_64.zip/download
+        basename: bowtie-0.12.7-linux-x86_64
+        suffix:   zip
+        desc:     ""
+        type:     binary
+osx:
+    cufflinks:
+        version:  1.0.3
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.0.3.OSX_x86_64.tar.gz
+        basename: cufflinks-1.0.3.OSX_x86_64
+        suffix:   tar.gz
+        desc:     ""
+        type:     binary
+    tophat:
+        version:  1.3.1
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.1.OSX_x86_64.tar.gz
+        basename: tophat-1.3.1.OSX_x86_64
+        suffix:   tar.gz
+        desc:     ""
+        type:     binary        
+    bowtie:
+        version:  0.12.7
+        url:      http://sourceforge.net/projects/bowtie-bio/files/bowtie/0.12.7/bowtie-0.12.7-macos-10.5-x86_64.zip/download
+        basename: bowtie-0.12.7-macos-10.5-x86_64
+        suffix:   zip
+        desc:     ""
+        type:     binary
