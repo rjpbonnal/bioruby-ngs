@@ -35,13 +35,13 @@ linux:
         suffix:   zip
         desc:     ""
         type:     binary
-    sra:
-        version: 
-        url:      http://trace.ncbi.nlm.nih.gov/Traces/sra/static/sratoolkit.2.1.0-centos_linux64.tar.gz
-        basename: sratoolkit.2.1.0-centos_linux64
-        suffix:   tar.gz
-        desc:     ""
-        type:     binary
+    # sra:
+    #     version: 
+    #     url:      http://trace.ncbi.nlm.nih.gov/Traces/sra/static/sratoolkit.2.1.0-centos_linux64.tar.gz
+    #     basename: sratoolkit.2.1.0-centos_linux64
+    #     suffix:   tar.gz
+    #     desc:     ""
+    #     type:     binary
 osx:
     cufflinks:
         version:  1.0.3
@@ -64,10 +64,10 @@ osx:
         suffix:   zip
         desc:     ""
         type:     binary
-    sra:
-        version: 
-        url:      http://trace.ncbi.nlm.nih.gov/Traces/sra/static/sratoolkit.2.1.0-mac64.tar.gz
-        basename: sratoolkit.2.1.0-mac64
-        suffix:   tar.gz
-        desc:     ""
-        type:     binary
+    # sra:
+    #     version: 
+    #     url:      http://trace.ncbi.nlm.nih.gov/Traces/sra/static/sratoolkit.2.1.0-mac64.tar.gz
+    #     basename: sratoolkit.2.1.0-mac64
+    #     suffix:   tar.gz
+    #     desc:     ""
+    #     type:     binary
