@@ -84,7 +84,7 @@ module Bio
 
       include Bio::Command::Wrapper
 
-      set_program Bio::Ngs::Utils.binary("tophat/tophat")
+      set_program Bio::Ngs::Utils.binary("tophat")
 
       add_option "output-dir",:type => :string, :aliases => '-o'
       add_option "min-anchor", :type => :numeric, :aliases => '-a'
