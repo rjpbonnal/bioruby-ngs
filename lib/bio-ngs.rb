@@ -8,6 +8,8 @@
 #
 #
 
+
+
 # External gems
 require 'yaml'
 require 'json'
@@ -23,6 +25,7 @@ require 'active_record'
 require 'sqlite3'
 
 # NGS classes
+require 'enumerable'
 require 'wrapper'
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
