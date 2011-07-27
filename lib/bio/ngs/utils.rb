@@ -7,6 +7,7 @@
 # License:: The Ruby License
 #
 #
+require 'find'
 
 module Bio
   module Ngs
@@ -22,12 +23,9 @@ module Bio
       end
       class << self
         def binary(name)
-          path = File.expand_path(File.dirname(__FILE__))
           begin
-            if File.exists?(plugin_binary = File.join(path,"ext","bin","common",name))
-              return plugin_binary
-            elsif File.exists?(plugin_os_binary = File.join(path,"ext","bin",self.os_type,name))
-              return plugin_os_binary
+            if !(plugin_binaries_found = find_binary_files(name)).empty?
+              return plugin_binaries_found.first
             elsif (os_binary = Bio::Command.query_command ["which", name]) != ""
               return os_binary.tr("\n","")
             else
@@ -37,7 +35,7 @@ module Bio
             warn e.message
           end
 
-        end
+        end #binary
 
         def os_type
           require 'rbconfig'
@@ -157,6 +155,20 @@ module Bio
               FileUtils.mkdir(path_binary_tool) 
               FileUtils.cp_r "#{uncompressed_tool_dir_name}/.", path_binary_tool
             end #uncompress install binary
+            
+
+            # search in the current gem's directory for installed binaries which the name binary_name
+            # it's a recursive search in common and os specific directories
+            # return an array: empty if the binary can not be found otherwise full path to the binaries
+            # it is up to the user choose which binary to use, it's suggested to use the first in the array
+            # to have a behavirou similar to the search PATH
+            def find_binary_files(binary_name)
+              path = File.expand_path(File.dirname(__FILE__))
+              Find.find(File.join(path,"ext","bin","common"),File.join(path,"ext","bin",self.os_type)).select do |f|
+                File.file?(f) && File.basename(f) == binary_name
+              end
+            end #find_binary_file
+              
           end #eiginclass
 
         end # end Utils
