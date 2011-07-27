@@ -153,7 +153,7 @@ module Bio
               path_binary_tool = File.join(path_binary,tool_name)
               FileUtils.remove_dir(path_binary_tool) if Dir.exists?(path_binary_tool)
               FileUtils.mkdir(path_binary_tool) 
-              FileUtils.cp_r "#{uncompressed_tool_dir_name}/.", path_binary_tool
+              FileUtils.cp_r "#{uncompressed_tool_dir_name}/.", path_binary_tool, :preserve=>true
             end #uncompress install binary
             
 
