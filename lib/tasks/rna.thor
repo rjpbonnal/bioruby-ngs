@@ -4,7 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/tophat')
 
 class Rna < Thor
 
-  # you'll end up with 3 accepted file, regular, sorted, sorted-indexed
+  # you'll end up with 3 accept file, regular, sorted, sorted-indexed
   desc "tophat DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors and then create a sorted bam indexed."
   method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
   Bio::Ngs::Tophat.new.thor_task(self, :tophat) do |wrapper, task, dist, index, outputdir, fastqs|
@@ -15,7 +15,6 @@ class Rna < Thor
 
       accepted_hits_bam_fn = File.join(outputdir, "accepted_hits.bam")
       task.invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
-      #you tasks here
   end
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
@@ -24,9 +23,30 @@ class Rna < Thor
     wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF" => gtf }
     wrapper.run :arguments=>[bam], :separator => "="
   end
+
+  #GTFS_QUANTIFICATION is a comma separated list of gtf file names
+  desc "compare GTF_REF OUTPUTDIR GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
+  Bio::Ngs::Cufflinks::Compare.new.thor_task(self, :compare) do |wrapper, task, gtf_ref, outputdir, gtfs_quantification|
+    # unless Dir.exists?(outputdir)
+    #   Dir.mkdir(outputdir)
+    # end
+    # Dir.chdir(outputdir)
+    # #I assume GTS_QUANTIFICATION is a comma separated list of single gtf files
+    # gtf_tracking_filename = "#{outputdir}.gtf_tracking"
+    # File.open(gtf_tracking_filename, 'w') do |file|
+    #   file.puts gtfs_quantification.gsub(/,/,"\n")
+    # end #file
+    wrapper.params = task.options
+    wrapper.params = {"outprefix" => outputdir, "gtf_reference"=>gtf_ref}
+    wrapper.run :arguments=>[gtfs_quantification.split(',')]
+    # Dir.chdir("../")
+  end
   
   desc "mapquant DIST INDEX OUTPUTDIR FASTQS", "map and quantify"
-  method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
+  method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose
+                                                                         this option pass just the basename
+                                                                         of the file without forward/reverse
+                                                                         and .fastq'
   def mapquant(dist, index, outputdir, fastqs)
     #tophat
     invoke :tophat, [dist, index, outputdir, fastqs], :paired=>options.paired
