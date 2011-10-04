@@ -53,6 +53,7 @@ module Bio
       #   --max-mle-iterations         maximum iterations allowed for MLE calculation        [ default:   5000 ]
       #   --library-type               Library prep used for input reads                     [ default:  below ]
       #   --max-bundle-length          maximum genomic length allowed for a given bundle     [ default:3500000 ]
+      #   --max-bundle-frags           maximum fragments allowed in a bundle before skipping [ default: 500000 ]      
       #   --min-intron-length          minimum intron size allowed in genome                 [ default:     50 ]
       # Supported library types:
       #   ff-firststrand
@@ -92,7 +93,8 @@ module Bio
         add_option "num-importance-samples", :type => :numeric#, :default => 1000
         add_option "max-mle-iterations", :type => :numeric#, :default => 5000
         add_option "library-type", :type => :string
-        add_option "max-bundle-length", :type => :numeric#, :default => 3500000
+        add_option "max-bundle-length", :type => :numeric #, :default => 3500000
+        add_option "max-bundle-frags", :type => :numeric #, :default => 500000
         add_option "min-intron-length", :type => :numeric#, :default => 50
       end #Quantification  
 

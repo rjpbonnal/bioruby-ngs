@@ -15,9 +15,9 @@ common:
         type:     source
 linux:
     cufflinks:
-        version:  1.0.3
-        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.0.3.Linux_x86_64.tar.gz
-        basename: cufflinks-1.0.3.Linux_x86_64
+        version:  1.1.0
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.1.0.Linux_x86_64.tar.gz
+        basename: cufflinks-1.1.0.Linux_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
@@ -44,9 +44,9 @@ linux:
     #     type:     binary
 osx:
     cufflinks:
-        version:  1.0.3
-        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.0.3.OSX_x86_64.tar.gz
-        basename: cufflinks-1.0.3.OSX_x86_64
+        version:  1.1.0
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.1.0.OSX_x86_64.tar.gz
+        basename: cufflinks-1.1.0.OSX_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
