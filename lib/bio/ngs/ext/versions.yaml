@@ -22,9 +22,9 @@ linux:
         desc:     ""
         type:     binary
     tophat:
-        version:  1.3.1
-        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.1.Linux_x86_64.tar.gz
-        basename: tophat-1.3.1.Linux_x86_64
+        version:  1.3.2
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.2.Linux_x86_64.tar.gz
+        basename: tophat-1.3.2.Linux_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
@@ -51,9 +51,9 @@ osx:
         desc:     ""
         type:     binary
     tophat:
-        version:  1.3.1
-        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.1.OSX_x86_64.tar.gz
-        basename: tophat-1.3.1.OSX_x86_64
+        version:  1.3.2
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.2.OSX_x86_64.tar.gz
+        basename: tophat-1.3.2.OSX_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary        
