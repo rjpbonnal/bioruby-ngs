@@ -63,13 +63,14 @@ module Bio
         will be discarded. Default = 0 = no minimum length."
         add_option :min_quality, :type=>:numeric, :default=>10, :aliases => "-t", :desc=>"Quality threshold - nucleotides with lower 
         quality will be trimmed (from the end of the sequence)."
-        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
+        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file.", :collapse=>true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file.", :collapse=>true
         add_option :gzip, :type => :boolean, :aliases => "-z", :desc => "Compress output with GZIP."
-        add_option :verbose, :type => :boolean, :alises => "-v", :desc => "[-v]         = Verbose - report number of sequences.
+        add_option :verbose, :type => :boolean, :aliases => "-v", :desc => "[-v]         = Verbose - report number of sequences.
         If [-o] is specified,  report will be printed to STDOUT.
         If [-o] is not specified (and output goes to STDOUT),
         report will be printed to STDERR."
+        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #Trim
 
       # Solexa-Quality BoxPlot plotter
@@ -159,8 +160,8 @@ module Bio
         include Bio::Command::Wrapper
         set_program Bio::Ngs::Utils.binary("fastx_quality_stats")
         use_aliases
-        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
+        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file.", :collapse=>true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file.", :collapse=>true
         add_option :new_format, :type => :boolean, :aliases => "-N", :desc => "New output format (with more information per nucleotide/cycle)."
       end #ReadsCoverage      
 

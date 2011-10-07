@@ -52,7 +52,7 @@ module Bio
       def params=(opts={})
         #add the parameters only if in options
         opts.each_pair do |parameter, value|
-          @params[parameter] = value if options.has_key? parameter 
+          @params[parameter.to_s] = value if options.has_key?(parameter.to_s)
         end        
       end
 
@@ -81,7 +81,7 @@ module Bio
       def normalize_params(separator="=")
         #use_aliases?
         args=params.to_a.map do |option|
-          option_name = option[0]
+          option_name = option[0].to_s
           option_values = option[1]
           #deprecated I'm not sure this code is good (at least the one with kind_of?)
           if option_values.kind_of? Hash
@@ -97,7 +97,7 @@ module Bio
             if option_values == true
               use_aliases? && options[option_name].has_key?(:aliases) ? options[option_name][:aliases] : "--#{option_name}"
             elsif option_values != false
-              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values}" : "--#{option_name}#{separator}#{option_values}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]}#{options[option_name][:collapse] ? "": " "}#{option_values}" : "--#{option_name}#{separator}#{option_values}"
             end
           end
         end
@@ -144,7 +144,11 @@ module Bio
           file_stdlog.close
           file_errlog.close
         else
-          Bio::Command.query_command([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact)
+          # puts "Normlized #{normalize_params(opts[:separator])}"
+          # puts "Arguments #{opts[:arguments]}"
+#puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact.inspect
+
+        Bio::Command.query_command([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact)
         end #if
       end #run
 
