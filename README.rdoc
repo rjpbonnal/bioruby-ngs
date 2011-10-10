@@ -67,6 +67,13 @@ Most of this tasks create sub-processes to speed up conversions
 
 = ForDevelopers
 
+== Contribute 
+=== Clone Main Repository
+This command will crate a local copy of the main repository
+    git clone https://github.com/helios/bioruby-ngs
+=== Install Bioinformatics Tools into the repository directory
+    rake rake devenv:bio_tools
+
 == Wrapper
 Bio-Ngs comes with a build-in wrapper to map binary software directly in BioRuby as objects. From this wrapper object is possible to create Thor task as well, with a lot of sugar.
 === Wrapping a binary
