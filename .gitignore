@@ -41,3 +41,7 @@ pkg
 # For vim:
 #*.swp
 .*
+lib/bio/ngs/ext/bin/common/fast*
+lib/bio/ngs/ext/bin/common/lib
+lib/bio/ngs/ext/bin/common/include
+lib/bio/ngs/ext/bin/common/share
