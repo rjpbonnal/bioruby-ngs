@@ -3,7 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 
-gem "bio", ">= 1.4.1"
+gem "bio", ">= 1.4.2"
 gem "bio-bwa", ">= 0.2.2"
 gem "bio-samtools", ">= 0.0.0"
 gem "thor", ">= 0.14.6"
@@ -22,7 +22,7 @@ group :development do
   gem "bundler", "~> 1.0.0"
   gem "jeweler", "~> 1.5.2"
   gem "rcov", ">= 0"
-  gem "bio", ">= 1.4.1"
+  gem "bio", ">= 1.4.2"
   gem "thor", ">= 0.14.6"
   gem "ffi", ">= 1.0.6"
   gem "rubyvis", ">= 0.5.0"

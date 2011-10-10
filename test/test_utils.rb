@@ -1,4 +1,4 @@
-require 'helper'
+require "#{File.dirname(__FILE__)}/helper"
 
 class TestUtils < Test::Unit::TestCase
   
@@ -21,7 +21,7 @@ class TestUtils < Test::Unit::TestCase
   end
   
   def test_raise_error
-    assert_raise ArgumentError do
+    assert_raise Bio::Ngs::Utils::BinaryNotFound do
       Bio::Ngs::Utils.binary("fake_binary")
     end
   end
