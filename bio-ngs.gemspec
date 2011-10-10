@@ -5,16 +5,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bio-ngs}
-  s.version = "0.2.1"
+  s.version = "0.3.2.alpha.01"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = %q{2011-07-26}
-  s.default_executable = %q{biongs}
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.authors = [%q{Francesco Strozzi}, %q{Raoul J.P. Bonnal}]
+  s.date = %q{2011-10-10}
   s.description = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.email = %q{francesco.strozzi@gmail.com}
-  s.executables = ["biongs"]
-  s.extensions = ["ext/mkrf_conf.rb"]
+  s.executables = [%q{biongs}]
+  s.extensions = [%q{ext/mkrf_conf.rb}]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -62,6 +61,8 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/record.rb",
     "lib/bio/ngs/task.rb",
     "lib/bio/ngs/utils.rb",
+    "lib/development_tasks.rb",
+    "lib/enumerable.rb",
     "lib/tasks/bwa.thor",
     "lib/tasks/convert.thor",
     "lib/tasks/history.thor",
@@ -95,13 +96,12 @@ Gem::Specification.new do |s|
     "test/test_utils.rb"
   ]
   s.homepage = %q{http://github.com/helios/bioruby-ngs}
-  s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.0}
+  s.licenses = [%q{MIT}]
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.6}
   s.summary = %q{bio-ngs provides a framework for handling NGS data with BioRuby}
   s.test_files = [
     "spec/converter_qseq_spec.rb",
-    "spec/cufflinks_spec.rb",
     "spec/quality_spec.rb",
     "spec/sff_extract_spec.rb",
     "spec/spec_helper.rb",
@@ -120,7 +120,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_runtime_dependency(%q<bio>, [">= 1.4.2"])
       s.add_runtime_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_runtime_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_runtime_dependency(%q<thor>, [">= 0.14.6"])
@@ -135,7 +135,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
-      s.add_development_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_development_dependency(%q<bio>, [">= 1.4.2"])
       s.add_development_dependency(%q<thor>, [">= 0.14.6"])
       s.add_development_dependency(%q<ffi>, [">= 1.0.6"])
       s.add_development_dependency(%q<rubyvis>, [">= 0.5.0"])
@@ -150,7 +150,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_development_dependency(%q<json>, [">= 0"])
     else
-      s.add_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_dependency(%q<bio>, [">= 1.4.2"])
       s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
@@ -165,7 +165,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rcov>, [">= 0"])
-      s.add_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_dependency(%q<bio>, [">= 1.4.2"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<ffi>, [">= 1.0.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
@@ -181,7 +181,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<json>, [">= 0"])
     end
   else
-    s.add_dependency(%q<bio>, [">= 1.4.1"])
+    s.add_dependency(%q<bio>, [">= 1.4.2"])
     s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
     s.add_dependency(%q<bio-samtools>, [">= 0.0.0"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
@@ -196,7 +196,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<rcov>, [">= 0"])
-    s.add_dependency(%q<bio>, [">= 1.4.1"])
+    s.add_dependency(%q<bio>, [">= 1.4.2"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<ffi>, [">= 1.0.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
