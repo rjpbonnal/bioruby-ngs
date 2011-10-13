@@ -14,7 +14,8 @@ class Rna < Thor
       wrapper.run :arguments=>[index, fastq_files ].flatten, :separator=>"="
 
       accepted_hits_bam_fn = File.join(outputdir, "accepted_hits.bam")
-      task.invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
+      #DEPRECATED tophat sort data by default 
+      #task.invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
   end
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
