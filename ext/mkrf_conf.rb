@@ -57,8 +57,6 @@ path_binary = File.join(path_external,"bin","common")
     task :compile do
       ["common", Bio::Ngs::Utils.os_type].each do |kind_software|
         path_binary = File.join("#{path_external}", 'bin', kind_software)
-        #download common libraries or tools
-        #download specific OS binaries or libraries    
         versions[kind_software].each do |tool, info|
           Bio::Ngs::Utils.compile_source(tool, info, "#{path_external}", path_binary) if info["type"]=="source"
         end #versions
