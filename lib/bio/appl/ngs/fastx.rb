@@ -84,12 +84,13 @@ module Bio
         include Bio::Command::Wrapper
         set_program Bio::Ngs::Utils.binary("fastx_trimmer")
         use_aliases
-        add_option :first_base, :type => :numeric, :default => 1, :aliases => "-f", :desc => "First base to keep"
+        add_option :first_base, :type => :numeric, :aliases => "-f", :desc => "First base to keep"
         add_option :last_base, :type => :numeric, :aliases => "-l", :desc => "Last base to keep"
         add_option :compress, :type => :boolean, :aliases => "-z", :desc => "Compress output with GZIP"
-        add_option :input, :type => :string, :aliases => "-i", :desc => "Input FASTA/Q file"
-        add_option :output, :type => :string, :aliases => "-o", :desc => "Output FASTA/Q file"
+        add_option :input, :type => :string, :aliases => "-i", :desc => "Input FASTA/Q file", :collapse => true
+        add_option :output, :type => :string, :aliases => "-o", :desc => "Output FASTA/Q file", :collapse => true
         add_option :trim, :type => :numeric, :aliases => "-t", :desc => "Trim N nucleotides from the end of the read"
+        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end
 
       # Solexa-Quality BoxPlot plotter
@@ -109,6 +110,7 @@ module Bio
         add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
         add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
+        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsBoxPlot
 
       # Solexa-Reads coverage plotter
@@ -128,6 +130,7 @@ module Bio
         add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
         add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
+        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsCoverage
 
 
@@ -182,6 +185,7 @@ module Bio
         add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file.", :collapse=>true
         add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file.", :collapse=>true
         add_option :new_format, :type => :boolean, :aliases => "-N", :desc => "New output format (with more information per nucleotide/cycle)."
+        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsCoverage      
 
     end #Fastx

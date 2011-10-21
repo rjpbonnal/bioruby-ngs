@@ -21,7 +21,7 @@ class Pre < Thor
   end
   
   
-  desc "merge [file(s)]","Merge together fastQ files (accepts wildcards like '')"
+  desc "merge [file(s)]","Merge together fastQ files (accepts wildcards)"
   method_option :compressed, :type => :boolean, :default => true
   method_option :cpu, :type => :numeric, :default => 4
   def merge(file)
@@ -63,15 +63,15 @@ class Pre < Thor
   method_option :cpu, :type => :numeric, :default => 4
   def uncompress(file)
     files = Dir.glob(file).sort
-    cmd_lines = []
+    blocks = []
     files.each do |file|
-      cmd_lines << -> {system("gunzip #{file}")}
-      if cmd_lines.size == options[:cpu]
-        Bio::Ngs::Utils.parallel_exec(cmd_lines)
-        cmd_blocks = []
+      blocks << -> {system("gunzip #{file}")}
+      if blocks.size == options[:cpu]
+        Bio::Ngs::Utils.parallel_exec(blocks)
+        blocks = []
       end
     end
-    Bio::Ngs::Utils.parallel_exec(cmd_blocks) 
+    Bio::Ngs::Utils.parallel_exec(blocks) 
   end
   
   
@@ -87,10 +87,13 @@ class Pre < Thor
         invoke "quality:fastq_stats", [file], {output:file+".stats"}
         trim_position = options[:read_length]
         lines = File.read(file+".stats").split("\n")
-        read_length = lines.size -1
+        if lines.size == 0
+		      raise RuntimeError, "Error in Quality Stats file! Check fastx_quality_stat output"
+	      end
+	      read_length = (lines.size) -1
         lines[1..-1].each_with_index do |line,index|
           if line.split("\t")[7].to_i <= options[:min_qual]
-            trim_position = index
+            trim_position = index +1
             break
           end 
         end
@@ -102,7 +105,7 @@ class Pre < Thor
         else
           puts "Trimming on position #{trim_position} for #{file}"
           trim = Bio::Ngs::Fastx::Trim.new
-          trim.params={trim:read_length-trim_position+1, min_qual:options.min_qual, input:file, output:file+".ready"}
+          trim.params={trim:read_length-trim_position+1, input:file, output:file+".ready"}
           trim.run
         end
       end
