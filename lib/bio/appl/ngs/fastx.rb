@@ -55,7 +55,7 @@ module Bio
       #                If [-o] is specified,  report will be printed to STDOUT.
       #                If [-o] is not specified (and output goes to STDOUT),
       #                report will be printed to STDERR.
-      class Trim
+      class QualityTrim
         include Bio::Command::Wrapper
         set_program Bio::Ngs::Utils.binary("fastq_quality_trimmer")
         use_aliases
@@ -72,6 +72,25 @@ module Bio
         report will be printed to STDERR."
         add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #Trim
+      
+ 	    # [-f N]       = First base to keep. Default is 1 (=first base).
+ 	    # [-l N]       = Last base to keep. Default is entire read.
+ 	    # [-t N]       = Trim N nucleotides from the end of the read.
+      #               '-t'  can not be used with '-l' and '-f'.
+ 	    # [-z]         = Compress output with GZIP.
+ 	    # [-i INFILE]  = FASTA/Q input file. default is STDIN.
+ 	    # [-o OUTFILE] = FASTA/Q output file. default is STDOUT.
+      class Trim
+        include Bio::Command::Wrapper
+        set_program Bio::Ngs::Utils.binary("fastx_trimmer")
+        use_aliases
+        add_option :first_base, :type => :numeric, :default => 1, :aliases => "-f", :desc => "First base to keep"
+        add_option :last_base, :type => :numeric, :aliases => "-l", :desc => "Last base to keep"
+        add_option :compress, :type => :boolean, :aliases => "-z", :desc => "Compress output with GZIP"
+        add_option :input, :type => :string, :aliases => "-i", :desc => "Input FASTA/Q file"
+        add_option :output, :type => :string, :aliases => "-o", :desc => "Output FASTA/Q file"
+        add_option :trim, :type => :numeric, :aliases => "-t", :desc => "Trim N nucleotides from the end of the read"
+      end
 
       # Solexa-Quality BoxPlot plotter
       # Generates a solexa quality score box-plot graph 

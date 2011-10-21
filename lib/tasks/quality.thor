@@ -19,14 +19,14 @@ class Quality < Thor
     Bio::Ngs::Graphics.draw_area(qual,options[:width],options[:height],options[:fileout],"Nucleotide","Quality Score")
   end
 
-  desc "trim FASTQ", "trim all the sequences"
+  desc "quality_trim FASTQ", "Trim all the sequences using quality information"
   #TODO: create a wrapper
   method_option :min_size, :type=>:numeric, :default=>20, :aliases => "-l", :desc=>"Minimum length - sequences shorter than this (after trimming)
                     will be discarded. Default = 0 = no minimum length."
   method_option :min_quality, :type=>:numeric, :default=>10, :aliases => "-t", :desc=>"Quality threshold - nucleotides with lower 
                                       quality will be trimmed (from the end of the sequence)."
   method_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name"
-  def trim(fastq)
+  def quality_trim(fastq)
     output_file = options.output || fastq.gsub(/(.*)_(forward|reverse)(.*)/,'\1_trim_\2\3')
     if output_file==fastq
       output_file+="_trim"
@@ -36,12 +36,11 @@ class Quality < Thor
       invoke :fastq_stats, [fastq]
     end
     #TODO check the file in input exists
-    trim = Bio::Ngs::Fastx::Trim.new
+    trim = Bio::Ngs::Fastx::QualityTrim.new
     trim.params={min_size:options.min_size, min_quality:options.min_quality, input:fastq, output:output_file}
     trim.run
     invoke :fastq_stats, [output_file]
   end
-  
   
   desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."

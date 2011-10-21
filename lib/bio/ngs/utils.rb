@@ -22,6 +22,14 @@ module Bio
         end
       end
       class << self
+        
+        def parallel_exec(command_blocks)
+          command_blocks.each do |block|
+            fork(&block)
+          end
+          Process.waitall
+        end
+        
         def binary(name)
           begin
             if !(plugin_binaries_found = find_binary_files(name)).empty?
@@ -123,7 +131,7 @@ module Bio
               uncompress = uncompress_command(tool_record["suffix"])
               STDERR.puts "#{uncompress} #{tool_file_name}"
               system "#{uncompress} #{tool_file_name}"
-              STDERR.puts "sto per uscire"
+              STDERR.puts "completed."
               if Dir.exists?(tool_dir_name)
                 tool_dir_name
               elsif Dir.exists?("#{tool_name}-#{tool_record['version']}")
@@ -138,6 +146,8 @@ module Bio
               tool_dir_name = uncompress_any(tool_name, tool_record)
               puts "Compiling #{tool_name}..."
               cd(tool_dir_name) do
+                #system "#{tool_record["lib"]}='#{path_external}/bin/common/lib'" if tool_record["lib"]
+                #system "#{tool_record["flags"]}='-O2'" if tool_record["flags"]
                 system "PKG_CONFIG_PATH='#{path_external}/bin/common/lib/pkgconfig' ./configure --prefix=#{path_binary} --bindir=#{path_binary}"
                 system "make"
                 system "make install"
