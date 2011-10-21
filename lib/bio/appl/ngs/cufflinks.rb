@@ -220,6 +220,7 @@ module Bio
         #Options hash
         # :fold(float), :min_samples(integer), :min_fpkm(float), :only_significative(boolean, false) , :z_score(boolean, false)
         # :regulated(symbol :up or :down default :up)
+        # :fpkm_log_two (:true :false, default :true)
         def process_de(diff, gtf, options={})
           fold = options[:fold] || 0.0
           min_samples = options[:min_samples] || 0
@@ -228,12 +229,13 @@ module Bio
           z_scores = options[:z_scores] || false
           #TODO improve check on paramters
           regulated =options[:regulated] || :up
+          fpkm_log_two = options[:fpkm_log_two] || true
 
           gtf_kb = Bio::Ngs::Cufflinks::Compare.exists_kb?(gtf)  ? Bio::Ngs::Cufflinks::Compare.load_compare_kb(gtf) : Bio::Ngs::Cufflinks::Compare.build_compare_kb(gtf)            
 
           #convert log2 fold value into natural log value (internally computed by cuffdiff)
           fold_log2 = fold
-          fold = fold==0 ? 0.0 : (fold*Math.log(2))
+          (fold = fold==0 ? 0.0 : (fold*Math.log(2))) unless fpkm_log_two
 
           dict=Hash.new {|h, k| h[k]=Hash.new{|hh,kk| hh[kk]=[]}; }
           dict_samples = Hash.new{|h,k| h[k]=""}
