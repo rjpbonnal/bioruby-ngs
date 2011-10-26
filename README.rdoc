@@ -194,6 +194,32 @@ You can create a new wrapper and configure it and run it from inside a Thor's ta
       end #Ngs
     end #Bio
 
+== Features
+=== Iterators for output files
+
+Example CuffDiff.  In this class is possible to define an iterator for a specific set of output files: genes, isoforms, tss_groups, cds.
+To activate the iterator is just a matter of call a class method in the class definition
+    class Bio::Ngs::Cufflinks::Diff
+      #... all the previous definitions
+      #define iterators
+      add_iterator_for :genes
+      add_iterator_for :isoforms
+      add_iterator_for :cds
+      add_iterator_for :tss_groups
+    end
+  
+This is an example of CuffDiff, parsing genes.fpkm_tracking file:
+
+    Bio::Ngs::Cufflinks::Diff.foreach_gene_tracked("path_to_cuffdiff_output_directory") do |gene_fpkm_track|
+      expression_profile = (1..7).map do |sample_idx|
+        gene_fpkm_track["q#{sample_idx}_FPKM"].to_f
+      end
+      
+      #do your stuff accessing this tabular file with gene_fpkm_track["name of the field"]
+    end
+
+In this case internally CSV library has been used to parse in an easy way the file, there is a lack of performances with huge files, gaining in flexibility.
+
 === Notes
 * It's possible to add more sugar and we are working hard on it
 * aliases are not well supported at this time. ToDo

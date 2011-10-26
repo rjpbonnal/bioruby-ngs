@@ -138,6 +138,7 @@ module Bio
       #   transfrags
       class Diff
         include Bio::Command::Wrapper
+        include Bio::Ngs::Cufflinks::Diff::Utils
 
         set_program Bio::Ngs::Utils.binary("cuffdiff")
 
@@ -163,13 +164,19 @@ module Bio
         add_option "quiet", :type => :boolean, :aliases => '-q'
         add_option "no-update-check", :type => :boolean, :aliases => '-j'
         add_option "emit-count-tables", :type => :boolean, :aliases => '-b'
+        
+        #define iterators
+        add_iterator_for :genes
+        add_iterator_for :isoforms
+        add_iterator_for :cds
+        add_iterator_for :tss_groups
 
         #Examples 
         #Bio::Ngs::Cufflinks::Diff.isoforms("/Users/bonnalraoul/Desktop/RRep16giugno/DE_lane1-2-3-4-6-8/DE_lane1-2-3-4-6-8/isoform_exp.diff", "/Users/bonnalraoul/Desktop/RRep16giugno/COMPARE_lane1-2-3-4-6-8/COMPARE_lane1-2-3-4-6-8.combined.gtf",1.0,3,0.6,false,true)
         #Bio::Ngs::Cufflinks::Diff.genes("/Users/bonnalraoul/Desktop/RRep16giugno/DE_lane1-2-3-4-6-8/DE_lane1-2-3-4-6-8/gene_exp.diff", "/Users/bonnalraoul/Desktop/RRep16giugno/COMPARE_lane1-2-3-4-6-8/COMPARE_lane1-2-3-4-6-8.combined.gtf",1.0,5,0.5,false,true)
 
         class << self
-
+        
           #Return the version of CuffDiff used to produce the output
           def version(diff)
             #cufflink_version_offset = Bio::Ngs::Cufflinks.version
@@ -193,7 +200,7 @@ module Bio
             1
           end
         end
-
+        
         #write a file with the information
         #See process_de for options available
         # Example: Bio::Ngs::Cufflinks::Diff.isoforms("/Users/bonnalraoul/Desktop/RRep16giugno/DEPopNormNOTh2s1NOTh17s1_lane1-2-3-4-6-8/isoform_exp.diff",
@@ -212,7 +219,11 @@ module Bio
         # fold:0.5,min_samples:5,min_fpkm:0.5,z_scores:true, :regulated=>:up)        
         def genes(diff, gtf, options={})
           process_de(diff, gtf, options) do |dict_info, diff_reference, gtf_kb, fpkm_values|
-            "#{dict_info[:winner].first}\t#{gtf_kb[diff_reference][:gene_name]}\t#{fpkm_values.join("\t")}"
+#            puts diff_reference
+#            puts fpkm_values
+            # "#{dict_info[:winner].first}\t#{gtf_kb[diff_reference][:gene_name]}\t#{fpkm_values.join("\t")}"
+            #do not use th gtf kb 
+            "#{dict_info[:winner].first}\t#{dict_info[:gene_name]}\t#{fpkm_values.join("\t")}"
           end
         end #genes          
 
@@ -222,6 +233,7 @@ module Bio
         # :regulated(symbol :up or :down default :up)
         # :fpkm_log_two (:true :false, default :true)
         def process_de(diff, gtf, options={})
+          #init default options
           fold = options[:fold] || 0.0
           min_samples = options[:min_samples] || 0
           min_fpkm = options[:min_fpkm] || 0.0
@@ -230,8 +242,10 @@ module Bio
           #TODO improve check on paramters
           regulated =options[:regulated] || :up
           fpkm_log_two = options[:fpkm_log_two] || true
+          force_not_significative = options[:force_not_significative] || false
 
-          gtf_kb = Bio::Ngs::Cufflinks::Compare.exists_kb?(gtf)  ? Bio::Ngs::Cufflinks::Compare.load_compare_kb(gtf) : Bio::Ngs::Cufflinks::Compare.build_compare_kb(gtf)            
+          #set up the kb if not available = pass an option with the path of the kb ?
+          gtf_kb = nil###### Bio::Ngs::Cufflinks::Compare.exists_kb?(gtf)  ? Bio::Ngs::Cufflinks::Compare.load_compare_kb(gtf) : Bio::Ngs::Cufflinks::Compare.build_compare_kb(gtf)            
 
           #convert log2 fold value into natural log value (internally computed by cuffdiff)
           fold_log2 = fold
@@ -245,78 +259,105 @@ module Bio
 
           File.open(diff,'r') do |f|
             header=f.readline #skip header
+            
+            test_id_idx = 0
+            gene_name_idx = 2
+            q_first_idx = 3 + cufflink_version_offset
+            q_second_idx = 4 + cufflink_version_offset
+            fpkm_first_idx = 6 + cufflink_version_offset
+            fpkm_second_idx = 7 + cufflink_version_offset
+            fold_idx = 8 + cufflink_version_offset
+            significant_idx = 11 + cufflink_version_offset + (cufflink_version_offset==1 ? 1 : 0)
+            
+            #Commenti:
+            # per ogni riga del diff devo salvare il valore dei espressione di ogni test
+            # quindi fpkm e se è significativo o meno
 
-            q_first = 3 + cufflink_version_offset
-            q_second = 4 + cufflink_version_offset
-            fpkm_first = 6 + cufflink_version_offset
-            fpkm_second = 7 + cufflink_version_offset
-            fold_position = 8 + cufflink_version_offset
-            significant_position = 11 + cufflink_version_offset + (cufflink_version_offset==1 ? 1 : 0)
             f.each_line do |line|
               data=line.split
-              if data[fold_position].to_f<=0 
-                data[fold_position]=data[fold_position].sub(/-/,"") 
+              
+              #fix comparison t-test, remove negative symbol e invert comparison: if fold change q1 vs q2 <0 abs(foldchange) & swaap q1,q2
+#              puts data[fold_idx].to_f
+#delete puts "#{data[fold_idx].to_f} #{data[fold_idx].to_f<0}"
+              if data[fold_idx].to_f<0
+                data[fold_idx]=data[fold_idx][1..-1] #.sub(/-/,"")  remove the minus symbol from the number, the values q1, q2 and their fpkm will be reorganized into the data structure
               else 
-                a=data[fpkm_second]
-                data[fpkm_second]=data[fpkm_first]
-                data[fpkm_first]=a
-                a=data[q_second]
-                data[q_second]=data[q_first]
-                data[q_first]=a
+#                puts "ciao"
+                data[fpkm_first_idx],data[fpkm_second_idx]=data[fpkm_second_idx],data[fpkm_first_idx]
+                data[q_first_idx],data[q_second_idx]=data[q_second_idx],data[q_first_idx]
+#delete                puts "#{q_first_idx},#{q_second_idx}"
               end
+#delete                              puts "#{q_first_idx},#{q_second_idx}"
+#delete              puts "#{data[q_first_idx].to_sym} #{data[q_second_idx].to_sym}"
+#delete              puts "#{data[fpkm_first_idx].to_sym} #{data[fpkm_second_idx].to_sym}"
+
+
               #0 TCONS
               #4 name sample is the max diff for the item
               #5 name sample is the less diff for the item
               #9 is the fold 
-              dict_samples[data[q_first]]
-              dict_samples[data[q_second]]
+              dict_samples[data[q_first_idx]]
+              dict_samples[data[q_second_idx]]
 
               #7 is the fpkm value of max pop/sample
               #8 is the fpkm value of min pop/sample
-              if ((only_significative==true && data[significant_position]=="yes") ||  (data[significant_position]=="yes" && data[fold_position].to_f>=fold)) && data[fpkm_first].to_f>=min_fpkm && data[fpkm_second].to_f>=min_fpkm
-                k_reference = data[0].to_sym #This can be TCONS if isoforms or XLOC if genes
+              k_reference = data[test_id_idx].to_sym #This can be TCONS if isoforms or XLOC if genes
+              
+              unless dict[k_reference].key?(:values)
+                dict[k_reference][:values]={}
+                dict[k_reference][:gene_name]=data[gene_name_idx]
+              end              
+              dict[k_reference][:values][data[q_first_idx].to_sym]=data[fpkm_first_idx].to_f unless dict[k_reference][:values].key?(data[q_first_idx].to_sym)
+              dict[k_reference][:values][data[q_second_idx].to_sym]=data[fpkm_second_idx].to_f unless dict[k_reference][:values].key?(data[q_second_idx].to_sym)              
+              
+              if ((only_significative==true && data[significant_idx]=="yes") ||  ((data[significant_idx]=="yes"||force_not_significative) && data[fold_idx].to_f>=fold)) && data[fpkm_first_idx].to_f>=min_fpkm && data[fpkm_second_idx].to_f>=min_fpkm
                 
                ###### puts data.join(" ") if k_reference == :XLOC_017497
                 #TODO refactor: this can be done using lambda
-                k_sample = case regulated
-                when :up
-                  k_sample = data[q_first].to_sym
-                  dict[k_reference][k_sample]<<data[q_second].to_sym
+                k_sample = ""
+                if regulated==:up
+
+                  k_sample = data[q_first_idx].to_sym
+#delete                  puts "#{k_sample} #{data[q_second_idx].to_sym}"
+                  dict[k_reference][k_sample]<<data[q_second_idx].to_sym
+#delete                   puts "#{k_reference} #{q_first_idx}, #{q_second_idx}"
                   k_sample
-                when :down
-                  k_sample = data[q_second].to_sym
-                  dict[k_reference][k_sample]<<data[q_first].to_sym
+                elsif regulated==:down
+                  k_sample = data[q_second_idx].to_sym
+                  dict[k_reference][k_sample]<<data[q_first_idx].to_sym
                   k_sample                                    
                 end
                 
-             #   puts dict[k_reference].inspect if k_reference == :XLOC_017497
-                
-                unless dict[k_reference].key?(:values)
-                  dict[k_reference][:values]={}
-                end
+             #delete   puts dict[k_reference].inspect if k_reference == :XLOC_017497
+                #delete puts dict.inspect
                 #store fpkm values as well for each pop/sample it should be 
-                dict[k_reference][:values][k_sample]=data[fpkm_first].to_f unless dict[k_reference][:values].key?(k_sample)
-                dict[k_reference][:values][data[q_second].to_sym]=data[fpkm_second].to_f unless dict[k_reference][:values].key?(data[q_second].to_sym)
                 if dict[k_reference][k_sample].size >= min_samples
-                  dict[k_reference][:winner] << k_sample
+                  (dict[k_reference][:winner] << k_sample).uniq!
                 end
-          #      puts dict[k_reference].inspect if k_reference == :XLOC_017497
+          #delete      puts dict[k_reference].inspect if k_reference == :XLOC_017497
               else
-                #TODO add threshold value below min fpkm
-                #dict[k_reference][:values][k_sample]=data[6].to_f
-                #dict[k_reference][:values][data[4].to_sym]=data[7].to_f
+                # k_reference = data[0].to_sym #This can be TCONS if isoforms or XLOC if genes
+                # 
+                # unless dict[k_reference].key?(:values)
+                #   dict[k_reference][:values]={}
+                # end
+                # #TODO add threshold value below min fpkm
+                # dict[k_reference][:values][data[q_first_idx].to_sym]=data[fpkm_first_idx].to_f unless dict[k_reference][:values].key?(data[q_first_idx].to_sym)
+                # dict[k_reference][:values][data[q_second_idx].to_sym]=data[fpkm_second_idx].to_f unless dict[k_reference][:values].key?(data[q_second_idx].to_sym)
+                # #dict[k_reference][:values][data[4].to_sym]=data[7].to_f
               end
+#delete              puts dict[k_reference].inspect
+              
             end #each line
-
             #example structure    
             #{:TCONS_00086164=>{:q5=>[:q1, :q2, :q3, :q6]}, :TCONS_00086166=>{:q5=>[:q1, :q2, :q3, :q4, :q6]}  
           end #file.open
-
 
           file_lines =[]
           dict.each do |diff_reference, dict_info|
             
             if dict_info.key?(:winner)
+              #puts dict_info.inspect
               
               #BAD PERFORMANCES use lambda
               valz = case z_scores
