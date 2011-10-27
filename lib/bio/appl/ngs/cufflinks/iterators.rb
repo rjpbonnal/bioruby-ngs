@@ -4,7 +4,6 @@
 module Bio
   module Ngs          
     module Cufflinks
-      class Diff
         module Utils
           
           def self.included(base)
@@ -31,7 +30,6 @@ module Bio
             end #iterator
           end #ClassMethod
         end #Utils
-      end #Diff
     end #Cufflinks
   end #Ngs
 end #Bio

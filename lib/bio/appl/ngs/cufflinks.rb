@@ -96,6 +96,9 @@ module Bio
         add_option "max-bundle-length", :type => :numeric #, :default => 3500000
         add_option "max-bundle-frags", :type => :numeric #, :default => 500000
         add_option "min-intron-length", :type => :numeric#, :default => 50
+        
+        add_iterator_for :genes
+        add_iterator_for :isoforms
       end #Quantification  
 
       # cuffdiff v1.0.2 (2336)
@@ -138,7 +141,7 @@ module Bio
       #   transfrags
       class Diff
         include Bio::Command::Wrapper
-        include Bio::Ngs::Cufflinks::Diff::Utils
+        include Bio::Ngs::Cufflinks::Utils
 
         set_program Bio::Ngs::Utils.binary("cuffdiff")
 
