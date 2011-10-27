@@ -66,6 +66,7 @@ module Bio
       class Quantification
 
         include Bio::Command::Wrapper
+        include Bio::Ngs::Cufflinks::Utils
 
         set_program Bio::Ngs::Utils.binary("cufflinks")
 
