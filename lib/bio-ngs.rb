@@ -44,7 +44,7 @@ require 'bio/appl/ngs/bowtie-inspect'
 require 'bio/appl/ngs/sff_extract'
 require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
-require 'bio/appl/ngs/cufflinks/diff'
+require 'bio/appl/ngs/cufflinks/iterators'
 require 'bio/appl/ngs/cufflinks'
 require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'
