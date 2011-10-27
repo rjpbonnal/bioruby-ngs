@@ -13,7 +13,7 @@ module Bio
           
           module ClassMethods
             require 'csv'            
-            # Create an iterator using the specified base_name file.
+            # Create an iterator using the specified type_name file.
             # in case of Cufflinks type_file_name can be gene,isoform, cds, tss_group
             def add_iterator_for( type_file_name, opts={})
               plural_name = type_file_name = type_file_name.to_s
