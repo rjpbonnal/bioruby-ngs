@@ -419,6 +419,7 @@ module Convert
               method_option :min_fpkm, :type => :numeric, :aliases => "-f", :default=> 0.0, :desc => "Store a value if its fpkm is at least"
               method_option :z_scores, :type => :boolean, :aliases => "-z", :default=> false, :desc=> "Return a matrix of Z-scores other than fpkm"
               method_option :up, :type => :boolean, :aliases => '-u', :default => true, :desc => "Up regulated (true), down regulated (false)"
+              method_option :force_not_significative, :type=>:boolean, :aliases=>'n', :default=>false, :desc=>"consider not significan value dutin computation of signature."
               def gene(diff_file, gtf)
                 how_regulated = options.up ? :up : :down
                 Bio::Ngs::Cufflinks::Diff.genes(diff_file,
@@ -449,6 +450,21 @@ module Convert
 
           end #Illumina
 
+
+          desc "list2table list", "reorganize a list of pairs key value in a table of key values. Tabular is the default separator"
+          def list2table(list)
+            dict = Hash.new{|h,k| h[k]=[]}
+              File.open(ARGV[0],'r') do |f|
+              f.each_line do |l|
+                 key, value = l.split
+                 dict[key]<<value
+              end
+            end
+
+            dict.each_pair do |key, values|
+              puts "#{key} #{values.join('  ')}"
+            end
+          end
 
         end #Convert
         #  Add methods to Enumerable, which makes them available to Array
