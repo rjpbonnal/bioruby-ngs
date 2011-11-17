@@ -20,7 +20,6 @@ require 'thor/group'
 require 'thor/runner'
 require 'bio-blastxmlparser'
 require 'bio'
-require 'bio-bwa'
 require 'active_record'
 require 'sqlite3'
 
