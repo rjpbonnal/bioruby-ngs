@@ -48,6 +48,7 @@ require 'bio/appl/ngs/cufflinks'
 require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'
 require 'bio/appl/ngs/blast'
+require 'bio/appl/ngs/bwa'
 
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
