@@ -19,7 +19,7 @@ common:
         basename: bwa-0.6.0
         suffix:   tar.bz2
         desc:     "Burrows-Wheeler Aligner"
-        type:     source
+        type:     make
 
         
 linux:

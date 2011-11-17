@@ -154,6 +154,16 @@ module Bio
               end #cd
             end #uncompress_compile
             
+            def just_make(tool_name, tool_record, path_external, path_binary)
+              puts "Uncompressing #{tool_name}..."
+              tool_dir_name = uncompress_any(tool_name, tool_record)
+              puts "Compiling #{tool_name}..."
+              cd(tool_dir_name) do
+                system "make"
+                FileUtils.cp tool_name,path_binary
+              end #cd
+            end
+            
             def install_binary(tool_name, tool_record, path_external, path_binary)
               require 'fileutils'
               include FileUtils::Verbose
