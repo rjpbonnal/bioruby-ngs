@@ -7,23 +7,17 @@ class Pre < Thor
     folders = Dir.glob(dir)
     cmd_blocks = []
     folders.each do |folder|
-      Dir.glob(folder+"/*.fastq.gz").sort.each do |fastq|
+      Parallel.each(Dir.glob(folder+"/*.fastq.gz").sort,:in_processes => options[:cpu].to_i) do |fastq|
         Dir.mkdir(folder+"/filtered") unless Dir.exists? folder+"/filtered"
         fastq = fastq.split("/")[-1]
-        cmd_blocks << -> {system("zcat #{folder+"/"+fastq} | grep -A 3 '^@.* [^:]*:N:[^:]*:' | grep -v '^\-\-'| #{options[:compression]} > #{folder}/filtered/#{fastq}")}
-        if cmd_blocks == options[:cpu]
-          Bio::Ngs::Utils.parallel_exec(cmd_blocks)
-          cmd_blocks = []
-        end
+        system("zcat #{folder+"/"+fastq} | grep -A 3 '^@.* [^:]*:N:[^:]*:' | grep -v '^\-\-'| #{options[:compression]} > #{folder}/filtered/#{fastq}")
       end
     end
-    Bio::Ngs::Utils.parallel_exec(cmd_blocks)
   end
   
   
   desc "merge [file(s)]","Merge together fastQ files (accepts wildcards)"
   method_option :compressed, :type => :boolean, :default => true
-  method_option :cpu, :type => :numeric, :default => 4
   def merge(file)
     files = Dir.glob(file).sort
     cat = (options[:compressed]) ? "zcat" : "cat"
@@ -64,14 +58,9 @@ class Pre < Thor
   def uncompress(file)
     files = Dir.glob(file).sort
     blocks = []
-    files.each do |file|
-      blocks << -> {system("gunzip #{file}")}
-      if blocks.size == options[:cpu]
-        Bio::Ngs::Utils.parallel_exec(blocks)
-        blocks = []
-      end
+    Parallel.each(files,:in_processes => options[:cpu].to_i) do |file|
+      system("gunzip #{file}")
     end
-    Bio::Ngs::Utils.parallel_exec(blocks) 
   end
   
   
@@ -81,9 +70,7 @@ class Pre < Thor
   def trim(file)
     files = Dir.glob(file).sort
     cmd_blocks = []
-    files.each do |file|
-      
-      block = -> do
+    Parallel.each(files, :in_processes => options[:cpu].to_i) do |file|
         invoke "quality:fastq_stats", [file], {output:file+".stats"}
         trim_position = options[:read_length]
         lines = File.read(file+".stats").split("\n")
@@ -108,16 +95,7 @@ class Pre < Thor
           trim.params={trim:read_length-trim_position+1, input:file, output:file+".ready"}
           trim.run
         end
-      end
-      
-      cmd_blocks << block
-      
-      if cmd_blocks.size == options[:cpu]
-        Bio::Ngs::Utils.parallel_exec(cmd_blocks)
-        cmd_blocks = []
-      end
     end
-    Bio::Ngs::Utils.parallel_exec(cmd_blocks)
   end
   
   private
