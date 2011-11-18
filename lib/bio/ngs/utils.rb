@@ -23,13 +23,6 @@ module Bio
       end
       class << self
         
-        def parallel_exec(command_blocks)
-          command_blocks.each do |block|
-            fork(&block)
-          end
-          Process.waitall
-        end
-        
         def binary(name)
           begin
             if !(plugin_binaries_found = find_binary_files(name)).empty?
