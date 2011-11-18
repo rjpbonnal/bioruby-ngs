@@ -68,9 +68,11 @@ class Pre < Thor
   method_option :cpu, :type => :numeric, :default => 4
   method_option :min_qual, :type => :numeric, :default => 20
   def trim(file)
-    files = Dir.glob(file).sort
+    list = Dir.glob(file).sort
+    groups = list / options[:cpu].to_i # get group of files equal to number of CPUs
     cmd_blocks = []
-    Parallel.each(files, :in_processes => options[:cpu].to_i) do |file|
+    groups.each do |files|
+      Parallel.each(files, :in_processes => options[:cpu].to_i) do |file|
         invoke "quality:fastq_stats", [file], {output:file+".stats"}
         trim_position = options[:read_length]
         lines = File.read(file+".stats").split("\n")
@@ -95,6 +97,7 @@ class Pre < Thor
           trim.params={trim:read_length-trim_position+1, input:file, output:file+".ready"}
           trim.run
         end
+      end
     end
   end
   
