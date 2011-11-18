@@ -11,6 +11,7 @@
 
 
 # External gems
+require 'parallel'
 require 'yaml'
 require 'json'
 require 'daemons'
