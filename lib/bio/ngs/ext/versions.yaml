@@ -15,16 +15,16 @@ common:
         type:     source
 linux:
     cufflinks:
-        version:  1.1.0
-        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.1.0.Linux_x86_64.tar.gz
-        basename: cufflinks-1.1.0.Linux_x86_64
+        version:  1.3.0
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.3.0.Linux_x86_64.tar.gz
+        basename: cufflinks-1.3.0.Linux_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
     tophat:
-        version:  1.3.2
-        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.2.Linux_x86_64.tar.gz
-        basename: tophat-1.3.2.Linux_x86_64
+        version:  1.4.1
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.4.1.Linux_x86_64.tar.gz
+        basename: tophat-1.4.1.Linux_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
@@ -44,16 +44,16 @@ linux:
     #     type:     binary
 osx:
     cufflinks:
-        version:  1.1.0
-        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.1.0.OSX_x86_64.tar.gz
-        basename: cufflinks-1.1.0.OSX_x86_64
+        version:  1.3.0
+        url:      http://cufflinks.cbcb.umd.edu/downloads/cufflinks-1.3.0.OSX_x86_64.tar.gz
+        basename: cufflinks-1.3.0.OSX_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary
     tophat:
-        version:  1.3.2
-        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.3.2.OSX_x86_64.tar.gz
-        basename: tophat-1.3.2.OSX_x86_64
+        version:  1.4.1
+        url:      http://tophat.cbcb.umd.edu/downloads/tophat-1.4.1.OSX_x86_64.tar.gz
+        basename: tophat-1.4.1.OSX_x86_64
         suffix:   tar.gz
         desc:     ""
         type:     binary        
