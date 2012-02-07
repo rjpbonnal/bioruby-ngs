@@ -27,7 +27,11 @@
 #     -i/--min-intron-length         <int>       [ default: 50               ]
 #     -I/--max-intron-length         <int>       [ default: 500000           ]
 #     -g/--max-multihits             <int>       [ default: 20               ]
-#     -F/--min-isoform-fraction      <float>     [ default: 0.15             ]
+#     -x/--transcriptome-max-hits    <int>       [ default: 60               ]
+#     -n/--transcriptome-mismatches  <int>       [ default: 1                ]
+#     -M/--prefilter-multihits                   ( for -G/--GTF option, enable
+#                                                  an initial bowtie search
+#                                                  against the genome )
 #     --max-insertion-length         <int>       [ default: 3                ]
 #     --max-deletion-length          <int>       [ default: 3                ]
 #     --solexa-quals
@@ -40,7 +44,9 @@
 #     --library-type                 <string>    (fr-unstranded, fr-firststrand,
 #                                                 fr-secondstrand)
 #     -p/--num-threads               <int>       [ default: 1                ]
-#     -G/--GTF                       <filename>
+#     -G/--GTF                       <filename>  (GTF/GFF with known transcripts)
+#     --transcriptome-index          <bwtidx>    (transcriptome bowtie index)
+#     -T/--transcriptome-only                    (map only to the transcriptome)
 #     -j/--raw-juncs                 <filename>
 #     --insertions                   <filename>
 #     --deletions                    <filename>
@@ -59,10 +65,11 @@
 #     --keep-tmp
 #     --tmp-dir                      <dirname>   [ default: <output_dir>/tmp ]
 #     -z/--zpacker                   <program>   [ default: gzip             ]
-#     -X/--unmapped-fifo                         [ use mkfifo to compress more temporary files]
+#     -X/--unmapped-fifo                         ( use mkfifo to compress
+#                                                  more temporary files      )
 # 
 # Advanced Options:
-#     --initial-read-mismatches      <int>       [ default: 2                ]
+#     -N/--initial-read-mismatches   <int>       [ default: 2                ]
 #     --segment-mismatches           <int>       [ default: 2                ]
 #     --segment-length               <int>       [ default: 25               ]
 #     --bowtie-n                                 [ default: bowtie -v        ]
@@ -73,10 +80,10 @@
 #     --max-coverage-intron          <int>       [ default: 20000            ]
 #     --min-segment-intron           <int>       [ default: 50               ]
 #     --max-segment-intron           <int>       [ default: 500000           ]
-#     --no-sort-bam                              [Output BAM is not coordinate-sorted]
-#     --no-convert-bam                           [Do not convert to bam format.
+#     --no-sort-bam                              (Output BAM is not coordinate-sorted)
+#     --no-convert-bam                           (Do not convert to bam format.
 #                                                 Output is <output_dir>accepted_hit.sam.
-#                                                 Implies --no-sort-bam.]
+#                                                 Implies --no-sort-bam)
 # 
 # SAM Header Options (for embedding sequencing run metadata in output):
 #     --rg-id                        <string>    (read group ID)
@@ -105,7 +112,9 @@ module Bio
       add_option "min-intron-length", :type => :numeric , :aliases => '-i'
       add_option "max-intron-length", :type => :numeric, :aliases => '-I'
       add_option "max-multihits", :type => :numeric, :aliases => '-g'
-      add_option "min-isoform_fraction", :type => :numeric, :aliases => '-F'
+      add_option "transcriptome-max-hits", :type => :numeric, :aliases =>'-x'
+      add_option "transcriptome-mismatches", :type => :numeric, :aliases =>'-n'
+      add_option "prefilter-multihits", :type => :boolean, :aliases =>'-M'
       add_option "max-insertion-length", :type => :numeric
       add_option "max-deletion-length", :type => :numeric
       add_option "solexa-quals", :type => :boolean
@@ -116,6 +125,8 @@ module Bio
       add_option "library-type", :type => :string
       add_option "num-threads", :type => :numeric, :aliases => '-p'
       add_option "GTF", :type => :string, :aliases => '-G'
+      add_option "transcriptome-index", :type => :string
+      add_option "transcriptome-only", :type => :boolean
       add_option "raw-juncs", :type => :string, :aliases => '-j'
       add_option :insertions, :type => :string
       add_option :deletions, :type => :string
@@ -135,6 +146,9 @@ module Bio
       add_option "no-butterfly-search", :type => :boolean
       add_option "keep-tmp", :type => :boolean
       add_option "tmp-dir", :type => :string
+      add_option "zpacker", :type => :string, :aliases => '-z'
+      add_option "unmapped-fifo", :type => :boolean, :aliases => '-X'
+      add_option "initial-read-mismatches", :type => :int, :aliases => '-N'
       add_option "segment-mismatches", :type => :numeric
       add_option "segment-length", :type => :numeric
       add_option "min-closure-exon", :type => :numeric
@@ -144,6 +158,8 @@ module Bio
       add_option "max-coverage-intron", :type => :numeric
       add_option "min-segment-intron", :type => :numeric
       add_option "max-segment-intron", :type => :numeric
+      add_option "no-sort-bam", :type => :boolean
+      add_option "no-convert-bam", :type => :boolean
       add_option "rg-id", :type => :string
       add_option "rg-sample", :type => :string
       add_option "rg-library", :type => :string
