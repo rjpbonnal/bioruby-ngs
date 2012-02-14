@@ -23,13 +23,6 @@ module Bio
       end
       class << self
         
-        def parallel_exec(command_blocks)
-          command_blocks.each do |block|
-            fork(&block)
-          end
-          Process.waitall
-        end
-        
         def binary(name)
           begin
             if !(plugin_binaries_found = find_binary_files(name)).empty?
@@ -153,6 +146,16 @@ module Bio
                 system "make install"
               end #cd
             end #uncompress_compile
+            
+            def just_make(tool_name, tool_record, path_external, path_binary)
+              puts "Uncompressing #{tool_name}..."
+              tool_dir_name = uncompress_any(tool_name, tool_record)
+              puts "Compiling #{tool_name}..."
+              cd(tool_dir_name) do
+                system "make"
+                FileUtils.cp tool_name,path_binary
+              end #cd
+            end
             
             def install_binary(tool_name, tool_record, path_external, path_binary)
               require 'fileutils'

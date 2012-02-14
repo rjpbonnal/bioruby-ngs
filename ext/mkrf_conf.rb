@@ -58,7 +58,11 @@ path_binary = File.join(path_external,"bin","common")
       ["common", Bio::Ngs::Utils.os_type].each do |kind_software|
         path_binary = File.join("#{path_external}", 'bin', kind_software)
         versions[kind_software].each do |tool, info|
-          Bio::Ngs::Utils.compile_source(tool, info, "#{path_external}", path_binary) if info["type"]=="source"
+          if info["type"]=="source"
+            Bio::Ngs::Utils.compile_source(tool, info, "#{path_external}", path_binary)
+          elsif info["type"]=="make"
+            Bio::Ngs::Utils.just_make(tool, info, "#{path_external}", path_binary)
+          end
         end #versions
       end   
     end #compile

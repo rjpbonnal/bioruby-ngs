@@ -11,6 +11,7 @@
 
 
 # External gems
+require 'parallel'
 require 'yaml'
 require 'json'
 require 'daemons'
@@ -20,7 +21,6 @@ require 'thor/group'
 require 'thor/runner'
 require 'bio-blastxmlparser'
 require 'bio'
-require 'bio-bwa'
 require 'active_record'
 require 'sqlite3'
 
@@ -49,7 +49,14 @@ require 'bio/appl/ngs/cufflinks'
 require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'
 require 'bio/appl/ngs/blast'
+require 'bio/appl/ngs/bwa'
 
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
 Bio::Ngs::Utils.extend_system_path
+
+# loading Tasks
+path = File.expand_path(File.dirname(__FILE__))
+Dir.glob(File.join(path,"tasks","*.thor")) do |thorfile|
+  Thor::Util.load_thorfile(thorfile)
+end

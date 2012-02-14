@@ -6,11 +6,6 @@ module Bio
     path = File.expand_path(File.dirname(__FILE__))
     $:<<File.join(File.dirname(path),"lib")
     require 'bio-ngs'
-
-    path = File.expand_path(File.dirname(__FILE__))
-    Dir.glob(File.join(File.dirname(path),"lib","tasks","*.thor")) do |thorfile|
-      Thor::Util.load_thorfile(thorfile)
-    end
     
     class Runner < Thor::Runner
       

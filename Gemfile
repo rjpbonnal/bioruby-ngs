@@ -4,8 +4,7 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 
 gem "bio", ">= 1.4.2"
-gem "bio-bwa", ">= 0.2.2"
-gem "bio-samtools", ">= 0.3.2"
+gem "bio-samtools", ">= 0.0.0"
 gem "thor", ">= 0.14.6"
 gem "rubyvis", ">= 0.5.0"
 gem "daemons", ">= 1.1.0"
@@ -15,6 +14,8 @@ gem "sqlite3", ">= 1.3.3"
 gem "bio-blastxmlparser"
 gem "progressbar",">= 0.9.0"
 gem "rake", "0.9.2.2"
+gem "json"
+gem "parallel"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -31,11 +32,11 @@ group :development do
   gem "daemons", ">= 1.1.0"
   gem "bio-samtools", ">= 0.3.2"
   gem "ruby-ensembl-api", ">= 1.0.1"
-  gem 'bio-bwa', ">= 0.2.2"
   gem "activerecord",">= 3.0.5"
   gem "sqlite3", ">= 1.3.3"
   gem "bio-blastxmlparser"
   gem "progressbar",">= 0.9.0"
   gem "json"
   gem "rake", "0.9.2.2"
+  gem "parallel"
 end
