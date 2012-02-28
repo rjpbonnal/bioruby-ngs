@@ -113,6 +113,91 @@ module Bio
         add_option :copy_header, :type => :string, :aliases => "-h", :desc => "copy the header in FILE to <out.bam> [in1.bam]"
       end #Merge
       
+      #Usage: samtools mpileup [options] in1.bam [in2.bam [...]]
+
+      #Input options:
+
+       #      -6           assume the quality is in the Illumina-1.3+ encoding
+       #      -A           count anomalous read pairs
+       #      -B           disable BAQ computation
+       #      -b FILE      list of input BAM files [null]
+       #      -C INT       parameter for adjusting mapQ; 0 to disable [0]
+       #      -d INT       max per-BAM depth to avoid excessive memory usage [250]
+       #      -E           extended BAQ for higher sensitivity but lower specificity
+       #      -f FILE      faidx indexed reference sequence file [null]
+       #      -G FILE      exclude read groups listed in FILE [null]
+       #      -l FILE      list of positions (chr pos) or regions (BED) [null]
+       #      -M INT       cap mapping quality at INT [60]
+       #      -r STR       region in which pileup is generated [null]
+       #      -R           ignore RG tags
+       #      -q INT       skip alignments with mapQ smaller than INT [0]
+       #      -Q INT       skip bases with baseQ/BAQ smaller than INT [13]
+
+      #Output options:
+
+      #       -D           output per-sample DP in BCF (require -g/-u)
+      #       -g           generate BCF output (genotype likelihoods)
+      #       -O           output base positions on reads (disabled by -g/-u)
+      #       -s           output mapping quality (disabled by -g/-u)
+      #       -S           output per-sample strand bias P-value in BCF (require -g/-u)
+      #       -u           generate uncompress BCF output
+
+      #SNP/INDEL genotype likelihoods options (effective with `-g' or `-u'):
+
+      #       -e INT       Phred-scaled gap extension seq error probability [20]
+      #       -F FLOAT     minimum fraction of gapped reads for candidates [0.002]
+      #       -h INT       coefficient for homopolymer errors [100]
+      #       -I           do not perform indel calling
+      #       -L INT       max per-sample depth for INDEL calling [250]
+      #       -m INT       minimum gapped reads for indel candidates [1]
+      #       -o INT       Phred-scaled gap open sequencing error probability [40]
+      #       -P STR       comma separated list of platforms for indels [all]
+
+      #Notes: Assuming diploid individuals.
+
+
+      class Mpileup
+        include Bio::Command::Wrapper
+        set_program Bio::Ngs::Utils.binary("samtools")
+        set_sub_program "mpileup"
+        add_option :illumina13, :type => :boolean, :aliases => "-6", :desc => "assume the quality is in the Illumina-1.3+ encoding"
+        add_option :anomalous, :type => :boolean, :aliases => "-A", :desc => "count anomalous read pairs"
+        add_option :baq, :type => :boolean, :aliases => "-B", :desc => "disable BAQ computation"
+        add_option :bam, :type => :string, :aliases => "-b", :desc => "list of input BAM files [null]"
+        add_option :adjust, :type => :numeric, :aliases => "-C", :desc => "parameter for adjusting mapQ; 0 to disable [0]"
+        add_option :depth, :type => :numeric, :aliases => "-d", :desc => "max per-BAM depth to avoid excessive memory usage [250]"
+        add_option :extended, :type => :boolean, :aliases => "-E", :desc => "extended BAQ for higher sensitivity but lower specificity"
+        add_option :file_in, :type => :string, :aliases => "-f", :desc => "faidx indexed reference sequence file [null]"
+        add_option :readgroup, :type => :string, :aliases => "-G", :desc => "exclude read groups listed in FILE [null]"
+        add_option :positions, :type => :string, :aliases => "-l", :desc => "list of positions (chr pos) or regions (BED) in FILE [null]"
+        add_option :mapping_quality, :type => :numeric, :aliases => "-M", :desc => "cap mapping quality at INT [60]"
+        add_option :region, :type => :string, :aliases => "r", :desc => "region in which pileup is generated [null]"
+        add_option :ignoreRG, :type => :boolean, :aliases => "-R", :desc => "ignore RG tags"
+        add_option :align_qual, :type => :numeric, :aliases => "-q", :desc => "skip alignments with mapQ smaller than INT [0]"
+        add_option :base_qual, :type => :numeric, :aliases => "-Q", :desc => "skip bases with baseQ/BAQ smaller than INT [13]"
+        add_option :dp, :type => :boolean, :aliases => "-D", :desc => "output per-sample DP in BCF (require -g/-u)"
+        add_option :bcfout, :type => :boolean, :aliases => "-g", :desc => "generate BCF output (genotype likelihoods)"
+        add_option :basepositions, :type => :boolean, :aliases => "-O", :desc => "output base positions on reads (disabled by -g/-u)"
+        add_option :mapq_out, :type => :boolean, :aliases => "-s", :desc => "output mapping quality (disabled by -g/-u)"  
+        add_option :strand_bias, :type => :boolean, :aliases => "-S", :desc => "output per-sample strand bias P-value in BCF (require -g/-u)"
+        add_option :uncompressed, :type => :boolean, :aliases => "-u", :desc => "generate uncompress BCF output"
+        add_option :gap_error, :type => :numeric, :aliases => "-e", :desc => "Phred-scaled gap extension seq error probability [20]"
+        add_option :reads_fraction, :type => :numeric, :aliases => "-F", :desc => "minimum fraction of gapped reads for candidates [0.002]"
+        add_option :homopolymer_errors, :type => :numeric, :aliases => "-h", :desc => "coefficient for homopolymer errors [100]"
+        add_option :noindel, :type => :boolean, :aliases => "-I", :desc => "do not perform indel calling"
+        add_option :sample_depth, :type => :numeric, :aliases => "-L", :desc => "max per-sample depth for INDEL calling [250]"
+        add_option :min_gap, :type => :numeric, :aliases => "-m", :desc => "minimum gapped reads for indel candidates [1]"
+        add_option :gap_open, :type => :numeric, :aliases, => "-o", :desc => "Phred-scaled gap open sequencing error probability [40]"
+        add_option :indel_platforms, :type => :string, :aliases => "-P", :desc => "comma separated list of platforms for indels [all]"
+      end #mpileup
+
+      class Faidx
+        include Bio::Command::Wrapper
+        set_program Bio::Ngs::Utils.binary("samtools")
+        set_sub_program "faidx" 
+      end #faidx
+
+
     end #Samtools
   end #Ngs
 end #Bio
