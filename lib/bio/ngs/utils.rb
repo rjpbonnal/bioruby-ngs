@@ -40,7 +40,7 @@ module Bio
 
         def os_type
           require 'rbconfig'
-          case Config::CONFIG['host_os']
+          case RbConfig::CONFIG['host_os']
           when /darwin/ then return "osx" 
           when /linux/ then return "linux"
           when /mswin|mingw/ then raise NotImplementedError, "This plugin does not run on Windows"
