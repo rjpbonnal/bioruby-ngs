@@ -40,7 +40,7 @@ class Pre < Thor
           if r1_count == r2_count
             Parallel.each(["R1","R2"],:in_processes => options[:cpu].to_i) do |read|
               filename = (read == "R1") ? r1 : r2
-              system "#{cat} #{filename} >> #{read}_reads.fastq")
+              system "#{cat} #{filename} >> #{read}_reads.fastq"
             end
           else
             raise RuntimeError "Error: files #{r1} and #{r2} do not have the same number of reads!"
