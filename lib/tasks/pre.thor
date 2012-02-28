@@ -31,9 +31,8 @@ class Pre < Thor
   def paired_merge(file)
     files = Dir.glob(file).sort.find_all {|f| f=~/_R1_/}
     cat = (options[:compressed] == true) ? "zcat" : "cat"
-    files.each do |file|
-      r1 = file
-      r2 = file.gsub(/_R1_/,"_R2_")
+    files.each do |r1|
+      r2 = r1.gsub(/_R1_/,"_R2_")
       if File.exists? r2
         r1_count = count_reads(r1,compressed:options[:compressed])
         r2_count = count_reads(r2,compressed:options[:compressed])
