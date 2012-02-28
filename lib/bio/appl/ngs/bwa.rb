@@ -46,7 +46,6 @@ module Bio
         use_aliases
         add_option :algorithm, :type => :string, :aliases => "-a", :desc => "BWT construction algorithm: bwtsw or is [is]"
         add_option :prefix, :type => :string, :aliases => "-p", :desc => "prefix of the index [same as fasta name]"
-        add_option :colorspace, :type => :boolean, :aliases => "-c", :desc => "build color-space index"
       end #Index
 
 
@@ -68,7 +67,6 @@ module Bio
       #         -q INT    quality threshold for read trimming down to 35bp [0]
       #         -f FILE   file to write output to instead of stdout
       #         -B INT    length of barcode
-      #         -c        input sequences are in the color space
       #         -L        log-scaled gap penalty for long deletions
       #         -N        non-iterative mode: search for all n-difference hits (slooow)
       #         -I        the input is in the Illumina 1.3+ FASTQ-like format
@@ -99,7 +97,6 @@ module Bio
         add_option :quality_trimming, :type => :numeric, :aliases => "-q", :desc => "quality threshold for read trimming down to 35bp [0]"
         add_option :file_out, :type => :string, :aliases => "-f", :desc => "file to write output to instead of stdout"
         add_option :barcode_length, :type => :numeric, :aliases => "-B", :desc => "length of barcode"
-        add_option :colorspace, :type => :boolean, :aliases => "-c", :desc => "input sequences are in the color space"
         add_option :log_scale_penalty, :type => :boolean, :aliases => "-L", :desc => "log-scaled gap penalty for long deletions"
         add_option :non_iterative, :type => :boolean, :aliases => "-N", :desc => "non-iterative mode: search for all n-difference hits"
         add_option :illumina_13, :type => :boolean, :aliases => "-I", :desc => "the input is in the Illumina 1.3+ FASTQ-like format"
