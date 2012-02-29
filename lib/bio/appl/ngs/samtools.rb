@@ -187,7 +187,7 @@ module Bio
         add_option :noindel, :type => :boolean, :aliases => "-I", :desc => "do not perform indel calling"
         add_option :sample_depth, :type => :numeric, :aliases => "-L", :desc => "max per-sample depth for INDEL calling [250]"
         add_option :min_gap, :type => :numeric, :aliases => "-m", :desc => "minimum gapped reads for indel candidates [1]"
-        add_option :gap_open, :type => :numeric, :aliases, => "-o", :desc => "Phred-scaled gap open sequencing error probability [40]"
+        add_option :gap_open, :type => :numeric, :aliases => "-o", :desc => "Phred-scaled gap open sequencing error probability [40]"
         add_option :indel_platforms, :type => :string, :aliases => "-P", :desc => "comma separated list of platforms for indels [all]"
       end #mpileup
 
