@@ -14,9 +14,9 @@ common:
         desc:     "Fastx-toolkit version 0.0.13 requires libgtextutils-0.6 (available here for download). A recent g++ compiler (tested with GNU G++ 4.1.2 and later). The fasta_clipping_histogram tool requires two perl modules: PerlIO::gzip and GD::Graph::bars. The fastx_barcode_splitter tool requires GNU sed. The fastq_quality_boxplot tool requires gnuplot version 4.2 or newer."
         type:     source
     bwa:
-        version:  0.6.0
-        url:      http://sourceforge.net/projects/bio-bwa/files/bwa-0.6.0.tar.bz2/download
-        basename: bwa-0.6.0
+        version:  0.6.1
+        url:      http://sourceforge.net/projects/bio-bwa/files/bwa-0.6.1.tar.bz2/download
+        basename: bwa-0.6.1
         suffix:   tar.bz2
         desc:     "Burrows-Wheeler Aligner"
         type:     make
