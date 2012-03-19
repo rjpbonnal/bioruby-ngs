@@ -45,9 +45,15 @@ class Quality < Thor
   desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
+
     output_file = options.output || "#{fastq}.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
-    stats.params = {input:fastq, output:output_file}
+    if fastq=~/\.gz/
+      stats.params = {output:output_file}
+      stas.pipe_ahead=["zcat", fastq]
+    else
+      stats.params = {input:fastq, output:output_file}
+    end
     stats.run
     invoke :boxplot, [output_file]
     invoke :reads_coverage, [output_file]

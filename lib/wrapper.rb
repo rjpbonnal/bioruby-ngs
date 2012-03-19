@@ -42,6 +42,7 @@ module Bio
         @program = binary || self.class.program
         @options = options
         @params = {}
+        @pipe_ahead = []
       end
 
       # Parameters are accepted ONLY if the key is present as
@@ -71,6 +72,27 @@ module Bio
 
       def reset_params
         @params.clear
+      end
+
+
+      def pipe_ahead
+        # TODO: recursive call to other Bio::Ngs wrapped commands
+        @pipe_ahead
+      end
+
+      def pipe_ahead?
+        return !@pipe_ahead.empty?
+      end
+
+      # If setted is an array described like the ones in Open3.pipeline
+      # http://www.ruby-doc.org/stdlib-1.9.3/libdoc/open3/rdoc/Open3.html#method-c-pipeline
+      def pipe_ahead=(ary)
+        @pipe_ahead=ary || []
+      end
+
+      #Return an array of elements of the command line
+      def to_cmd_ary(opts={arguments:[],separator:"="})
+        [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
       end
 
       # Return the options and parameters formmatted as typed in the command line as a string
@@ -130,8 +152,8 @@ module Bio
           raise "Can't write to any output file. With a program which writes on stdout you must provide a file name" if opts[:output_file].nil?
           file_stdlog = File.open(opts[:output_file], 'w')
           file_errlog = File.open(opts[:output_file]+".err",'w')
-
-          Bio::Command.call_command_open3([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact) do |pin, pout, perr|
+          #[program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
+          Bio::Command.call_command_open3(to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments])) do |pin, pout, perr|
             pout.sync = true
             perr.sync = true           
             t = Thread.start {pout.lines{|line| file_stdlog.puts line}}
@@ -143,12 +165,17 @@ module Bio
           end #command call open3
           file_stdlog.close
           file_errlog.close
+
+        elsif pipe_ahead?
+          #in case the user setted the pipeline we use it.
+          Open3.pipeline(pipe_ahead, to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]))
         else
           # puts "Normlized #{normalize_params(opts[:separator])}"
           # puts "Arguments #{opts[:arguments]}"
 #puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact.inspect
-
-        Bio::Command.query_command([program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact)
+        #Note: maybe seprator could be defined as a method  for each wrapped program ?
+        Bio::Command.query_command(to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]))
+        #[program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
         end #if
       end #run
 
