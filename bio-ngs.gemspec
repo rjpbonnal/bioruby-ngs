@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-02-13"
+  s.date = "2012-03-19"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
     "lib/bio/appl/ngs/bcl2qseq.rb",
     "lib/bio/appl/ngs/blast.rb",
     "lib/bio/appl/ngs/bowtie-inspect.rb",
+    "lib/bio/appl/ngs/bwa.rb",
     "lib/bio/appl/ngs/cufflinks.rb",
     "lib/bio/appl/ngs/cufflinks/iterators.rb",
     "lib/bio/appl/ngs/fastx.rb",
@@ -102,28 +103,12 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.10"
   s.summary = "bio-ngs provides a framework for handling NGS data with BioRuby"
-  s.test_files = [
-    "spec/converter_qseq_spec.rb",
-    "spec/quality_spec.rb",
-    "spec/sff_extract_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/tophat_spec.rb",
-    "spec/utils_spec.rb",
-    "test/helper.rb",
-    "test/test_bio-ngs.rb",
-    "test/test_db.rb",
-    "test/test_homology.rb",
-    "test/test_ngs.rb",
-    "test/test_ontology.rb",
-    "test/test_utils.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.2"])
-      s.add_runtime_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_runtime_dependency(%q<bio-samtools>, [">= 0.3.2"])
       s.add_runtime_dependency(%q<thor>, [">= 0.14.6"])
       s.add_runtime_dependency(%q<rubyvis>, [">= 0.5.0"])
@@ -134,9 +119,11 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<bio-blastxmlparser>, [">= 0"])
       s.add_runtime_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_runtime_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<parallel>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.1.0"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_development_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_development_dependency(%q<bio>, [">= 1.4.2"])
       s.add_development_dependency(%q<thor>, [">= 0.14.6"])
@@ -146,16 +133,15 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_development_dependency(%q<bio-samtools>, [">= 0.3.2"])
       s.add_development_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
-      s.add_development_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_development_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_development_dependency(%q<sqlite3>, [">= 1.3.3"])
       s.add_development_dependency(%q<bio-blastxmlparser>, [">= 0"])
       s.add_development_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_development_dependency(%q<json>, [">= 0"])
       s.add_development_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_development_dependency(%q<parallel>, [">= 0"])
     else
       s.add_dependency(%q<bio>, [">= 1.4.2"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
@@ -166,9 +152,11 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
       s.add_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<parallel>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_dependency(%q<bundler>, ["~> 1.1.0"])
+      s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_dependency(%q<bio>, [">= 1.4.2"])
       s.add_dependency(%q<thor>, [">= 0.14.6"])
@@ -178,17 +166,16 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
       s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
-      s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
       s.add_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
       s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
       s.add_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_dependency(%q<parallel>, [">= 0"])
     end
   else
     s.add_dependency(%q<bio>, [">= 1.4.2"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
     s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
@@ -199,9 +186,11 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
     s.add_dependency(%q<progressbar>, [">= 0.9.0"])
     s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+    s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<parallel>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+    s.add_dependency(%q<bundler>, ["~> 1.1.0"])
+    s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
     s.add_dependency(%q<rcov>, ["~> 0.9.11"])
     s.add_dependency(%q<bio>, [">= 1.4.2"])
     s.add_dependency(%q<thor>, [">= 0.14.6"])
@@ -211,13 +200,13 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
     s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
     s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
-    s.add_dependency(%q<bio-bwa>, [">= 0.2.2"])
     s.add_dependency(%q<activerecord>, [">= 3.0.5"])
     s.add_dependency(%q<sqlite3>, [">= 1.3.3"])
     s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
     s.add_dependency(%q<progressbar>, [">= 0.9.0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+    s.add_dependency(%q<parallel>, [">= 0"])
   end
 end
 
