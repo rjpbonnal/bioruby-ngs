@@ -1,9 +1,9 @@
 class Pre < Thor
   
-  desc "filter [DIR(s)]", "Filter the data using Y/N flag in FastQ headers (Illumina). Search for fastq.gz files within directory(ies) passed."
+  desc "illumina_filter [DIR(s)]", "Filter the data using Y/N flag in FastQ headers (Illumina). Search for fastq.gz files within directory(ies) passed."
   method_option :compression, :type => :string, :default => "pigz"
   method_option :cpu, :type => :numeric, :default => 4
-  def filter(dir)
+  def illumina_filter(dir)
     folders = Dir.glob(dir)
     cmd_blocks = []
     folders.each do |folder|
@@ -31,18 +31,17 @@ class Pre < Thor
   def paired_merge(file)
     files = Dir.glob(file).sort.find_all {|f| f=~/_R1_/}
     cat = (options[:compressed] == true) ? "zcat" : "cat"
-    files.each do |file|
-      r1 = file
-      r2 = file.gsub(/_R1_/,"_R2_")
+    files.each do |r1|
+      r2 = r1.gsub(/_R1_/,"_R2_")
       if File.exists? r2
         r1_count = count_reads(r1,compressed:options[:compressed])
         r2_count = count_reads(r2,compressed:options[:compressed])
         puts "Read count: #{r1_count} : #{r2_count} , #{file}"
           if r1_count == r2_count
-            blocks = []
-            blocks << -> {system("#{cat} #{r1} >> R1_reads.fastq")}
-            blocks << -> {system("#{cat} #{r2} >> R2_reads.fastq")}
-            Bio::Ngs::Utils.parallel_exec(blocks)
+            Parallel.each(["R1","R2"],:in_processes => options[:cpu].to_i) do |read|
+              filename = (read == "R1") ? r1 : r2
+              system "#{cat} #{filename} >> #{read}_reads.fastq"
+            end
           else
             raise RuntimeError "Error: files #{r1} and #{r2} do not have the same number of reads!"
           end
@@ -64,7 +63,7 @@ class Pre < Thor
   end
   
   
-  desc "trim [file(s)]","Calulate quality profile and trim the all the reads using FastX (accepts wildcards)"
+  desc "trim [fastq(s)]","Calulate quality profile and trim the all the reads using FastX (accepts wildcards)"
   method_option :cpu, :type => :numeric, :default => 4
   method_option :min_qual, :type => :numeric, :default => 20
   def trim(file)

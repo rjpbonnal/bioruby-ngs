@@ -26,7 +26,7 @@ module Bio
       
       def load   
           tasks = []
-          YAML.each_document(@file) do |ydoc| 
+          YAML.load_stream(@file) do |ydoc| 
             ydoc[:args].flatten!
             tasks << ydoc
           end
@@ -41,7 +41,7 @@ module Bio
       
       def is_saved?(params)    
         tasks = []
-        YAML.each_document(@file) {|ydoc| tasks << ydoc}
+        YAML.load_stream(@file) {|ydoc| tasks << ydoc}
         return tasks.include?(params)
       end
       
