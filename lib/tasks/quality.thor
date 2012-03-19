@@ -55,8 +55,12 @@ class Quality < Thor
       stats.params = {input:fastq, output:output_file}
     end
     stats.run
-    invoke :boxplot, [output_file]
-    invoke :reads_coverage, [output_file]
+    require 'parallel'
+    Parallel.map([[:boxplot,[output_file]],[:reads_coverage,[output_file]]]) do |graph|
+      invoke graph.first, graph.last
+    end
+    #invoke :boxplot, [output_file]
+    #invoke :reads_coverage, [output_file]
   end
   
   desc "boxplot FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
