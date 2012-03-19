@@ -46,11 +46,11 @@ class Quality < Thor
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
 
-    output_file = options.output || "#{fastq}.txt"
+    output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
     if fastq=~/\.gz/
       stats.params = {output:output_file}
-      stas.pipe_ahead=["zcat", fastq]
+      stats.pipe_ahead=["zcat", fastq]
     else
       stats.params = {input:fastq, output:output_file}
     end

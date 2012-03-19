@@ -107,10 +107,9 @@ module Bio
         set_program Bio::Ngs::Utils.binary("fastq_quality_boxplot_graph.sh")
         use_aliases
         add_option :ps, :type => :boolean, :aliases => "-p", :desc => "Generate PostScript (.PS) file. Default is PNG image."
-        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
+        add_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name. default is STDOUT.", :collapse => true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"solexa_quality_statistics\" program.", :collapse => true
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
-        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsBoxPlot
 
       # Solexa-Reads coverage plotter
@@ -127,10 +126,9 @@ module Bio
         set_program Bio::Ngs::Utils.binary("fastq_coverage_graph.sh")
         use_aliases
         add_option :ps, :type => :boolean, :aliases => "-p", :desc => "Generate PostScript (.PS) file. Default is PNG image."
-        add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file."
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file."
+        add_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name. default is STDOUT.", :collapse => true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"solexa_quality_statistics\" program.", :collapse => true
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
-        add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsCoverage
 
 

@@ -172,7 +172,7 @@ module Bio
         else
           # puts "Normlized #{normalize_params(opts[:separator])}"
           # puts "Arguments #{opts[:arguments]}"
-#puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact.inspect
+          #puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact.inspect
         #Note: maybe seprator could be defined as a method  for each wrapped program ?
         Bio::Command.query_command(to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]))
         #[program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
