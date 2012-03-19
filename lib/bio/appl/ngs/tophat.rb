@@ -148,7 +148,7 @@ module Bio
       add_option "tmp-dir", :type => :string
       add_option "zpacker", :type => :string, :aliases => '-z'
       add_option "unmapped-fifo", :type => :boolean, :aliases => '-X'
-      add_option "initial-read-mismatches", :type => :int, :aliases => '-N'
+      add_option "initial-read-mismatches", :type => :numeric, :aliases => '-N'
       add_option "segment-mismatches", :type => :numeric
       add_option "segment-length", :type => :numeric
       add_option "min-closure-exon", :type => :numeric
