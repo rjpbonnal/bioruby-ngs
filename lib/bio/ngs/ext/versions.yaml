@@ -20,6 +20,13 @@ common:
         suffix:   tar.bz2
         desc:     "Burrows-Wheeler Aligner"
         type:     make
+    samtools:
+        version:  0.1.18
+        url:      http://sourceforge.net/projects/samtools/files/samtools/0.1.18/samtools-0.1.18.tar.bz2/download
+        basename: samtools-0.1.18
+        suffix:   tar.bz2
+        desc:     "SAMtools"
+        type:     make       
 
         
 linux:

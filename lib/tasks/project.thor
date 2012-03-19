@@ -20,7 +20,8 @@ class Project < Thor
   method_option :type, :type => :string, :desc => "The project type (e.g. annotation)"
   def new(name)
     empty_directory name
-    empty_directory File.join("#{name}","data")
+    empty_directory File.join("#{name}","raw_data")
+    empty_directory File.join("#{name}","outputs")
     empty_directory File.join("#{name}","tasks")
     empty_directory File.join("#{name}","scripts")
     self.name = name # for template to take the correct values
