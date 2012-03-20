@@ -72,7 +72,7 @@ module Bio
 
     	class Project
     		attr_accessor :samples, :name, :sample_sheet
-    		def initialize(name, root_dir="")
+    		def initialize(name, root_dir=".")
     			@name = name
     			@samples = {}
     			@sample_sheet = nil
@@ -93,7 +93,8 @@ module Bio
     	require 'find'
     	class << self
     		def project_directory?(path=".")
-               projects = Dir.glob([File.join(path,"Project_*"),File.join(path,"Undetermined_indices")])
+    		  Dir.chdir(path) do	
+               projects = Dir.glob(["Project_*","Undetermined_indices"])
                return false if projects.empty?
                into_projects = projects.map do |project|
                  Dir.chdir(project) do |sample|
@@ -104,11 +105,13 @@ module Bio
                if (into_projects.size>1 || (into_projects.first==false))
                	return false
                end
+              end
                true
     		end
 
     		def build(path=".")
-    		  Dir.glob([File.join(path,"Project_*"),File.join(path,"Undetermined_indices")]).inject({}) do |projects, project_dir|
+    		 Dir.chdir(path) do
+    		  Dir.glob(["Project_*","Undetermined_indices"]).inject({}) do |projects, project_dir|
     		    project = Project.new(project_dir.sub(/Project_/,""))
                 projects[project.name] = project
     			Dir.chdir(project_dir) do
@@ -124,6 +127,7 @@ module Bio
     			end
     			projects
     	      end
+    	     end
     		end
     	end
     end #Illumina
