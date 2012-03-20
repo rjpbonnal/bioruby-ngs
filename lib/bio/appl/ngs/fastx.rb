@@ -108,7 +108,7 @@ module Bio
         use_aliases
         add_option :ps, :type => :boolean, :aliases => "-p", :desc => "Generate PostScript (.PS) file. Default is PNG image."
         add_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name. default is STDOUT.", :collapse => true
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"solexa_quality_statistics\" program.", :collapse => true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"fastx_quality_statistics\" program.", :collapse => true
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
       end #ReadsBoxPlot
 
@@ -127,7 +127,7 @@ module Bio
         use_aliases
         add_option :ps, :type => :boolean, :aliases => "-p", :desc => "Generate PostScript (.PS) file. Default is PNG image."
         add_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name. default is STDOUT.", :collapse => true
-        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"solexa_quality_statistics\" program.", :collapse => true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"fastx_quality_statistics\" program.", :collapse => true
         add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
       end #ReadsCoverage
 
@@ -185,6 +185,24 @@ module Bio
         add_option :new_format, :type => :boolean, :aliases => "-N", :desc => "New output format (with more information per nucleotide/cycle)."
         add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
       end #ReadsCoverage      
+
+  # FASTA/Q Nucleotide Distribution Plotter
+
+# Usage: /usr/local/bin/fastx_nucleotide_distribution_graph.sh [-i INPUT.TXT] [-t TITLE] [-p] [-o OUTPUT]
+
+#   [-p]           - Generate PostScript (.PS) file. Default is PNG image.
+#   [-i INPUT.TXT] - Input file. Should be the output of "fastx_quality_statistics" program.
+#   [-o OUTPUT]    - Output file name. default is STDOUT.
+#   [-t TITLE]     - Title - will be plotted on the graph.
+      class NucleotideDistribution
+        include Bio::Command::Wrapper
+        set_program Bio::Ngs::Utils.binary "fastx_nucleotide_distribution_graph.sh"
+        use_aliases
+        add_option :ps, :type => :boolean, :aliases => "-p", :desc => "Generate PostScript (.PS) file. Default is PNG image."
+        add_option :output, :type=>:string, :aliases => "-o", :desc => "Output file name. default is STDOUT.", :collapse => true
+        add_option :input, :type=>:string, :aliases => "-i", :desc => "Input file. Should be the output of \"fastx_quality_statistics\" program.", :collapse => true
+        add_option :title, :type => :string, :aliases => "-t", :desc => "Title (usually the solexa file name) - will be plotted on the graph."
+      end
 
     end #Fastx
   end #Ngs

@@ -46,7 +46,7 @@ class Quality < Thor
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
 
-    output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}.txt"
+    output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}_stats.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
     if fastq=~/\.gz/
       stats.params = {output:output_file}
@@ -56,7 +56,10 @@ class Quality < Thor
     end
     stats.run
     require 'parallel'
-    Parallel.map([[:boxplot,[output_file]],[:reads_coverage,[output_file]]]) do |graph|
+    go_in_parallel = [[:boxplot,[output_file]],
+                      [:reads_coverage,[output_file]],
+                      [:nucleotide_distribution,[output_file]]]
+    Parallel.map(go_in_parallel, in_processes:go_in_parallel.size) do |graph|
       invoke graph.first, graph.last
     end
     #invoke :boxplot, [output_file]
@@ -67,7 +70,7 @@ class Quality < Thor
   method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def boxplot(fastq_quality_stats)
-    output_file = options.output || "#{fastq_quality_stats}.png"
+    output_file = options.output || "#{fastq_quality_stats}_boxplot.png"
     boxplot = Bio::Ngs::Fastx::ReadsBoxPlot.new
     boxplot.params={input:fastq_quality_stats, output:output_file}
     boxplot.run
@@ -84,6 +87,15 @@ class Quality < Thor
     coverage.run
   end
   
+  desc "nucleotide_distribution FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
+  method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
+  method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
+  def nucleotide_distribution(fastq_quality_stats)
+    output_file = options.output || "#{fastq_quality_stats}_nuc_dist.png"
+    nucdistr = Bio::Ngs::Fastx::NucleotideDistribution.new
+    nucdistr.params={input:fastq_quality_stats, output:output_file}
+    nucdistr.run
+  end
 
   desc "illumina_b_profile_raw FASTQ", "perform a profile for reads coming fom Illumina 1.5+ and write the report in a txt file"
   method_option :read_length, :type => :numeric, :required => true
