@@ -35,7 +35,7 @@ Most of this tasks create sub-processes to speed up conversions
 * biongs convert:qseq:fastq:samples_by_lane SAMPLES LANE OUTPUT  # Convert the qseqs for each sample in a specific lane. SAMPLES is an array of index codes separated by commas lane is an integer
 
 === filter
-* biongs filter:by_list QUANTIFICATION LIST  # Extract from QUANTIFICATION rows with a key in LIST
+* biongs filter:by_list TABLE LIST  # Extract from TABLE rows with a key in LIST
 
 === quality
 
