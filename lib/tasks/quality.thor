@@ -45,7 +45,6 @@ class Quality < Thor
   desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
-
     output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}_stats.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
     if fastq=~/\.gz/
@@ -66,6 +65,23 @@ class Quality < Thor
     #invoke :reads_coverage, [output_file]
   end
   
+  desc "illumina_project_stats", "Reports quality of FASTQ files in an Illumina project directory"
+  def illumina_projects_stats(directory=".")
+    if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
+      projects = Bio::Ngs::Illumina.build(directory)
+      projects.each do |project_name, project|
+        project.samples_path.each do |reads_file|
+          #reads_file is an hash with right or left, maybe single also but I didn't code anything for it yet.
+          #TODO: refactor these calls
+          invoke fastq_stats, [File.join(directory, reads_file[:left])] if reads_file.key?(:left)
+          invoke fastq_stats, [File.join(directory, reads_file[:right])] if reads_file.key?(:right)
+        end
+      end
+    else
+      STDERR.puts "illumina_projects_stats: Not an Illumina directory"
+    end
+  end
+
   desc "boxplot FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
   method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."

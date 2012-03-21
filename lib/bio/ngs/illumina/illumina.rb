@@ -1,5 +1,5 @@
 #TODO: refactor this code, I don't like it very much
-
+#TODO: export in JSON format
 module Bio
   module Ngs
     module Illumina

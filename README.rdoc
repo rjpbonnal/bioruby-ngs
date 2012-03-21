@@ -43,6 +43,7 @@ Most of this tasks create sub-processes to speed up conversions
 * biongs quality:fastq_stats FASTQ                             # Reports quality of FASTQ file
 * biongs quality:illumina_b_profile_raw FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+ and write the report in a txt file
 * biongs quality:illumina_b_profile_svg FASTQ --read-length=N  # perform a profile for reads coming fom Illumina 1.5+
+* biongs quality:illumina_project_stats                        # Reports quality of FASTQ files in an Illumina project directory
 * biongs quality:reads FASTQ                                   # perform quality check for NGS reads
 * biongs quality:reads_coverage FASTQ_QUALITY_STATS            # plot reads coverage in bases
 * biongs quality:trim FASTQ                                    # trim all the sequences
