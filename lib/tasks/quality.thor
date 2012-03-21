@@ -69,13 +69,18 @@ class Quality < Thor
   def illumina_projects_stats(directory=".")
     if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
       projects = Bio::Ngs::Illumina.build(directory)
+      files = []
       projects.each do |project_name, project|
         project.samples_path.each do |reads_file|
           #reads_file is an hash with right or left, maybe single also but I didn't code anything for it yet.
           #TODO: refactor these calls
-          invoke fastq_stats, [File.join(directory, reads_file[:left])] if reads_file.key?(:left)
-          invoke fastq_stats, [File.join(directory, reads_file[:right])] if reads_file.key?(:right)
+          
+          files<<[File.join(directory, reads_file[:left])] if reads_file.key?(:left)
+          files<<[File.join(directory, reads_file[:right])] if reads_file.key?(:right)
         end
+      end
+      Parallel.map(files, in_processes:20) do |file|
+        invoke :fastq_stats, file
       end
     else
       STDERR.puts "illumina_projects_stats: Not an Illumina directory"
