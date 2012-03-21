@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-ngs"
-  s.version = "0.4.2.alpha.01"
+  s.version = "0.4.4.alpha.01"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-03-19"
+  s.date = "2012-03-21"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "bio-ngs.gemspec",
     "ext/mkrf_conf.rb",
     "lib/bio-ngs.rb",
+    "lib/bio/appl/ngs/bcftools.rb",
     "lib/bio/appl/ngs/bcl2qseq.rb",
     "lib/bio/appl/ngs/blast.rb",
     "lib/bio/appl/ngs/bowtie-inspect.rb",
@@ -67,6 +68,7 @@ Gem::Specification.new do |s|
     "lib/enumerable.rb",
     "lib/tasks/bwa.thor",
     "lib/tasks/convert.thor",
+    "lib/tasks/filter.thor",
     "lib/tasks/history.thor",
     "lib/tasks/homology.thor",
     "lib/tasks/ontology.thor",
