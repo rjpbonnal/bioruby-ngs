@@ -34,6 +34,9 @@ Most of this tasks create sub-processes to speed up conversions
 * biongs convert:qseq:fastq:by_lane_index LANE INDEX OUTPUT      # Convert the qseq from a line and index in a fastq file
 * biongs convert:qseq:fastq:samples_by_lane SAMPLES LANE OUTPUT  # Convert the qseqs for each sample in a specific lane. SAMPLES is an array of index codes separated by commas lane is an integer
 
+=== filter
+* biongs filter:by_list QUANTIFICATION LIST  # Extract from QUANTIFICATION rows with a key in LIST
+
 === quality
 
 * biongs quality:boxplot FASTQ_QUALITY_STATS                   # plot reads quality as boxplot
