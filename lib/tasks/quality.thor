@@ -61,11 +61,10 @@ class Quality < Thor
     Parallel.map(go_in_parallel, in_processes:go_in_parallel.size) do |graph|
       invoke graph.first, graph.last
     end
-    #invoke :boxplot, [output_file]
-    #invoke :reads_coverage, [output_file]
   end
   
   desc "illumina_project_stats", "Reports quality of FASTQ files in an Illumina project directory"
+  method_option :cpus, :type=>:numeric, :default=>4, :aliases=>'-c', :desc=>'Number of processes to use.'
   def illumina_projects_stats(directory=".")
     if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
       projects = Bio::Ngs::Illumina.build(directory)
@@ -79,7 +78,7 @@ class Quality < Thor
           files<<[File.join(directory, reads_file[:right])] if reads_file.key?(:right)
         end
       end
-      Parallel.map(files, in_processes:20) do |file|
+      Parallel.map(files, in_processes:options[:cpus]) do |file|
         invoke :fastq_stats, file
       end
     else
