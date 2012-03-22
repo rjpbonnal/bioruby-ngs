@@ -80,7 +80,7 @@ module Bio
     		end
 
     		def path
-              File.join(@root_dir,"Project_#{name}")
+              File.join(@root_dir, (name=~/Undetermined_indices/ ? name : "Project_#{name}"))
     		end
 
     		def samples_path
