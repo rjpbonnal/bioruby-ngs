@@ -230,11 +230,13 @@ In this case internally CSV library has been used to parse in an easy way the fi
 
 = REQUIREMENTS
 * http://hannonlab.cshl.edu/fastx_toolkit/ (the gem tries to install this tool by itself)
-* http://www.gnuplot.info/
+* http://www.gnuplot.info/ tested on version 4.6
 
 Pleas follow the instruction for your own distribution/operating system
 
 = TODO
+* Write Tutorial for Wrapper & Pipes
+* Write Tutorial for handling Illumina/Fastq.gz with BioNGS Bio::Ngs::Illumina::FastqGz
 * Report the version of every software installed/used from bio-ngs 
 * Develop fastq quality reports with RibuVis ?
 * Write documentation
@@ -244,8 +246,8 @@ Pleas follow the instruction for your own distribution/operating system
 * BRANCH:misk_tasks Explore possibility to user DelayedJobs
 * biongs ann:ensembl:gtf:features:categorize GTF GTF categorize also by chromosome not only by BioType
 * configuration file input,output, experimental design
-* include fastx toolkit, download and compile
-* how to put in background tasks that can be run in parallel
+* DONE: include fastx toolkit, download and compile
+* ANSWER: how to put in background tasks that can be run in parallel? Use Parallel (see code for quality:illumina_project_stats)
 * is it possible to establish a relation between input data and output data ? like fastq task_selected output/s
 * add description for developers on howto include news external tool with versions.yaml
  
