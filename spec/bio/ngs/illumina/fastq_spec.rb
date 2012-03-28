@@ -12,29 +12,29 @@ describe "Illumina Fastq compressed with Gzip" do
   end
 
 
-describe Bio::Ngs::Illumina::FastqGz, "#gets_uncompressed" do
+describe Bio::Ngs::Illumina::FastqGz, "::gets_uncompressed" do
   it "returns reads from Illumina fastq compressed archive" do
-  	reads=[]
   	ftest=File.join(@data_dir, 'test.fastq.gz')
-    Bio::Ngs::Illumina::FastqGz.gets_uncompressed(ftest) do |read_header, reader_seq, read_splitter, read_qual|
-      reads<<read_header
+    n_reads = Bio::Ngs::Illumina::FastqGz.gets_uncompressed(ftest) do |read_header, reader_seq, read_splitter, read_qual|
+      read_header
     end
-     reads.size.should be 10
+     n_reads.should be 10
   end
 end
 
-describe Bio::Ngs::Illumina::FastqGz, "#gets_filtered" do
+describe Bio::Ngs::Illumina::FastqGz, "::gets_filtered" do
   it "returns the filterd reads from Illumina" do
   	reads_header = ""
   	ftest=File.join(@data_dir, 'test.fastq.gz')
-    Bio::Ngs::Illumina::FastqGz.gets_filtered(ftest) do |read_header, reader_seq, read_splitter, read_qual|
+    n_reads = Bio::Ngs::Illumina::FastqGz.gets_filtered(ftest) do |read_header, reader_seq, read_splitter, read_qual|
       reads_header+=read_header
     end
     reads_header.should eq "@H125:125:D0C0DACXX:5:1307:20682:66201 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20749:66215 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20707:66224 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20846:66039 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20878:66172 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20854:66177 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20830:66194 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:20773:66233 1:N:0:ATCACG\n@H125:125:D0C0DACXX:5:1307:21088:66002 1:N:0:ATCACG\n"
+    n_reads.should be 9
   end
 end
 
-describe Bio::Ngs::Illumina::FastqGz, "#gets_compressed" do
+describe Bio::Ngs::Illumina::FastqGz, "::gets_compressed" do
   it "returns compressed reads by Gzip" do
   	reads=[]
   	ftest=File.join(@data_dir, 'test.fastq.gz')

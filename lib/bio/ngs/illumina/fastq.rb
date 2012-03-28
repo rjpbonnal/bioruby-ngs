@@ -1,39 +1,51 @@
 module Bio
   module Ngs
     module Illumina
+      # module Fastx
+      #   include Fs::Utility
+      # end #Fastx
+
       module FastqGz
-      	require 'zlib'
+        require 'zlib'
         class << self
 
+        # Return the number of reads processed
         def gets_uncompressed(file, &block)
+          n_reads = 0
           Zlib::GzipReader.open(file) do |gz|
-          while  header=gz.gets
-	        seq, splitter, qual = gz.gets, gz.gets, gz.gets
-          	yield header, seq, splitter, qual
-          end #while
-         gz.close
-        end #GzipReader
-
+            while  header=gz.gets
+              #seq, splitter, qual = gz.gets, gz.gets, gz.gets
+              n_reads+=1
+              #yield header, seq, splitter, qual
+              yield header, gz.gets, gz.gets, gz.gets
+            end #while
+            gz.close
+          end #GzipReader
+          n_reads
         end #gets_uncompressed
 
+        
         def gets_compressed(file, &block)
-        	Zlib::GzipWriter.open(file) do |gz|
-        	  yield gz
-        	  gz.close
-        	end
-        end
+          Zlib::GzipWriter.open(file) do |gz|
+           yield gz
+           gz.close
+         end
+       end
 
-      	def gets_filtered(file, &block)
-      		gets_uncompressed(file) do |header, seq, splitter, qual|
-      			if header=~/^@.* [^:]*:N:[^:]*:/ 
-      		      #pass to the block header, fasta, quality splitter, quality
-                  yield header, seq, splitter, qual
-                end
-        end #GzipReader
+        # Return the number of reads processed
+        def gets_filtered(file, &block)
+          n_reads = 0
+          gets_uncompressed(file) do |header, seq, splitter, qual|
+           if header=~/^@.* [^:]*:N:[^:]*:/ 
+            n_reads+=1
+                #pass to the block header, fasta, quality splitter, quality
+                yield header, seq, splitter, qual
+              end
+          end #GzipReader
+          n_reads
         end #gets_filtered
       end #FastqGz
 
-  
   # desc "illumina_filter [DIR(s)]", "Filter the data using Y/N flag in FastQ headers (Illumina). Search for fastq.gz files within directory(ies) passed."
   # method_option :compression, :type => :string, :default => "pigz"
   # method_option :cpu, :type => :numeric, :default => 4
@@ -110,9 +122,9 @@ module Bio
   #       trim_position = options[:read_length]
   #       lines = File.read(file+".stats").split("\n")
   #       if lines.size == 0
-		#       raise RuntimeError, "Error in Quality Stats file! Check fastx_quality_stat output"
-	 #      end
-	 #      read_length = (lines.size) -1
+    #       raise RuntimeError, "Error in Quality Stats file! Check fastx_quality_stat output"
+   #      end
+   #      read_length = (lines.size) -1
   #       lines[1..-1].each_with_index do |line,index|
   #         if line.split("\t")[7].to_i <= options[:min_qual]
   #           trim_position = index +1

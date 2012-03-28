@@ -53,6 +53,8 @@ require 'bio/appl/ngs/bwa'
 
 #Illumina utility for projects
 require 'bio/ngs/illumina/illumina'
+require 'bio/ngs/fs'
+
 # history 
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
 Bio::Ngs::Utils.extend_system_path
