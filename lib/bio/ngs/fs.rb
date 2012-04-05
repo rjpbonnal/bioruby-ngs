@@ -15,15 +15,31 @@ module Bio
                   	while line = file.gets
                   		fmerge << line
                   	end
-                  	
-                    # file.each_line do |line|
-                    #   fmerge.puts line
-                    # end #each_line
                   end #read
                 end #each
               end #write
             end #if
         end #cat
+        alias :merge :cat
+
+
+        def files(everything, suffix=nil)
+          if everything.is_a? String
+            if File.file? everything
+              [File.expand_path(everything)]
+            elsif File.directory? everything
+                files(Dir.glob(File.join(everything, suffix.nil? ? "*" : "*"+suffix)).select{|item| File.file? item}).flatten
+            elsif everything=~/\*/
+              files(Dir.glob(everything)).flatten
+            elsif everything=~/[ ,:;]/
+             files(everything.split(/[ ,:;]/))
+            end
+          elsif everything.is_a? Array
+            everything.map do |item|
+              files(item)
+            end.flatten
+          end
+        end
       end  #self
     end #FS
   end #Ngs

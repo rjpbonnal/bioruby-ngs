@@ -5,6 +5,22 @@ module Bio
       #   include Fs::Utility
       # end #Fastx
 
+
+      def filter(file)
+        if File.exists? file
+          filtered_file_basename = File.basename(file)
+          filtered_dir =  File.join(File.dirname,"filtered")
+          Dir.mkdir(filtered_dir) unless Dir.exists?(filtered_dir)
+          FastqGz.gets_compressed(filtered_file_basename) do |compress|
+            FastqGz.gets_filtered(ftest) do |read_header, reader_seq, read_splitter, read_qual|
+             compress.write(read_header + reader_seq + read_splitter + read_qual)
+            end
+          end
+       else
+        raise "Bio::Ngs::Illumina.filter : unkown file #{file}"
+       end 
+      end
+
       module FastqGz
         require 'zlib'
         class << self

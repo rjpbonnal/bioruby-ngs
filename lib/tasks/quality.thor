@@ -59,11 +59,11 @@ class Quality < Thor
                       [:reads_coverage,[output_file]],
                       [:nucleotide_distribution,[output_file]]]
     Parallel.map(go_in_parallel, in_processes:go_in_parallel.size) do |graph|
-      invoke graph.first, graph.last
+      send graph.first, graph.last
     end
   end
   
-  desc "illumina_project_stats", "Reports quality of FASTQ files in an Illumina project directory"
+  desc "illumina_projects_stats", "Reports quality of FASTQ files in an Illumina project directory"
   method_option :cpus, :type=>:numeric, :default=>4, :aliases=>'-c', :desc=>'Number of processes to use.'
   def illumina_projects_stats(directory=".")
     if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
@@ -74,12 +74,12 @@ class Quality < Thor
           #reads_file is an hash with right or left, maybe single also but I didn't code anything for it yet.
           #TODO: refactor these calls
           
-          files<<[File.join(directory, reads_file[:left])] if reads_file.key?(:left)
-          files<<[File.join(directory, reads_file[:right])] if reads_file.key?(:right)
+          files<<File.join(directory, reads_file[:left]) if reads_file.key?(:left)
+          files<<File.join(directory, reads_file[:right]) if reads_file.key?(:right)
         end
       end
       Parallel.map(files, in_processes:options[:cpus]) do |file|
-        invoke :fastq_stats, file
+        fastq_stats file
       end
     else
       STDERR.puts "illumina_projects_stats: Not an Illumina directory"
