@@ -43,11 +43,7 @@ class Filter < Thor
       nlines.times.each{|i| flist.readline}
     end
     flist.readline if options[:skip_list_header]
-<<<<<<< HEAD
-    list_dictionary = {}#Hash.new {|hash,key| hash[key] = :fool}
-=======
     list_dictionary = Hash.new {|hash,key| hash[key] = :fool}
->>>>>>> master
 
     #TODO: refactor, find a smarter way to distinguish between fuse or not
     if fuse
@@ -78,12 +74,9 @@ class Filter < Thor
     if (nlines = options[:skip_table_lines])
       nlines.times.each{|i| skipped_lines << ftable.readline}
     end
-<<<<<<< HEAD
-    skipped_lines << ftable.readline if options[:skip_table_header]
-=======
 
-    skipped_lines << ftable.readline unless options[:skip_table_header]
->>>>>>> master
+    skipped_lines << ftable.readline if options[:skip_table_header]
+
     #list_dictionary = Hash.new {|hash,key| hash[key] = :fool}
 
     fout = (output_name=options[:output]).nil? ? $stdout : File.open(output_name,'w')
@@ -97,14 +90,9 @@ class Filter < Thor
                   end
     ftable.each_line do |line|
       #search for a key in the dictionary/list 
-<<<<<<< HEAD
-      if list_dictionary.key?(table_key=line.split(delimiter)[table_key_idx]) || options[:exclude]
-        fout.puts fuse_lambda.call(line,list_dictionary, table_key)
-=======
       #if list_dictionary.key?(line.split(delimiter)[table_key_idx]) || options[:exclude]
       if find_key_in_dictionary(line.split(delimiter)[table_key_idx], list_dictionary, options[:in_column_delimiter]) || options[:exclude]
         fout.puts line
->>>>>>> master
       end
     end
     ftable.close
