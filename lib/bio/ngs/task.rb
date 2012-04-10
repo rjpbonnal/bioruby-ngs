@@ -15,7 +15,7 @@ class Thor
 
     def run(instance, args=[])
       public_method?(instance) ? instance.send(name, *args) : instance.class.handle_no_task_error(name)
-      save_history(instance,args) unless instance.class == Bio::Ngs::Runner or instance.class == Thor::Sandbox::History
+     # save_history(instance,args) unless instance.class == Bio::Ngs::Runner or instance.class == Thor::Sandbox::History
     rescue ArgumentError => e
       handle_argument_error?(instance, e, caller) ?
       instance.class.handle_argument_error(self, e) : (raise e)
