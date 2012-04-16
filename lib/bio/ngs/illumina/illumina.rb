@@ -36,7 +36,7 @@ module Bio
     		def build(path=".")
     		 Dir.chdir(path) do
     		  Dir.glob(["Project_*","Undetermined_indices"]).inject({}) do |projects, project_dir|
-    		    project = Project.new(project_dir.sub(/Project_/,""))
+    		    project = Project.new(project_dir.sub(/Project_/,""),path)
                 projects[project.name] = project
     			Dir.chdir(project_dir) do
                   Dir.glob("Sample*").each do |sample_dir|
