@@ -88,7 +88,7 @@ module Bio
         add_option "num-threads", :type => :numeric, :aliases => '-p', :default => 1
         add_option "seed", :type => :numeric
         add_option "GTF", :type => :string, :aliases => '-G'
-        add_option "GTF-guide", :type => :boolean, :aliases => '-g'
+        add_option "GTF-guide", :type => :string, :aliases => '-g'
         add_option "mask-file", :type => :string, :aliases => '-M'
         add_option "frag-bias-correct", :type => :string, :aliases => '-b'
         add_option "multi-read-correct", :type => :boolean, :aliases => '-u'
@@ -130,8 +130,8 @@ module Bio
         
         add_iterator_for :genes
         add_iterator_for :isoforms
-      end #Quantification  
-
+      end #Quantification
+      
       # cuffdiff v1.3.0 (3022)
       # -----------------------------
       # Usage:   cuffdiff [options] <transcripts.gtf> <sample1_hits.sam> <sample2_hits.sam> [... sampleN_hits.sam]
