@@ -131,7 +131,15 @@ module Bio
         add_iterator_for :genes
         add_iterator_for :isoforms
       end #Quantification
-      
+
+
+      class QuantificationDenovo  < Quantification
+        set_program Bio::Ngs::Utils.binary("cufflinks")
+        delete_option "GTF"
+        add_option "GTF-guide", :type => :string, :aliases => '-g'
+#        add_alias "GTF", "GTF-guide"
+      end
+
       # cuffdiff v1.3.0 (3022)
       # -----------------------------
       # Usage:   cuffdiff [options] <transcripts.gtf> <sample1_hits.sam> <sample2_hits.sam> [... sampleN_hits.sam]
