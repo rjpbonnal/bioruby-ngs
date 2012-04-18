@@ -215,6 +215,15 @@ module Bio
       end
 
       module ClassMethods
+
+        # Propagate class variable in the superclass to the inherited class,
+        # so options defined in a previous wrap can be recicled.
+        def inherited(subclass)
+          self.instance_variables.each do |var|
+            subclass.instance_variable_set(var, self.instance_variable_get(var))
+          end
+        end
+
         #TODO: do I need to set a default program name using class name or not ?
         #       or do we need to specify somewhere a defaitl path and looking for a real binary ?
 
@@ -241,6 +250,16 @@ module Bio
         def add_option(name, opt={})
           @options = (@options || {}).merge(name.to_s=>opt)
         end
+
+        # Remove an option from the class
+        def delete_option(name)
+          @options.delete(name)
+        end
+
+        # An alias reuse the properties of a specific method and giving them another name
+        # def add_alias(source, dest)
+        #   @options = (@options || {}).merge(name.to_s=>@options[dest.to_s]) unless @options[dest]
+        # end
 
         alias set_program program=
         alias set_sub_program sub_program=
