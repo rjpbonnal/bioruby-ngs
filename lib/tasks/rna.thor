@@ -25,10 +25,10 @@ class Rna < Thor
     wrapper.run :arguments=>[bam], :separator => "="
   end
 
-  desc "quantdenovo GTF OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
-  Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf, outputdir, bam|
+  desc "quantdenovo GTF_guide OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
+  Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf_guide, outputdir, bam|
     wrapper.params = task.options
-    wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF-guide" => gtf }
+    wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF-guide" => gtf_guide }
     wrapper.run :arguments=>[bam], :separator => "="
   end
 

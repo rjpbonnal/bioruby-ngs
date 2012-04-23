@@ -24,9 +24,12 @@ require 'bio'
 require 'active_record'
 require 'sqlite3'
 
-# NGS classes
+#Generic classes
 require 'enumerable'
 require 'wrapper'
+require 'meta'
+
+# NGS classes
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
 require 'bio/ngs/quality'

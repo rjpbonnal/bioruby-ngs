@@ -1,17 +1,20 @@
 #TODO: refactor this code, I don't like it very much
 #TODO: export in JSON format
+require 'meta'
+
 module Bio
   module Ngs
     require 'json'
     module Illumina
-    	class Project
-    		attr_accessor :samples, :name, :sample_sheet, :root_dir
+    	class Project < Meta::Pool
+    		attr_accessor :samples, :sample_sheet, :root_dir
     		def initialize(name, root_dir=".")
-    			@name = name
-    			@samples = {}
+          super(name)
     			@sample_sheet = nil
     			@root_dir = root_dir
     		end
+
+        alias :samples :pool
 
     		def path
               File.join(@root_dir, (name=~/Undetermined_indices/ ? name : "Project_#{name}"))
