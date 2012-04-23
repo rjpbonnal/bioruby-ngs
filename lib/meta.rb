@@ -1,11 +1,7 @@
 module Meta
-  class File
-    attr_accessor :name, :metadata
 
-    def initialize(name, metadata={})
-      @name = name
-      @metadata = metadata
-    end
+  module Data
+    attr_accessor :metadata
 
     def ==(other)
       if self.name==other.name && self.metadata==other.metadata
@@ -29,6 +25,16 @@ module Meta
     def [](tag)
       metadata[tag]
     end
+  end #Data
+
+  class File
+    include Data
+    attr_accessor :name
+
+    def initialize(name, metadata={})
+      @name = name
+      @metadata = metadata
+    end
 
     #TODO: make this class generic and available to other classes
     #TODO: include or subclass original class File, I need to borrow most of its methods. File.exists? File.open File.read
@@ -43,10 +49,12 @@ module Meta
 
   #TODO: this class could be generalized
   class Pool
+    include Data
     attr_accessor :name, :pool
     def initialize(name)
       @name = name
       @pool = {}
+      @metadata = {}
     end
 
     def add(element)
@@ -59,7 +67,7 @@ module Meta
     alias :<< :add
 
     def get(name_or_tag_or_value=nil)
-      get_by_name(name_or_tag_or_value) || get_by_tag(name_or_tag_or_value) || get_by_value(name_or_tag_or_value)
+      get_by_name(name_or_tag_or_value) || get_by_tag(name_or_tag_or_value) || get_by_value(name_or_tag_or_value) || get_down_to_childer(name_or_tag_or_value)
     end #get
 
     def get_by_name(name)
@@ -74,20 +82,41 @@ module Meta
       get_generic :value, val
     end #get_by_value
 
-    def get_by_tag_and_value(tag,val)
-        res = []
-        @pool.each_pair do |name, meta|
-          res << meta if meta.has_tag?(tag) && meta[tag]==val
-        end
-        if res.empty?
-          nil
-        elsif res.size == 1
-          res.first
+    def get_by_tag_and_value(tag, val)
+      res = []
+      @pool.each_pair do |name, meta|
+        if meta.has_tag?(tag) && meta[tag]==val
+          res << meta
         else
-          res
+          @pool.each_pair do |name, element|
+            res << element.get_by_tag_and_value(tag, val) if element.respond_to?(:get_by_tag_and_value) && element.respond_to?(:pool)
+          end
         end
+      end
+      if res.empty?
+        nil
+      elsif res.size == 1
+        res.first
+      else
+        res.flatten
+      end
     end #get_by_tag_and_value
 
+    def get_down_to_childer(x)
+      res = []
+      @pool.each_pair do |name, element|
+        res << element.get(x) if element.respond_to?(:get) && element.respond_to?(:pool)
+      end
+      res.flatten
+    end
+
+    def to_json(*a)
+      {
+        "json_class"   => self.class.name,
+        "name"         => name,
+        "filenames"    => metadata
+      }.to_json(*a)
+    end
 
     private
     def get_generic(type, data)
@@ -95,7 +124,9 @@ module Meta
       if [:tag,:value].include? type
         res = []
         @pool.each_pair do |name, meta|
-          res << meta if meta.send("has_#{type}?", data)
+          if meta.send("has_#{type}?", data)
+            res << meta
+          end
         end
         if res.empty?
           nil

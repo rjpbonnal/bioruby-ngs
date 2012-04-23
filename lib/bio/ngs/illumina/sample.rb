@@ -1,6 +1,7 @@
 #TODO: refactor this code, I don't like it very much
 #TODO: export in JSON format
 require 'meta'
+require 'securerandom'
 
 module Bio
   module Ngs
@@ -21,7 +22,8 @@ module Bio
         end
 
         def add_filename(filename)
-          metadata = {}
+          filename_metadata = filename.dup
+          metadata = {:filename=>filename_metadata}
           #TODO maybe could be usefult to leave this to end used, define what is a filtered/trimmed file. Define a regexp for each category.
           if filename=~/trimmed|TRIMMED/
             metadata[:trimmed] = true
@@ -48,12 +50,12 @@ module Bio
             if filename=~/R._(\d*).fastq(.gz)?/
               metadata[:chunks]=$1
             end
-            self.add Meta::File.new(filename, metadata)
+            self.add Meta::File.new(SecureRandom.uuid, metadata)
           end
 
-          def get(tag=filtered)
-            @files.get(tag)
-          end
+#REMOVE          # def get(tag=filtered)
+          #   @files.get(tag)
+          # end
 
           def filenames_paths
             @filenames.keys.map do |filename|
@@ -61,13 +63,13 @@ module Bio
             end.flatten
           end
 
-          def to_json(*a)
-            {
-              "json_class"   => self.class.name,
-              "name"         => name,
-              "filenames"    => filenames_paths
-            }.to_json(*a)
-          end
+          # def to_json(*a)
+          #   {
+          #     "json_class"   => self.class.name,
+          #     "name"         => name,
+          #     "filenames"    => filenames_paths
+          #   }.to_json(*a)
+          # end
         end #Sample
       end #Illumina
     end #Ngs
