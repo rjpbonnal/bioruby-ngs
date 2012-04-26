@@ -3,16 +3,16 @@ require 'thor/base'
 require 'meta'
 
 describe do
-  context Meta::File do
+  context Meta::Data do
 
-    mf = Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
+    mf = Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
 
     it 'has name' do
       mf.name.should == 'filename.rb'
     end #name
 
     it 'has tags' do
-      mf.metadata.should == {type:'generic', user:'duck', group:'workers'}
+      mf.metadata.should == {type:'generic', user:'duck', group:'workers', :name => "filename.rb"}
     end #name
 
   end #File
@@ -21,7 +21,7 @@ describe do
 
   describe Meta::Pool do
     before(:each) do
-      @mf = Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
+      @mf = Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
       @mp = Meta::Pool.new(:my_pool)
     end
 
@@ -38,30 +38,32 @@ describe do
   describe "#add" do
     it 'adds a file to the pool' do
       @mp.add @mf
-      @mp.pool.first[1].should == Meta::File.new("filename.rb", {:type=>"generic", :user=>"duck", :group=>"workers"})
+      @mp.pool.first[1].should == Meta::Data.new("filename.rb", {:type=>"generic", :user=>"duck", :group=>"workers"})
     end
   end
 
   describe '#get_by_name' do
     it do
       @mp.add @mf
-      @mp.get_by_name('filename.rb').should == Meta::File.new("filename.rb", {:type=>"generic", :user=>"duck", :group=>"workers"})
+      @mp.get_by_name('filename.rb').should == Meta::Data.new("filename.rb", {:type=>"generic", :user=>"duck", :group=>"workers"})
     end
   end
 
   describe '#get_by_tag' do
     it do
       @mp.add @mf      
-      @mp.add Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
-      @mp.get(:type).should == [ Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
+      @mp.add Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      @mp.get(:type).pool.should ==  @mp.pool
+      #[ Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
     end
   end
 
   describe '#get_by_tag_and_value' do
     it do
       @mp.add @mf      
-      @mp.add Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
-      @mp.get_by_tag_and_value(:group, "workers").should == [ Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]      
+      @mp.add Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      @mp.get_by_tag_and_value(:group, "workers").pool.should == @mp.pool
+      #[ Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]      
     end
   end
 
@@ -71,17 +73,18 @@ describe do
       @mp.add @mf
     end
     it 'looks for name' do
-      @mp.add Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
-      @mp.get('filename.rb').should == Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
+      @mp.add Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      @mp.get('filename.rb').should == Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'})
     end
     it 'looks for tag' do
-      @mp.add Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers', size:10})
-      @mp.get(:size).should == Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers', size:10})
+      @mp.add Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers', size:10})
+      @mp.get(:size).first.should == Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers', size:10})
     end
     it 'looks for value' do
-      @mp.add Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
-      @mp.get("workers").should == [ Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'}),
-      Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
+      @mp.add Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      @mp.get("workers").pool.should == @mp.pool
+      #[ Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'}),
+      #Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
     end
   end
 
@@ -91,15 +94,15 @@ describe do
       @mp.add @mf
     end
     it 'gets only one file' do
-      mft = Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      mft = Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
       @mp.add mft
-      @mp.get_by_value("donald").should == mft
+      @mp.get_by_value("donald").first.should == mft
     end
 
     it 'gets multiple files' do
-      mft = Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
+      mft = Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})
       @mp.add mft
-      @mp.get_by_value("workers").should == [ Meta::File.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::File.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
+      @mp.get_by_value("workers").pool.should == @mp.pool #[ Meta::Data.new('filename.rb', {type:'generic', user:'duck', group:'workers'}), Meta::Data.new('filename_spec.rb', {type:'spec', user:'donald', group:'workers'})]
     end
 
   end

@@ -6,8 +6,16 @@ require 'securerandom'
 module Bio
   module Ngs
     module Illumina
+      class MetaReads < Meta::Data
+        def initialize(name, metadata={})
+          super(name, metadata)
+          metadata[:type]=:file
+          metadata[:format]=:fastq
+        end
+      end #File
+
       class Sample < Meta::Pool
-        attr_accessor :name #, :filenames
+        #attr_accessor :name #, :filenames
         def initialize(name, parent=nil)
           super(name)
           @parent = parent
@@ -50,7 +58,7 @@ module Bio
             if filename=~/R._(\d*).fastq(.gz)?/
               metadata[:chunks]=$1
             end
-            self.add Meta::File.new(SecureRandom.uuid, metadata)
+            self.add MetaReads.new(SecureRandom.uuid, metadata)
           end
 
 #REMOVE          # def get(tag=filtered)

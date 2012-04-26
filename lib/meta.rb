@@ -1,7 +1,21 @@
 module Meta
 
-  module Data
+  class Data
     attr_accessor :metadata
+
+    def initialize(name, metadata={})
+      @metadata={}
+      @metadata[:name]=name
+      @metadata.merge! metadata
+    end
+
+    def name
+      @metadata[:name]
+    end
+
+    def name=(val)
+      @metadata[:name]=val
+    end
 
     def ==(other)
       if self.name==other.name && self.metadata==other.metadata
@@ -25,49 +39,73 @@ module Meta
     def [](tag)
       metadata[tag]
     end
-  end #Data
 
-  class File
-    include Data
-    attr_accessor :name
 
-    def initialize(name, metadata={})
-      @name = name
-      @metadata = metadata
+    def to_json(*a)
+      {
+        "json_class"   => self.class.name,
+        "name"         => name,
+        "metadata"    => metadata
+      }.to_json(*a)
     end
+    # end #Data
+
+    # class File
+    #   include Data
+
 
     #TODO: make this class generic and available to other classes
     #TODO: include or subclass original class File, I need to borrow most of its methods. File.exists? File.open File.read
 
     #TODO: configure a generic classifier to add any kind of tag passing a block do/yield?
-
-    # write in the metadata[:tag_name] the value returned by block
-    # def self.attach_tag(tag_name, &block)
-    #   @metadata[tag_name.to_sym]=block.call
-    # end
   end #File
 
   #TODO: this class could be generalized
-  class Pool
-    include Data
-    attr_accessor :name, :pool
-    def initialize(name)
-      @name = name
+  class Pool < Data
+    include Enumerable
+    # include Data
+    attr_accessor :pool 
+    def initialize(name=SecureRandom.uuid)
+      super(name)
       @pool = {}
-      @metadata = {}
     end
 
+
+    def each &block
+      @pool.each_pair{|name, member| block.call(member)}
+    end
+
+    # TODO implement <=>
+
+
     def add(element)
-      if @pool.key? element.name
-        @pool[element.name].metadata.merge! element.metadata
-      else
-        @pool[element.name]=element
+      unless element.nil?
+        if @pool.key? element.name #TODO I don't know if this is correct.
+          @pool[element.name].metadata.merge! element.metadata
+        else
+          @pool[element.name]=element
+        end
       end
     end
     alias :<< :add
 
+    def empty?
+      @pool.empty?
+    end
+
+    def names
+      @pool.keys
+    end
+
     def get(name_or_tag_or_value=nil)
+      # TODO implement recursive query or passing multiple values as hash, insercet or etc.....
+      #       if name_or_tag_or_value.is_a? Hash
+      #         name_or_tag_or_value.each_pair  do |tag, value|
+      #
+      #         end
+      #       else
       get_by_name(name_or_tag_or_value) || get_by_tag(name_or_tag_or_value) || get_by_value(name_or_tag_or_value) || get_down_to_childer(name_or_tag_or_value)
+      # end
     end #get
 
     def get_by_name(name)
@@ -83,58 +121,38 @@ module Meta
     end #get_by_value
 
     def get_by_tag_and_value(tag, val)
-      res = []
+      ret_pool = Pool.new
       @pool.each_pair do |name, meta|
         if meta.has_tag?(tag) && meta[tag]==val
-          res << meta
+          ret_pool.add meta
         else
           @pool.each_pair do |name, element|
-            res << element.get_by_tag_and_value(tag, val) if element.respond_to?(:get_by_tag_and_value) && element.respond_to?(:pool)
+            ret_pool.add element.get_by_tag_and_value(tag, val) if element.respond_to?(:get_by_tag_and_value) && element.respond_to?(:pool)
           end
         end
       end
-      if res.empty?
-        nil
-      elsif res.size == 1
-        res.first
-      else
-        res.flatten
-      end
+      ret_pool unless ret_pool.empty?
     end #get_by_tag_and_value
 
     def get_down_to_childer(x)
-      res = []
+      ret_pool = Pool.new
       @pool.each_pair do |name, element|
-        res << element.get(x) if element.respond_to?(:get) && element.respond_to?(:pool)
+        ret_pool.add element.get(x) if element.respond_to?(:get) && element.respond_to?(:pool)
       end
-      res.flatten
-    end
-
-    def to_json(*a)
-      {
-        "json_class"   => self.class.name,
-        "name"         => name,
-        "filenames"    => metadata
-      }.to_json(*a)
+      ret_pool unless ret_pool.empty?
     end
 
     private
     def get_generic(type, data)
+      ret_pool = Pool.new
       type = type.to_sym
       if [:tag,:value].include? type
-        res = []
         @pool.each_pair do |name, meta|
           if meta.send("has_#{type}?", data)
-            res << meta
+            ret_pool.add(meta)
           end
         end
-        if res.empty?
-          nil
-        elsif res.size == 1
-          res.first
-        else
-          res
-        end
+        ret_pool unless ret_pool.empty?
       else
         raise ArgumentError, "#{type} is not a valid parameter, use only tag or value"
       end # valid parameters
