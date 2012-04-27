@@ -64,7 +64,7 @@ class Rna < Thor
     # end #file
     wrapper.params = task.options
     wrapper.params = {"ref-gtf"=>gtf_ref, "ref-sequence"=>fasta_ref}
-    wrapper.run :arguments=>[assembly_gtf_list]
+    wrapper.run :arguments=>[assembly_gtf_list], :separator => "="
     # Dir.chdir("../")
   end
 
