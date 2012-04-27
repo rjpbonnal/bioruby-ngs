@@ -49,6 +49,25 @@ class Rna < Thor
     wrapper.run :arguments=>[gtfs_quantification.split(',')]
     # Dir.chdir("../")
   end
+
+
+  desc "merge GTF_REF FASTA_REF ASSEMBLY_GTF_LIST", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
+  Bio::Ngs::Cufflinks::Merge.new.thor_task(self, :merge) do |wrapper, task, gtf_ref, fasta_ref, assembly_gtf_list|
+    # unless Dir.exists?(outputdir)
+    #   Dir.mkdir(outputdir)
+    # end
+    # Dir.chdir(outputdir)
+    # #I assume GTS_QUANTIFICATION is a comma separated list of single gtf files
+    # gtf_tracking_filename = "#{outputdir}.gtf_tracking"
+    # File.open(gtf_tracking_filename, 'w') do |file|
+    #   file.puts gtfs_quantification.gsub(/,/,"\n")
+    # end #file
+    wrapper.params = task.options
+    wrapper.params = {"ref-gtf"=>gtf_ref, "ref-sequence"=>fasta_ref}
+    wrapper.run :arguments=>[assembly_gtf_list]
+    # Dir.chdir("../")
+  end
+
   
   desc "mapquant DIST INDEX OUTPUTDIR FASTQS", "map and quantify"
   method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose
