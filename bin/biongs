@@ -2,6 +2,7 @@
 
 module Bio
   module Ngs
+    LoadBaseTasks = true
 
     path = File.expand_path(File.dirname(__FILE__))
     $:<<File.join(File.dirname(path),"lib")

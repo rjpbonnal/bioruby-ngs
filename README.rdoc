@@ -224,6 +224,17 @@ This is an example of CuffDiff, parsing genes.fpkm_tracking file:
 
 In this case internally CSV library has been used to parse in an easy way the file, there is a lack of performances with huge files, gaining in flexibility.
 
+== Loading or Not tasks from outside
+If in your external library or binary you define LoadBaseTasks in Bio::Ngs (as a costant) requiring 'bio-ngs' bio-ngs's tasks will not load but only the libraries.
+    module Bio
+      module Ngs
+        LoadBaseTasks = true
+      end
+    end
+
+This is something useful if you want to develop a separate binary which uses bio-ngs librariys.
+Is not yet possible to define a list of desired tasks to load.
+
 === Notes
 * It's possible to add more sugar and we are working hard on it
 * aliases are not well supported at this time. ToDo
