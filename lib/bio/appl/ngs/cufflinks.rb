@@ -615,6 +615,7 @@ module Bio
         add_option "min-isoform-fraction", :type => :numeric, :aliases => '-m'
         add_option "num-threads", :type => :integer, :aliases => '-p'
         add_option "keep-tmp", :type => :boolean, :aliases => 't'
-      end #Cufflinks
-    end #Ngs
-  end #Bio
+      end #Merge
+    end #Cufflinks
+  end #Ngs
+end #Bio
