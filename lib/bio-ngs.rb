@@ -58,12 +58,15 @@ require 'bio/appl/ngs/bwa'
 require 'bio/ngs/illumina/illumina'
 require 'bio/ngs/fs'
 
-# history 
+# history
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
 Bio::Ngs::Utils.extend_system_path
 
 # loading Tasks
-path = File.expand_path(File.dirname(__FILE__))
-Dir.glob(File.join(path,"tasks","*.thor")) do |thorfile|
-  Thor::Util.load_thorfile(thorfile)
+# TODO let the user define which tasks must be loaded, maybe a list of names
+if Bio::Ngs.const_defined?(:LoadBaseTasks) && Bio::Ngs.const_get(:LoadBaseTasks)==true
+  path = File.expand_path(File.dirname(__FILE__))
+  Dir.glob(File.join(path,"tasks","*.thor")) do |thorfile|
+    Thor::Util.load_thorfile(thorfile)
+  end
 end
