@@ -9,6 +9,10 @@ module Bio
     module Illumina
 
       class Projects < Meta::Pool
+        def initialize(name, path)
+          super(name)
+          metadata[:path]=path
+        end
         alias :projects :pool
       end
 
@@ -33,15 +37,15 @@ module Bio
 
         def build(path=".")
 
-          projects = Projects.new("Illumina")
+          projects = Projects.new("Illumina", path)
 
           Dir.chdir(path) do
             Dir.glob(["Project_*","Undetermined_indices"]).each do |project_dir|
-              project = Project.new(project_dir.sub(/Project_/,""),path)
+              project = Project.new(project_dir.sub(/Project_/,""),project_dir)
               projects.add(project)
               Dir.chdir(project_dir) do
                 Dir.glob("Sample*").each do |sample_dir|
-                  sample = Sample.new(sample_dir.sub(/Sample_/,""), project)
+                  sample = Sample.new(sample_dir.sub(/Sample_/,""), sample_dir, project)
                   project.add(sample)
                   Dir.chdir(sample_dir) do
                     Dir.glob(["**/*.fastq", "**/*.fastq.gz"]) do |reads_filename|

@@ -12,6 +12,7 @@ module Bio
           super(name)
           @sample_sheet = nil
           @root_dir = root_dir
+          metadata[:path]=root_dir
         end
 
         alias :samples :pool

@@ -16,8 +16,9 @@ module Bio
 
       class Sample < Meta::Pool
         #attr_accessor :name #, :filenames
-        def initialize(name, parent=nil)
+        def initialize(name, path, parent=nil)
           super(name)
+          metadata[:path]=path
           @parent = parent
         end
 
