@@ -102,13 +102,19 @@ class Filter < Thor
   private
 
   def find_key_in_dictionary(key, dict, split_key=nil)
+    #puts dict
     if split_key.nil?
-      dict.key?(key)
+      if dict.key?(key)
+        return true
+      end
     else
       key.split(split_key).each do |ikey|
-        ikey == key && break
+        if dict.key?(ikey)
+          return true
+        end
       end
     end
+    return false
   end
 
 end
