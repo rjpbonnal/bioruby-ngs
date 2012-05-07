@@ -43,6 +43,15 @@ module Bio
         @options = options
         @params = {}
         @pipe_ahead = []
+        @path = options.delete(:path) || "."
+      end
+
+      def path
+        @path
+      end
+
+      def path=(path)
+        @path=path
       end
 
       # Parameters are accepted ONLY if the key is present as
