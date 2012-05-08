@@ -44,23 +44,23 @@ module Bio
               end
             end
           else #lazy
-            @lazy = false
+            not_lazy
             blocks_to_run = @blocks
             @blocks=[]
             result=select do |transcript|
               bool_blocks = blocks_to_run.map do |b|
                 b.call(transcript)
               end
-              !(bool_blocks.include? nil || bool_blocks.include?(false))
+              !(bool_blocks.include?(nil) || bool_blocks.include?(false))
             end
-            @lazy = true
-            result.each_transcript(&block)
+            set_lazy
+            result.send(:each_transcript, &block)
           end #lazy or not?
         end
 
 
         def select(&block)
-          if @lazy
+          if is_lazy?
             @blocks||=[]
             @blocks << block
             self
@@ -83,7 +83,7 @@ module Bio
           end
         end
 
-        def multi_exon
+        def multi_exons
           # mark
           select do |transcript|
             transcript.multi_exons? #transcript line and exon line
@@ -145,6 +145,18 @@ module Bio
             block.call(t.to_bed(only_exons))
           end
         end #to_bed
+
+def set_lazy
+  @lazy=true
+end
+
+def is_lazy?
+  @lazy
+end
+
+def not_lazy
+  @lazy = false
+end
 
         def save(filename=nil)
           fn = filename || "#{@fh.path}.gtf"
@@ -222,7 +234,7 @@ module Bio
       end
 
       def mono_exon?
-        !multi_exons?
+        exons.size == 1
       end
 
       def size

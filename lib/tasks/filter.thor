@@ -1,4 +1,44 @@
+require File.expand_path(File.dirname(__FILE__) + '/../bio/ngs/utils')
+require File.expand_path(File.dirname(__FILE__) + '/../wrapper')
+require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/cufflinks')
 class Filter < Thor
+
+class Cufflinks < Thor
+   desc "transcripts GTF", "Extract transcripts from Cufflinks' GTF"
+   method_option :brand_new, :type => :boolean, :aliases => '-b', :desc => "get only brand new transcripts, no overlap with any annotation feature"
+   method_option :new, :type => :boolean, :aliases => '-n', :desc => "get only new transcripts, overlapping annotations are accepted"
+   method_option :annotated, :type => :boolean, :aliases => '-a', :desc => "get only annotated transcripts"
+   method_option :mono_exon, :type => :boolean, :aliases => '-s', :desc => "get mono exon transcripts"
+   method_option :multi_exons, :type => :boolean, :aliases => '-m', :desc => "get multi exons transcripts"
+   method_option :length, :type => :numeric, :aliases => '-l', :desc => "transcripts with a length gt"
+   method_option :coverage, :type => :numeric, :aliases => '-c', :desc => "transcripts with a coverage gt"
+   method_option :bed, :type => :boolean, :aliases => '-t', :desc => "output data in bed format"
+   def transcripts(gtf)
+    if File.exists?(gtf)
+      data = Bio::Ngs::Cufflinks::Gtf.new gtf
+      data.set_lazy
+      data.brand_new_isoforms if options[:brand_new]
+      data.new_isoforms if options[:new]
+      data.annotated_isoforms if options[:annotated]
+      data.mono_exons if options[:mono_exons]
+      data.multi_exons if options[:multi_exons]
+      data.length_gt(options[:length]) if options[:length]
+      data.coverage_gt(options[:coverage]) if options[:coverage]
+      if options[:bed]
+        data.to_bed do |t|
+          puts t
+        end
+      else
+        data.each_transcript do |t|
+          puts t
+        end
+      end
+    else
+      raise ArgumentError, "file #{gtf} doesn't exist"
+    end
+   end
+end #Cufflinks
+
 
   # Assume that this is a plain list of elements, with just one column. In the future it could be
   # a table as well.
@@ -99,6 +139,8 @@ class Filter < Thor
     fout.close unless options[:output].nil?
   end
 
+
+
   private
 
   def find_key_in_dictionary(key, dict, split_key=nil)
@@ -116,5 +158,8 @@ class Filter < Thor
     end
     return false
   end
+
+
+
 
 end
