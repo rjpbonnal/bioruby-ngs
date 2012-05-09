@@ -48,6 +48,9 @@ require 'bio/appl/ngs/sff_extract'
 require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
 require 'bio/appl/ngs/cufflinks/iterators'
+require 'bio/appl/ngs/cufflinks/gtf/gtf_parser'
+require 'bio/appl/ngs/cufflinks/gtf/gtf'
+require 'bio/appl/ngs/cufflinks/gtf/transcript'
 require 'bio/appl/ngs/cufflinks'
 require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'
@@ -61,6 +64,7 @@ require 'bio/ngs/fs'
 # history
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
 Bio::Ngs::Utils.extend_system_path
+
 
 # loading Tasks
 # TODO let the user define which tasks must be loaded, maybe a list of names
