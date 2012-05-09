@@ -451,20 +451,20 @@ module Convert
           end #Illumina
 
 
-          desc "list2table list", "reorganize a list of pairs key value in a table of key values. Tabular is the default separator"
-          def list2table(list)
-            dict = Hash.new{|h,k| h[k]=[]}
-              File.open(ARGV[0],'r') do |f|
-              f.each_line do |l|
-                 key, value = l.split
-                 dict[key]<<value
-              end
-            end
+          # desc "list2table LIST", "reorganize a list of pairs key value in a table of key values. Tabular is the default separator"
+          # def list2table(list)
+          #   dict = Hash.new{|h,k| h[k]=[]}
+          #     File.open(ARGV[0],'r') do |f|
+          #     f.each_line do |l|
+          #        key, value = l.split
+          #        dict[key]<<value
+          #     end
+          #   end
 
-            dict.each_pair do |key, values|
-              puts "#{key} #{values.join('  ')}"
-            end
-          end
+          #   dict.each_pair do |key, values|
+          #     puts "#{key} #{values.join('  ')}"
+          #   end
+          # end
 
         end #Convert
         #  Add methods to Enumerable, which makes them available to Array
