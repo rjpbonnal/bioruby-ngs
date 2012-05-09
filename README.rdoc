@@ -198,6 +198,12 @@ You can create a new wrapper and configure it and run it from inside a Thor's ta
       end #Ngs
     end #Bio
 
+==== Disable binary check at load time
+When a wrapping is defined BioNGS verify that the program is installed on the local system, if it is not it  thrown an warning message and the task is disabled by default. This check is made for each binary wrapped, so it could takes long the first time you load BioNGS.
+To skip this check the user can define an environment variable assigning one of these terms "true yes ok 1" to BIONGS_SKIP_CHECK_BINARIES
+    export BIONGS_SKIP_CHECK_BINARIES=true
+you can also add this setting to the .bashrc or .profile in the user home directory.
+
 == Features
 === Iterators for output files
 
