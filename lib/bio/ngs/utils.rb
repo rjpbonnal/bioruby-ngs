@@ -12,6 +12,8 @@ require 'find'
 module Bio
   module Ngs
     class Utils
+      @@skip_check_binaries=false
+
       class BinaryNotFound < StandardError
         def initialize(opts={})
           @skip_task = opts[:skip_task]
@@ -22,6 +24,14 @@ module Bio
         end
       end
       class << self
+
+        def skip_check_binaries
+          @@skip_check_binaries=true
+        end
+
+        def skip_check_binaries?
+          @@skip_check_binaries
+        end
 
         def binary(name)
           unless skip_check_binaries?
@@ -182,20 +192,10 @@ module Bio
               File.file?(f) && File.basename(f) == binary_name
             end
           end #find_binary_file
-
-        def skip_check_binaries
-          @@skip_check_binaries=true
-        end
-
-        def skip_check_binaries?
-          @@skip_check_binaries
-        end
-
-
         end #eiginclass
 
       end # end Utils
     end # end NGS
   end # end Bio
 
-Bio::Ngs::Utils.skip_check_binaries if %w(true yes ok 1).include?(ENV['BIONGS_SKIP_CHECK_BINARIES'])
+  Bio::Ngs::Utils.skip_check_binaries if %w(true yes ok 1).include?(ENV['BIONGS_SKIP_CHECK_BINARIES'])
