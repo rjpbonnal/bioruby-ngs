@@ -142,7 +142,17 @@ module Bio
             end
           end
         end #save
+
+        def count
+          size = 0
+          each_transcript do
+            size+=1
+          end
+          size
+        end #count
+
       end #GtfParser
-    end
-  end
-end
+
+    end #Cufflinks
+  end #Ngs
+end #Bio
