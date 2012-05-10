@@ -15,6 +15,7 @@ class Cufflinks < Thor
    method_option :bed, :type => :boolean,         :aliases => '-t', :desc => "output data in bed format"
    method_option :count, :type => :boolean,       :aliases => '-x', :desc => "counts the selected transcripts"
    method_option :discover, :type => :boolean,    :aliases => '-d', :desc => "discovers transcripts.gtf files from within the current directory"
+   method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in multiple files"
    def transcripts(gtf=nil)
     if gtf.nil? && options[:discover]
       options.remove(:discover)
@@ -31,10 +32,16 @@ class Cufflinks < Thor
       data.multi_exons if options[:multi_exons]
       data.length_gt(options[:length]) if options[:length]
       data.coverage_gt(options[:coverage]) if options[:coverage]
-      if options[:bed]
-        data.to_bed do |t|
-          puts t
+      if options[:bed] && options[:split]
+        data.to_bed do |t, bed_exons|
+          File.open(t.attributes[:transcript_id], 'w') do |w|
+          w.puts bed_exons
+          end
         end
+      elsif options[:bed]
+        data.to_bed do |t, bed_exons|
+          puts bed_exons
+        end          
       elsif options[:count]
         puts "#{gtf}:\t#{data.count}"
       else
