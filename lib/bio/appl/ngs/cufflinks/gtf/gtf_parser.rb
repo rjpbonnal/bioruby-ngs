@@ -13,7 +13,7 @@ module Bio
             transcript.tra = @fh.readline
             @fh.each_line do |line|
               if line =~ /\ttranscript\t/
-                block.call(transcript)
+                block.call(transcript, @fh.lineno)
                 transcript.clear
                 transcript.tra = line
               else line =~ /\texon\t/
@@ -115,7 +115,7 @@ module Bio
 
         def to_bed(only_exons=true, &block)
           each_transcript do |t|
-            block.call(t.to_bed(only_exons))
+            block.call(t, t.to_bed(only_exons))
           end
         end #to_bed
 
@@ -151,8 +151,63 @@ module Bio
           size
         end #count
 
+        def build_idx
+          idx = Hash.new {|h,k| h[k]=[]}
+          idx[:transcripts]
+          idx[:exons]
+          each_transcript do |t, f_lno|
+            t_idx=(f_lno-t.exons.size-2)
+            idx[:transcripts] << t_idx
+            eidx_b = t_idx +1
+            t.exons.each_index do |ei|
+              idx[t_idx] << eidx_b + ei
+              idx[:exons] << eidx_b + ei
+            end
+          end
+          @idx = idx
+        end #build_idx
+
+        # def dump_idx
+        #   build_idx unless defined?(@idx)
+        #   # File.open("#{source.path}.idx",'w') do |w|
+        #   #   w.puts @idx.to_yaml
+        #   # end
+        #   @idx[:default_hash] = @idx.default
+        #   File.open("#{source.path}.idx", "w+") do |f|
+        #     Marshal.dump(@idx, f)
+        #   end
+        # end #dump_idx
+
+        # def load_idx
+        #   if File.exists?("#{source.path}.idx")
+        #     @idx = Marshal.load(File.open("#{source.path}.idx"))
+        #     @idx.default = @idx[:default_hash]
+        #     # File.open("#{source.path}.idx") do |r|
+        #     #   @idx=YAML.load_stream(r)
+        #     # end
+        #   end
+        # end # load_idx
+
       end #GtfParser
 
     end #Cufflinks
   end #Ngs
 end #Bio
+
+# class Array
+#   def to_ranges
+#     sorted=self.sort
+#     left = sorted.first
+#     ranges = sorted.compact.uniq.sort.map do |e|
+#       if sorted[sorted.index(e) +1] == e.succ
+#         right = e.succ
+#         nil # set the elements between the ranges to nil
+#       else
+#         range_left = left
+#         left=sorted[sorted.index(e) +1]
+#         range_left == e ? e : Range.new(range_left, e)
+#       end
+#     end
+#     ranges.compact
+#   end
+# end
