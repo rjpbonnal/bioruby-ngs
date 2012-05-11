@@ -108,7 +108,11 @@ module Bio
         attributes[:gene_id]!~/CUFF\.\d+/ && attributes[:transcript_id]!~/CUFF\.\d+\.\d+/
       end
 
-    end
-  end
-end
-end
+      def byte_length
+        exons.map{|e| e.length}.sum + tra.length
+      end
+
+    end #Transcript
+  end #Cufflinks
+end #Ngs
+end #Bio

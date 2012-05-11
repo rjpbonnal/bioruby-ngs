@@ -157,36 +157,57 @@ module Bio
           idx[:exons]
           each_transcript do |t, f_lno|
             t_idx=(f_lno-t.exons.size-2)
-            idx[:transcripts] << t_idx
-            eidx_b = t_idx +1
-            t.exons.each_index do |ei|
-              idx[t_idx] << eidx_b + ei
-              idx[:exons] << eidx_b + ei
-            end
+            idx[:transcripts] << t.byte_length
+            # eidx_b = t_idx +1
+            # t.exons.each_index do |ei|
+            #   idx[t_idx] << eidx_b + ei
+            #   idx[:exons] << eidx_b + ei
+            # end
           end
           @idx = idx
         end #build_idx
 
-        # def dump_idx
-        #   build_idx unless defined?(@idx)
-        #   # File.open("#{source.path}.idx",'w') do |w|
-        #   #   w.puts @idx.to_yaml
-        #   # end
-        #   @idx[:default_hash] = @idx.default
-        #   File.open("#{source.path}.idx", "w+") do |f|
-        #     Marshal.dump(@idx, f)
-        #   end
-        # end #dump_idx
+        def dump_idx
+          build_idx unless defined?(@idx)
+          # File.open("#{source.path}.idx",'w') do |w|
+          #   w.puts @idx.to_yaml
+          # end
+          @idx[:default_hash] = @idx.default
+          @idx.default = nil
+          File.open("#{source.path}.idx", "w+") do |f|
+            Marshal.dump(@idx, f)
+          end
+          @idx.default = @idx[:default_hash]
+        end #dump_idx
 
-        # def load_idx
-        #   if File.exists?("#{source.path}.idx")
-        #     @idx = Marshal.load(File.open("#{source.path}.idx"))
-        #     @idx.default = @idx[:default_hash]
-        #     # File.open("#{source.path}.idx") do |r|
-        #     #   @idx=YAML.load_stream(r)
-        #     # end
-        #   end
-        # end # load_idx
+        def load_idx
+          if File.exists?("#{source.path}.idx")
+            @idx = Marshal.load(File.open("#{source.path}.idx"))
+            @idx.default = @idx[:default_hash]
+            # File.open("#{source.path}.idx") do |r|
+            #   @idx=YAML.load_stream(r)
+            # end
+          end
+        end # load_idx
+
+        def index
+          @idx
+        end
+
+        # start from 1
+        def read_transcript(n=1)
+          build_idx unless defined?(@idx)
+          if n==1
+            source.seek(0)
+            source.read(@idx[:transcripts][0])
+          elsif n==2
+            source.seek(@idx[:transcripts][0])
+            source.read(@idx[:transcripts][n-1])
+          else
+            source.seek(@idx[:transcripts][0..n-2].sum)
+            source.read(@idx[:transcripts][n-1])
+          end
+        end
 
       end #GtfParser
 
