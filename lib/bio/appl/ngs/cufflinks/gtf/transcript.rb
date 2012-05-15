@@ -6,22 +6,38 @@ module Bio
         Fields = %w(seqname source feature start stop score strand frame)
         Attr_to_Float = %w(FPKM frac conf_lo conf_hi cov)
         Attr_to_Integer = %w(exon_number)
+        ChrNotation = {ensembl:"", ucsc:"chr"}
 
-        attr_reader :tra, :exons, :seqname, :source, :feature, :start, :stop, :score, :strand, :frame, :attributes
-        def initialize(tra="", exons=[])
-          @tra = tra #TODO fix assignments for all other variables is the user pass a line
-          @seqname = nil
-          @source = nil
-          @feature = nil
-          @start = nil
-          @stop = nil
-          @score = nil
-          @strand = nil
-          @frame = nil
-          @exons = exons
+        attr_accessor :seqname, :source, :feature, :start, :stop, :score, :strand, :frame, :chr_notation
+
+        def initialize()
+          @tra = nil
+          @exons = []
           @attributes = {}
+          @chr_notation = :ensembl #ensembl/ucsc
         end
 
+        def tra
+          if @chr_notation == :ensembl && @tra=~/^chr(.*)/
+            "#{ChrNotation[:ensembl]}#{$1}"
+          elsif @chr_notation == :ucsc && @tra=~/^(\d.*)/
+            "#{ChrNotation[:ucsc]}#{$1}"
+          else
+            @tra
+          end
+        end
+
+        def exons
+          @exons
+        end
+
+        def exons=(ary)
+          @exons=ary
+        end
+
+        def attributes
+          @attributes
+        end
         def tra=(line)
           @tra = line
           data=line.split
@@ -71,21 +87,33 @@ module Bio
       #     puts "There's no method called #{m} here -- please try again."
       #   end
 
+      # add last "\n" to last row.
       def to_s
-        s=tra
-        exons.each do |e|
-          s << e
-        end
-        s
+        s=tra #+"\n"
+        s << exons.join #("\n") #<< "\n"
       end
 
       def to_bed(only_exons=true)
         bed_str=""
         unless only_exons
+          puts seqname
+#TODO fix seqname does not print the right  transcript line
+          if @chr_notation == :ensembl && seqname=~/^chr(.*)/
+            seqname="#{ChrNotation[:ensembl]}#{$1}"
+          elsif @chr_notation == :ucsc && seqname=~/^(\d.*)/
+            seqname="#{ChrNotation[:ucsc]}#{$1}"
+          end
+
           bed_str<<"#{seqname}\t#{start}\t#{stop}\t#{attributes[:gene_id]}_#{attributes[:transcript_id]}\n"
         end
         exons.each do |e|
           data = e.tr('";','').split
+          if @chr_notation == :ensembl && data[0]=~/^chr(.*)/
+            data[0]="#{ChrNotation[:ensembl]}#{$1}"
+          elsif @chr_notation == :ucsc && data[0]=~/^(\d.*)/
+            data[0]="#{ChrNotation[:ucsc]}#{$1}"
+          end
+
           bed_str<<"#{data[0]}\t#{data[3]}\t#{data[4]}\t#{data[9]}_#{data[11]}\n"
         end
         bed_str
@@ -110,6 +138,14 @@ module Bio
 
       def byte_length
         exons.map{|e| e.length}.sum + tra.length
+      end
+
+      def set_ucsc_notation
+        @chr_notation = :ucsc
+      end
+
+      def set_ensembl_notation
+        @chr_notation = :ensembl
       end
 
     end #Transcript

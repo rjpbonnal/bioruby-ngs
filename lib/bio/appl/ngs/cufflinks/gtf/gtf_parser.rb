@@ -1,3 +1,7 @@
+# TODO: 
+# * when select or first each trasncript create and index. Be aware to return/crete the right index for the requested filtering.
+#   issue: filtering is applied but the index is created and saved for the original source file.
+
 
 module Bio
   module Ngs
@@ -48,7 +52,7 @@ module Bio
                 file.write transcript.to_s
               end
             end
-            Gtf.new(file.path) unless file.size == 0
+            gtf=Gtf.new(file.path) unless file.size == 0
           end
         end #select
 
@@ -135,12 +139,10 @@ module Bio
           fn = filename || "#{@fh.path}.gtf"
           File.open(fn, 'w') do |f|
             each_transcript do |transcript|
-              #change this with exporting to_s when we'll use the class Transcript object
-              transcript.each do |t|
-                f.write t
-              end
+                f.write transcript
             end
           end
+          # dump_idx("#{fn}.idx") #BUGGY this saves the old index in case the user called a select 
         end #save
 
         def count
@@ -156,7 +158,7 @@ module Bio
           idx[:transcripts]
           idx[:exons]
           each_transcript do |t, f_lno|
-            t_idx=(f_lno-t.exons.size-2)
+            # t_idx=(f_lno-t.exons.size-2)
             idx[:transcripts] << t.byte_length
             # eidx_b = t_idx +1
             # t.exons.each_index do |ei|
@@ -167,26 +169,26 @@ module Bio
           @idx = idx
         end #build_idx
 
-        def dump_idx
+        def dump_idx(fn=nil)
+          fn||="#{source.path}.idx"
+
           build_idx unless defined?(@idx)
-          # File.open("#{source.path}.idx",'w') do |w|
-          #   w.puts @idx.to_yaml
-          # end
           @idx[:default_hash] = @idx.default
           @idx.default = nil
-          File.open("#{source.path}.idx", "w+") do |f|
+          File.open(fn, "w+") do |f|
             Marshal.dump(@idx, f)
           end
           @idx.default = @idx[:default_hash]
+          fn
         end #dump_idx
 
         def load_idx
           if File.exists?("#{source.path}.idx")
             @idx = Marshal.load(File.open("#{source.path}.idx"))
             @idx.default = @idx[:default_hash]
-            # File.open("#{source.path}.idx") do |r|
-            #   @idx=YAML.load_stream(r)
-            # end
+          else
+            build_idx
+            dump_idx
           end
         end # load_idx
 
@@ -196,7 +198,7 @@ module Bio
 
         # start from 1
         def read_transcript(n=1)
-          build_idx unless defined?(@idx)
+          load_idx unless defined?(@idx)
           if n==1
             source.seek(0)
             source.read(@idx[:transcripts][0])
@@ -208,6 +210,18 @@ module Bio
             source.read(@idx[:transcripts][n-1])
           end
         end
+
+        def get_transcript(n=1)
+          r=read_transcript(n)
+          s=r.split("\n").first
+          e=r.split("\n")[1..-1]
+          x=Bio::Ngs::Cufflinks::Transcript.new
+          x.tra= s+"\n"
+          x.exons=e.map{|ei| ei+"\n"}
+          x
+        end
+
+        alias :[]  :get_transcript
 
       end #GtfParser
 

@@ -12,6 +12,10 @@ module Bio
           @fh
         end
 
+        def source=(src)
+          @fh=src
+        end
+
       end #Gtf
 
     end

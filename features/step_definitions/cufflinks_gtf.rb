@@ -17,7 +17,7 @@ Then /^I want to print "(.*?)" on stdout$/ do |each_method|
 end
 
 Then /^I want to "(.*?)" the "(.*?)"$/ do |operation, subset|
-  @gtf.send(subset).count.should == 29293
+  @gtf.send(subset).count.should == 17
 end
 
 

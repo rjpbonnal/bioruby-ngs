@@ -15,7 +15,9 @@ class Cufflinks < Thor
    method_option :bed, :type => :boolean,         :aliases => '-t', :desc => "output data in bed format"
    method_option :count, :type => :boolean,       :aliases => '-x', :desc => "counts the selected transcripts"
    method_option :discover, :type => :boolean,    :aliases => '-d', :desc => "discovers transcripts.gtf files from within the current directory"
-   method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in multiple files"
+   method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
+   method_option :output, :type => :string,       :aliases => '-o', :desc => "save the results in the output file"
+   #TODO method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
    def transcripts(gtf=nil)
     if gtf.nil? && options[:discover]
       options.remove(:discover)
@@ -32,27 +34,53 @@ class Cufflinks < Thor
       data.multi_exons if options[:multi_exons]
       data.length_gt(options[:length]) if options[:length]
       data.coverage_gt(options[:coverage]) if options[:coverage]
+
+      default_stdout = (options[:output] && File.open(options[:output], 'w')) || $stdout
+
       if options[:bed] && options[:split]
-        data.to_bed do |t, bed_exons|
+        data.to_bed do |t, bed_exons| 
           File.open(t.attributes[:transcript_id], 'w') do |w|
           w.puts bed_exons
           end
         end
       elsif options[:bed]
         data.to_bed do |t, bed_exons|
-          puts bed_exons
+          default_stdout.puts bed_exons
         end          
       elsif options[:count]
-        puts "#{gtf}:\t#{data.count}"
+        default_stdout.puts "#{gtf}:\t#{data.count}"
       else
-        data.each_transcript do |t|
-          puts t
+        if options[:output]
+          data.save(options[:output])
+        else
+          data.each_transcript do |t|
+            default_stdout.puts t
+          end
         end
       end
     else
       raise ArgumentError, "file #{gtf} doesn't exist"
     end
    end
+
+   desc "tra_at_idx GTF IDX", "Extract transcripts from Cufflinks' GTF at specific location, print filename in output"
+   method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
+   method_option :extract, :type => :numeric,     :aliases => '-e', :desc => "extract the n-th transcript"
+   method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
+   method_option :exons, :type => :boolean,       :aliases => '-x', :desc => "proved in output only exons without transcripts", :default => true
+   def tra_at_idx(gtf, idx)
+      data = Bio::Ngs::Cufflinks::Gtf.new gtf
+      t=data[idx.to_i]
+      if options[:ucsc]
+        t.set_ucsc_notation
+      end
+      fn = "#{t.attributes[:gene_id]}-#{t.attributes[:transcript_id]}.bed"
+      File.open(fn, 'w') do |f|
+        f.puts t.to_bed(options[:exons]) #by default only the exons
+      end
+      puts fn
+   end
+
 end #Cufflinks
 
 
