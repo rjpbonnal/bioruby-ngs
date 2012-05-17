@@ -4,6 +4,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/cufflinks')
 class Filter < Thor
 
 class Cufflinks < Thor
+   #TODO method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
+
    desc "transcripts [GTF]", "Extract transcripts from Cufflinks' GTF"
    method_option :brand_new, :type => :boolean,   :aliases => '-b', :desc => "get only brand new transcripts, no overlap with any annotation feature"
    method_option :new, :type => :boolean,         :aliases => '-n', :desc => "get only new transcripts, overlapping annotations are accepted"
@@ -17,7 +19,6 @@ class Cufflinks < Thor
    method_option :discover, :type => :boolean,    :aliases => '-d', :desc => "discovers transcripts.gtf files from within the current directory"
    method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
    method_option :output, :type => :string,       :aliases => '-o', :desc => "save the results in the output file"
-   #TODO method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
    def transcripts(gtf=nil)
     if gtf.nil? && options[:discover]
       options.remove(:discover)
