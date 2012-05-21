@@ -18,9 +18,9 @@ module Bio
         end
 
         def tra
-          if @chr_notation == :ensembl && @tra=~/^chr(.*)/
+          if @chr_notation == :ensembl && @tra=~/^chr(.*?)\s/
             "#{ChrNotation[:ensembl]}#{$1}"
-          elsif @chr_notation == :ucsc && @tra=~/^(\d.*)/
+          elsif @chr_notation == :ucsc && @tra=~/^(.*?)\s/
             "#{ChrNotation[:ucsc]}#{$1}"
           else
             @tra
