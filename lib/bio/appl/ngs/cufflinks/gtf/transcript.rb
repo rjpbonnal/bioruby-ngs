@@ -96,11 +96,11 @@ module Bio
       def to_bed(only_exons=true)
         bed_str=""
         unless only_exons
-          puts seqname
+#          puts seqname
 #TODO fix seqname does not print the right  transcript line
           if @chr_notation == :ensembl && seqname=~/^chr(.*)/
             seqname="#{ChrNotation[:ensembl]}#{$1}"
-          elsif @chr_notation == :ucsc && seqname=~/^(\d.*)/
+          elsif @chr_notation == :ucsc && seqname=~/^(.*)/
             seqname="#{ChrNotation[:ucsc]}#{$1}"
           end
 
@@ -110,7 +110,7 @@ module Bio
           data = e.tr('";','').split
           if @chr_notation == :ensembl && data[0]=~/^chr(.*)/
             data[0]="#{ChrNotation[:ensembl]}#{$1}"
-          elsif @chr_notation == :ucsc && data[0]=~/^(\d.*)/
+          elsif @chr_notation == :ucsc && data[0]=~/^(.*)/
             data[0]="#{ChrNotation[:ucsc]}#{$1}"
           end
 
