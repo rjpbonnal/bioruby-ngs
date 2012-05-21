@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-03-21"
+  s.date = "2012-05-18"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -29,6 +29,11 @@ Gem::Specification.new do |s|
     "bin/biongs",
     "bio-ngs.gemspec",
     "ext/mkrf_conf.rb",
+    "features/cufflinks_gtf_parser.feature",
+    "features/cufflinks_gtf_parser_indexing.feature",
+    "features/step_definitions/cufflinks_gtf.rb",
+    "features/step_definitions/cufflinks_gtf_parser_indexing.rb",
+    "features/support/env.rb",
     "lib/bio-ngs.rb",
     "lib/bio/appl/ngs/bcftools.rb",
     "lib/bio/appl/ngs/bcl2qseq.rb",
@@ -36,6 +41,9 @@ Gem::Specification.new do |s|
     "lib/bio/appl/ngs/bowtie-inspect.rb",
     "lib/bio/appl/ngs/bwa.rb",
     "lib/bio/appl/ngs/cufflinks.rb",
+    "lib/bio/appl/ngs/cufflinks/gtf/gtf.rb",
+    "lib/bio/appl/ngs/cufflinks/gtf/gtf_parser.rb",
+    "lib/bio/appl/ngs/cufflinks/gtf/transcript.rb",
     "lib/bio/appl/ngs/cufflinks/iterators.rb",
     "lib/bio/appl/ngs/fastx.rb",
     "lib/bio/appl/ngs/samtools.rb",
@@ -57,8 +65,13 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/ext/bin/linux/samtools",
     "lib/bio/ngs/ext/bin/osx/samtools",
     "lib/bio/ngs/ext/versions.yaml",
+    "lib/bio/ngs/fs.rb",
     "lib/bio/ngs/graphics.rb",
     "lib/bio/ngs/homology.rb",
+    "lib/bio/ngs/illumina/fastq.rb",
+    "lib/bio/ngs/illumina/illumina.rb",
+    "lib/bio/ngs/illumina/project.rb",
+    "lib/bio/ngs/illumina/sample.rb",
     "lib/bio/ngs/ontology.rb",
     "lib/bio/ngs/quality.rb",
     "lib/bio/ngs/record.rb",
@@ -66,6 +79,7 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/utils.rb",
     "lib/development_tasks.rb",
     "lib/enumerable.rb",
+    "lib/meta.rb",
     "lib/tasks/bwa.thor",
     "lib/tasks/convert.thor",
     "lib/tasks/filter.thor",
@@ -80,8 +94,22 @@ Gem::Specification.new do |s|
     "lib/templates/README.tt",
     "lib/templates/db.tt",
     "lib/wrapper.rb",
+    "spec/bio/ngs/fs_spec.rb",
+    "spec/bio/ngs/illumina/fastq_spec.rb",
+    "spec/bio/ngs/illumina/illumina_spec.rb",
+    "spec/bio/ngs/illumina/project_spec.rb",
+    "spec/bio/ngs/illumina/sample_spec.rb",
+    "spec/bio/ngs/illumina/samples_spec.rb",
     "spec/converter_qseq_spec.rb",
+    "spec/filter_spec.rb",
     "spec/fixture/s_1_1_1108_qseq.txt",
+    "spec/fixture/table_filter_list.txt",
+    "spec/fixture/table_filter_list_first_column.txt",
+    "spec/fixture/table_filter_source.tsv",
+    "spec/fixture/test-filtered-reference.fastq.gz",
+    "spec/fixture/test-merged-reference.fastq.gz",
+    "spec/fixture/test.fastq.gz",
+    "spec/meta_spec.rb",
     "spec/quality_spec.rb",
     "spec/sff_extract_spec.rb",
     "spec/spec_helper.rb",
@@ -103,7 +131,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/helios/bioruby-ngs"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.15"
   s.summary = "bio-ngs provides a framework for handling NGS data with BioRuby"
 
   if s.respond_to? :specification_version then
@@ -112,7 +140,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.2"])
       s.add_runtime_dependency(%q<bio-samtools>, [">= 0.3.2"])
-      s.add_runtime_dependency(%q<thor>, [">= 0.14.6"])
+      s.add_runtime_dependency(%q<thor>, ["= 0.14.6"])
       s.add_runtime_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_runtime_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_runtime_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
@@ -128,7 +156,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_development_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_development_dependency(%q<bio>, [">= 1.4.2"])
-      s.add_development_dependency(%q<thor>, [">= 0.14.6"])
+      s.add_development_dependency(%q<thor>, ["= 0.14.6"])
       s.add_development_dependency(%q<ffi>, [">= 1.0.6"])
       s.add_development_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_development_dependency(%q<rspec>, [">= 2.5.0"])
@@ -145,7 +173,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<bio>, [">= 1.4.2"])
       s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
-      s.add_dependency(%q<thor>, [">= 0.14.6"])
+      s.add_dependency(%q<thor>, ["= 0.14.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<daemons>, [">= 1.1.0"])
       s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
@@ -161,7 +189,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_dependency(%q<bio>, [">= 1.4.2"])
-      s.add_dependency(%q<thor>, [">= 0.14.6"])
+      s.add_dependency(%q<thor>, ["= 0.14.6"])
       s.add_dependency(%q<ffi>, [">= 1.0.6"])
       s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
       s.add_dependency(%q<rspec>, [">= 2.5.0"])
@@ -179,7 +207,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<bio>, [">= 1.4.2"])
     s.add_dependency(%q<bio-samtools>, [">= 0.3.2"])
-    s.add_dependency(%q<thor>, [">= 0.14.6"])
+    s.add_dependency(%q<thor>, ["= 0.14.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<daemons>, [">= 1.1.0"])
     s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
@@ -195,7 +223,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
     s.add_dependency(%q<rcov>, ["~> 0.9.11"])
     s.add_dependency(%q<bio>, [">= 1.4.2"])
-    s.add_dependency(%q<thor>, [">= 0.14.6"])
+    s.add_dependency(%q<thor>, ["= 0.14.6"])
     s.add_dependency(%q<ffi>, [">= 1.0.6"])
     s.add_dependency(%q<rubyvis>, [">= 0.5.0"])
     s.add_dependency(%q<rspec>, [">= 2.5.0"])
