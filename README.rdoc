@@ -248,6 +248,7 @@ Is not yet possible to define a list of desired tasks to load.
 = REQUIREMENTS
 * http://hannonlab.cshl.edu/fastx_toolkit/ (the gem tries to install this tool by itself)
 * http://www.gnuplot.info/ tested on version 4.6
+* libxslt1-dev
 
 Pleas follow the instruction for your own distribution/operating system
 
