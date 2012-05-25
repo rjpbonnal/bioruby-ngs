@@ -21,7 +21,7 @@ module Bio
        end 
       end
 
-      module FastqGz
+      module FastqGz #TODO this module can be move in another namespace more generic
         require 'zlib'
         class << self
 
