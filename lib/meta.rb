@@ -109,14 +109,18 @@ module Meta
       @pool.keys
     end
 
-    def get(name_or_tag_or_value=nil)
+    def get(name_or_tag_or_value, value=nil)
       # TODO implement recursive query or passing multiple values as hash, insercet or etc.....
       #       if name_or_tag_or_value.is_a? Hash
       #         name_or_tag_or_value.each_pair  do |tag, value|
       #
       #         end
       #       else
-      get_by_name(name_or_tag_or_value) || get_by_tag(name_or_tag_or_value) || get_by_value(name_or_tag_or_value) || get_down_to_childer(name_or_tag_or_value)
+      if value
+        get_by_tag_and_value(name_or_tag_or_value, value)
+      else
+        get_by_name(name_or_tag_or_value) || get_by_tag(name_or_tag_or_value) || get_by_value(name_or_tag_or_value) || get_down_to_childer(name_or_tag_or_value)
+      end
       # end
     end #get
 
