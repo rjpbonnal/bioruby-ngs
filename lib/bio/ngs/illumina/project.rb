@@ -31,7 +31,7 @@ module Bio
             "json_class"    => self.class.name,
             "name"          => name,
             "sample_sheet"  => sample_sheet,
-            "samples"       => samples.each_key.map{|k| samples[k].to_json }
+            "samples"       => samples#each_key.map{|k| samples[k].to_json }
           }.to_json(*a)
         end
       end

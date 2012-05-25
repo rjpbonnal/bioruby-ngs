@@ -64,12 +64,24 @@ module Meta
   class Pool < Data
     include Enumerable
     # include Data
-    attr_accessor :pool 
+    attr_accessor :pool
     def initialize(name=SecureRandom.uuid)
       super(name)
       @pool = {}
     end
 
+    def to_json(*a)
+      {
+        "json_class"   => self.class.name,
+        "name"         => name,
+        "pool"     => pool
+        #{}"filenames"    => filenames_paths
+      }.to_json(*a)
+    end
+
+    def self.json_create(o)
+      me = new(o["name"], o["metadata"]["path"],o["metadata"]["parent"])
+    end
 
     def each &block
       @pool.each_pair{|name, member| block.call(member)}
@@ -141,6 +153,9 @@ module Meta
       end
       ret_pool unless ret_pool.empty?
     end
+
+
+
 
     private
     def get_generic(type, data)

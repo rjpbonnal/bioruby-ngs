@@ -12,6 +12,19 @@ module Bio
           metadata[:type]=:file
           metadata[:format]=:fastq
         end
+
+        def to_json(*a)
+          {
+            "json_class"   => self.class.name,
+            "name"         => name,
+            "metadata"     => metadata
+            #{}"filenames"    => filenames_paths
+          }.to_json(*a)
+        end
+
+        def self.json_create(o)
+          me = new(o["name"], o["metadata"]["path"],o["metadata"]["parent"])
+        end
       end #File
 
       class Sample < Meta::Pool
@@ -62,7 +75,7 @@ module Bio
             self.add MetaReads.new(SecureRandom.uuid, metadata)
           end
 
-#REMOVE          # def get(tag=filtered)
+          #REMOVE          # def get(tag=filtered)
           #   @files.get(tag)
           # end
 
@@ -72,12 +85,17 @@ module Bio
             end.flatten
           end
 
-          # def to_json(*a)
-          #   {
-          #     "json_class"   => self.class.name,
-          #     "name"         => name,
-          #     "filenames"    => filenames_paths
-          #   }.to_json(*a)
+          def to_json(*a)
+            {
+              "json_class"   => self.class.name,
+              "name"         => name,
+              "metadata"     => metadata,
+              "files"        => pool
+            }.to_json(*a)
+          end
+
+          # def self.json_create(o)
+          #   me = new(o["name"], o["metadata"]["path"],o["metadata"]["parent"])
           # end
         end #Sample
       end #Illumina
