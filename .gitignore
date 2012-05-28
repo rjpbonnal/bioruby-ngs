@@ -41,17 +41,13 @@ pkg
 # For vim:
 #*.swp
 .*
+ext/Rakefile
 lib/bio/ngs/ext/bin/common/fast*
+lib/bio/ngs/ext/bin/common/bwa
+lib/bio/ngs/ext/bin/common/samtools
 lib/bio/ngs/ext/bin/common/lib
 lib/bio/ngs/ext/bin/common/include
 lib/bio/ngs/ext/bin/common/share
-GRCh37-61.gtf
-TF_Master.bam
-TF_Master_sort.bam
-TF_Master_sort.bam.bai
-comparami/
-es_1_transcripts.gtf
-es_2_transcripts.gtf
 lib/bio/ngs/ext/bin/osx/bowtie/
 lib/bio/ngs/ext/bin/osx/cufflinks/
 lib/bio/ngs/ext/bin/osx/tophat/
@@ -62,3 +58,8 @@ spec/fixture/s_1_1_1108_qseq.fastq
 spec/fixture/test.fastq
 test_fastq.fastq
 .gitignore
+TODO.json
+spec/fixture/*.gtf
+spec/fixture/*.gff*
+spec/fixture/*.idx
+spec/fixture/*.fastq.gz
