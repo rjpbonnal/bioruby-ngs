@@ -1,0 +1,58 @@
+base_dir: /mnt/iscsi/ngs
+projects:
+  Naive:
+   Samples:
+    SQ_0080:
+     location: &id001
+      type: file
+      path: 110908_H125_0119_AB01W2ABXX_Data/Project_Naive_T0/Sample_SQ_0080/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam
+      format: bam
+      
+
+  Th1: 2
+  Th17: 3
+  Th2: 4
+  Treg: 5
+  Tfh: 6
+
+
+
+  	   - 110908_H125_0119_AB01W2ABXX_Data/Project_Naive_T0/Sample_SQ_0080/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 			  					
+	   - 110908_H125_0119_AB01W2ABXX_Data/Project_Naive_T0/Sample_SQ_0081/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 	  		
+	   - 110908_H125_0119_AB01W2ABXX_Data/Project_Naive_T0/Sample_SQ_0082/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+	   - 110714_H125_0102_Ab048uabxx_Data/Project_Naive/TopHat_Alignment_PE_genomeV66/accepted_hits.bam
+	Th1:
+        BAMS:
+        - 111013_H125_0121_AC076LACXX_Data/Project_Th1/Sample_SQ_0007/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 			 		   
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th1/Sample_SQ_0046/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 	   
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th1/Sample_SQ_0047/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th1/Sample_SQ_0048/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam  
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th1/Sample_SQ_0050/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+    Th17:
+        BAMS:
+        - 111013_H125_0121_AC076LACXX_Data/Project_Th17/Sample_SQ_0011/filtered/TopHat_Alignment_PE_genomeV66_insert200/accepted_hits.bam 	 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th17/Sample_SQ_0051/filtered/TopHat_Alignment_PE_genomeV66_insert200/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th17/Sample_SQ_0052/filtered/TopHat_Alignment_PE_genomeV66_insert200/accepted_hits.bam 	 		
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th17/Sample_SQ_0053/filtered/TopHat_Alignment_PE_genomeV66_insert200/accepted_hits.bam 	 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th17/Sample_SQ_0055/filtered/TopHat_Alignment_PE_genomeV66_insert200/accepted_hits.bam
+    Th2:
+        BAMS:
+        - 111013_H125_0121_AC076LACXX_Data/Project_Th2/Sample_SQ_0014/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th2/Sample_SQ_0015/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 	 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th2/Sample_SQ_0056/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th2/Sample_SQ_0058/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Th2/Sample_SQ_0059/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam     
+    Treg:
+		BAMS:
+		- 111013_H125_0121_AC076LACXX_Data/Project_Treg/Sample_SQ_0021/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Treg/Sample_SQ_0022/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Treg/Sample_SQ_0023/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Treg/Sample_SQ_0065/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam  
+		- 111013_H125_0121_AC076LACXX_Data/Project_Treg/Sample_SQ_0067/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+	Tfh
+		BAMS:
+		- 111013_H125_0121_AC076LACXX_Data/Project_Tfh_Adenoide/Sample_SQ_0074/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Tfh_Adenoide/Sample_SQ_0075/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Tfh_Adenoide/Sample_SQ_0076/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 	
+		- 111013_H125_0121_AC076LACXX_Data/Project_Tfh_Adenoide/Sample_SQ_0078/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 
+		- 111013_H125_0121_AC076LACXX_Data/Project_Tfh_Adenoide/Sample_SQ_0079/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam
