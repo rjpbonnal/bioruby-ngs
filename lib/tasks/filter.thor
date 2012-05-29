@@ -64,14 +64,14 @@ class Cufflinks < Thor
     end
    end
 
-   desc "tra_at_idx GTF IDX", "Extract transcripts from Cufflinks' GTF at specific location, print filename in output"
+   desc "tra_at_idx GTF IDX", "Extract transcript(s) from Cufflinks' GTF at a specific location or givin the transcript name, print filename in output"
    method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
    method_option :extract, :type => :numeric,     :aliases => '-e', :desc => "extract the n-th transcript"
    method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
    method_option :exons, :type => :boolean,       :aliases => '-x', :desc => "proved in output only exons without transcripts", :default => true
    def tra_at_idx(gtf, idx)
       data = Bio::Ngs::Cufflinks::Gtf.new gtf
-      t=data[idx.to_i]
+      t=data[idx]
       if options[:ucsc]
         t.set_ucsc_notation
       end

@@ -1,4 +1,4 @@
-# TODO: 
+# TODO:
 # * when select or first each trasncript create and index. Be aware to return/crete the right index for the requested filtering.
 #   issue: filtering is applied but the index is created and saved for the original source file.
 
@@ -139,10 +139,10 @@ module Bio
           fn = filename || "#{@fh.path}.gtf"
           File.open(fn, 'w') do |f|
             each_transcript do |transcript|
-                f.write transcript
+              f.write transcript
             end
           end
-          # dump_idx("#{fn}.idx") #BUGGY this saves the old index in case the user called a select 
+          # dump_idx("#{fn}.idx") #BUGGY this saves the old index in case the user called a select
         end #save
 
         def count
@@ -156,10 +156,16 @@ module Bio
         def build_idx
           idx = Hash.new {|h,k| h[k]=[]}
           idx[:transcripts]
+          idx[:names]={}
           idx[:exons]
           each_transcript do |t, f_lno|
             # t_idx=(f_lno-t.exons.size-2)
             idx[:transcripts] << t.byte_length
+            idx[:names][t.attributes[:transcript_id]] = idx[:transcripts].length
+            if t.attributes[:transcript_id]=="ENST00000408219"
+              puts t.attributes[:transcript_id]
+              puts idx[:transcripts].length
+            end
             # eidx_b = t_idx +1
             # t.exons.each_index do |ei|
             #   idx[t_idx] << eidx_b + ei
@@ -197,27 +203,35 @@ module Bio
         end
 
         # start from 1
+        # n can be a number or a name for a transcript
         def read_transcript(n=1)
           load_idx unless defined?(@idx)
-          if n==1
-            source.seek(0)
-            source.read(@idx[:transcripts][0])
-          elsif n==2
-            source.seek(@idx[:transcripts][0])
-            source.read(@idx[:transcripts][n-1])
+          if n.to_s.is_numeric?
+            n = n.to_i
+            if n==1
+              source.seek(0)
+              source.read(@idx[:transcripts][0])
+            elsif n==2
+              source.seek(@idx[:transcripts][0])
+              source.read(@idx[:transcripts][n-1])
+            else
+              source.seek(@idx[:transcripts][0..n-2].sum)
+              source.read(@idx[:transcripts][n-1])
+            end
           else
-            source.seek(@idx[:transcripts][0..n-2].sum)
-            source.read(@idx[:transcripts][n-1])
+            read_transcript(@idx[:names][n])
           end
         end
 
         def get_transcript(n=1)
-          r=read_transcript(n)
-          s=r.split("\n").first
-          e=r.split("\n")[1..-1]
-          x=Bio::Ngs::Cufflinks::Transcript.new
-          x.tra= s+"\n"
-          x.exons=e.map{|ei| ei+"\n"}
+          x=nil
+          if r=read_transcript(n)
+            s=r.split("\n").first
+            e=r.split("\n")[1..-1]
+            x=Bio::Ngs::Cufflinks::Transcript.new
+            x.tra= s+"\n"
+            x.exons=e.map{|ei| ei+"\n"}
+          end
           x
         end
 
@@ -228,6 +242,18 @@ module Bio
     end #Cufflinks
   end #Ngs
 end #Bio
+
+
+class String
+  # from http://railsforum.com/viewtopic.php?id=19081
+  def is_numeric?
+    Float(self)
+    true
+  rescue
+    false
+  end
+end
+
 
 # class Array
 #   def to_ranges
