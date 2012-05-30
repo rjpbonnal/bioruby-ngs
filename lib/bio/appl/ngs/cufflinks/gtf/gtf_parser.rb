@@ -162,10 +162,6 @@ module Bio
             # t_idx=(f_lno-t.exons.size-2)
             idx[:transcripts] << t.byte_length
             idx[:names][t.attributes[:transcript_id]] = idx[:transcripts].length
-            if t.attributes[:transcript_id]=="ENST00000408219"
-              puts t.attributes[:transcript_id]
-              puts idx[:transcripts].length
-            end
             # eidx_b = t_idx +1
             # t.exons.each_index do |ei|
             #   idx[t_idx] << eidx_b + ei
