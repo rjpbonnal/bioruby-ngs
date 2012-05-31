@@ -22,8 +22,12 @@ require 'thor/runner'
 require 'bio-blastxmlparser'
 require 'bio'
 require 'active_record'
-require 'sqlite3'
 
+if defined?(JRUBY_VERSION)
+	require 'jdbc-sqlite3'
+else
+	require 'sqlite3'
+end
 #Generic classes
 require 'enumerable'
 require 'wrapper'
