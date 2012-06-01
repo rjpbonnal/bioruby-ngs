@@ -15,9 +15,9 @@ class Project < Thor
   end
     
   attr_accessor :name
-  
+  attr_accessor :adapter 
   desc "new [NAME]","Create a new NGS project directory"
-  method_option :type, :type => :string, :desc => "The project type (e.g. annotation)"
+  #method_option :type, :type => :string, :desc => "The project type (e.g. annotation)"
   def new(name)
     empty_directory name
     empty_directory File.join("#{name}","raw_data")
@@ -25,28 +25,43 @@ class Project < Thor
     empty_directory File.join("#{name}","tasks")
     empty_directory File.join("#{name}","scripts")
     self.name = name # for template to take the correct values
-    template(File.join("..","templates","README.tt"), "#{name}/README.txt")    
     
-    if options[:type] == "annotation"
-        invoke "project:update:annotation", [],{:dir => name}
-    else    
-      empty_directory File.join("#{name}","log")
-      empty_directory File.join("#{name}","conf")
-    end
-  end
-  
-  attr_accessor :type
+    #if options[:type] == "annotation"
+    #    invoke "project:update:annotation", [],{:dir => name}
+    #else    
+    empty_directory File.join("#{name}","log")
+    empty_directory File.join("#{name}","conf") 
+    empty_directory File.join("#{name}","db")
 
-  desc "update [TYPE]", "Update the working dir to a new type of project"
-  method_option :dir, :type => :string
-  def update(type)
-    self.type = type
-    dir = (options[:dir]) ? options[:dir]+"/" : ""
-    empty_directory "#{dir}log"
-    empty_directory "#{dir}conf"
-    empty_directory "#{dir}db"
-    template(File.join("..","templates","db.tt"), "#{dir}conf/#{type}_db.yml")
+		if defined?(JRUBY_VERSION)
+			self.adapter = "jdbcsqlite3"
+		else
+			self.adapter = "sqlite3"
+		end
+		
+		template(File.join("..","templates","db.tt"), "#{name}/conf/database.yml")	
+    template(File.join("..","templates","README.tt"), "#{name}/README.txt")    
+		#end
   end
+ 
+
+#  attr_accessor :type
+#	attr_accessor :adapter
+#  desc "update [TYPE]", "Update the working dir to a new type of project"
+#  method_option :dir, :type => :string
+#  def update(type)
+#    self.type = type
+#		if defined?(JRUBY_VERSION)
+#			self.adapter = "jdbcsqlite3"
+#		else
+#			self.adapter = "sqlite3"
+#		end
+#    dir = (options[:dir]) ? options[:dir]+"/" : ""
+#    empty_directory "#{dir}log"
+#    empty_directory "#{dir}conf"
+#    empty_directory "#{dir}db"
+#    template(File.join("..","templates","db.tt"), "#{dir}conf/#{type}_db.yml")
+#  end
 
   
 end
