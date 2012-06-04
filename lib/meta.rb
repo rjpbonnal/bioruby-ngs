@@ -48,6 +48,10 @@ module Meta
         "metadata"    => metadata
       }.to_json(*a)
     end
+
+    def self.json_create(o)
+      me = new(o["name"], o["metadata"])
+    end
     # end #Data
 
     # class File
@@ -75,12 +79,13 @@ module Meta
         "json_class"   => self.class.name,
         "name"         => name,
         "pool"     => pool
-        #{}"filenames"    => filenames_paths
       }.to_json(*a)
     end
 
     def self.json_create(o)
-      me = new(o["name"], o["metadata"]["path"],o["metadata"]["parent"])
+      me = new(o["name"])
+      me.pool=o["pool"]
+      me
     end
 
     def each &block

@@ -41,7 +41,7 @@ module Bio
 
           Dir.chdir(path) do
             Dir.glob(["**/Project_*","**/Undetermined_indices"]).each do |project_dir|
-              project = Project.new(project_dir.basename.sub(/Project_/,""),project_dir)
+              project = Project.new(project_dir.sub(/.*Project_/,""),project_dir)
               projects.add(project)
               Dir.chdir(project_dir) do
                 Dir.glob("Sample*").each do |sample_dir|

@@ -18,12 +18,11 @@ module Bio
             "json_class"   => self.class.name,
             "name"         => name,
             "metadata"     => metadata
-            #{}"filenames"    => filenames_paths
           }.to_json(*a)
         end
 
         def self.json_create(o)
-          me = new(o["name"], o["metadata"]["path"],o["metadata"]["parent"])
+          me = new(o["name"], o["metadata"])
         end
       end #File
 

@@ -5,8 +5,7 @@ As a bioinformatician
 I want to have a querable data structure which represents most of the pre cumputed data
 
 Scenario: Explore and Build data structure
-  Given A path with many projects at the first level
-  And others at second level (inside others directories)
+  Given A path with many projects at the first and second level
   When I build the projects structure
   Then I sould get all the projects organized in the same structure.
 
