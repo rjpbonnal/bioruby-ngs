@@ -5,18 +5,16 @@ source "http://rubygems.org"
 
 gem "bio", ">= 1.4.2"
 gem "bio-samtools", ">= 0.3.2"
-# gem "thor", path:"/Users/bonnalraoul/Documents/Develop/thor" #, ">= 0.14.6"
 gem "thor", "= 0.14.6"
 gem "rubyvis", ">= 0.5.0"
 gem "daemons", ">= 1.1.0"
 gem "ruby-ensembl-api", ">= 1.0.1"
 gem "activerecord",">= 3.0.5"
-gem "sqlite3", ">= 1.3.3"
-gem "bio-blastxmlparser"
 gem "progressbar",">= 0.9.0"
 gem "rake", "0.9.2.2"
 gem "json"
 gem "parallel"
+gem "bio-blastxmlparser"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -26,8 +24,16 @@ group :development do
   gem "jeweler", "~> 1.8.3"
   gem "rcov", "~> 0.9.11"
   gem "bio", ">= 1.4.2"
-  # gem "thor", path:"/Users/bonnalraoul/Documents/Develop/thor" #, ">= 0.14.6"
-  gem "thor", "= 0.14.6"
+  
+  platforms :jruby do
+    gem 'jdbc-sqlite3', :require => true 
+  	gem "activerecord-jdbcsqlite3-adapter"
+	end
+  platforms :ruby do
+    gem 'sqlite3', :require => 'sqlite3'
+  end
+
+	gem "thor", "= 0.14.6"
   gem "ffi", ">= 1.0.6"
   gem "rubyvis", ">= 0.5.0"
   gem "rspec", ">= 2.5.0"
@@ -35,10 +41,9 @@ group :development do
   gem "bio-samtools", ">= 0.3.2"
   gem "ruby-ensembl-api", ">= 1.0.1"
   gem "activerecord",">= 3.0.5"
-  gem "sqlite3", ">= 1.3.3"
-  gem "bio-blastxmlparser"
   gem "progressbar",">= 0.9.0"
   gem "json"
   gem "rake", "0.9.2.2"
   gem "parallel"
+	gem "bio-blastxmlparser"
 end

@@ -1,6 +1,6 @@
-Copyright (c) 2011 Raoul J.P. Bonnal and Francesco Strozzi.
+Copyright (c) 2012 Raoul J.P. Bonnal and Francesco Strozzi.
 
-Bio-NGS is an official BioRuby Plugin for Next Generation Sequencing data analysis and workflows.
+Bio-NGS is an official BioRuby Gem for Next Generation Sequencing data analysis and workflows.
 
 
 == Description ==
@@ -11,7 +11,9 @@ Here is a tree description:
 
 <%= name %>
  |
- |-- data	# the place to store all your raw data and output files
+ |-- raw_data	# the place to store all your raw data
+ |
+ |-- outputs # the place for analysis results
  |
  |-- log	# the place to store log and temporary files
  |
