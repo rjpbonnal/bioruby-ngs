@@ -28,3 +28,8 @@ end
 Then /^I want to "(.*?)" the "(.*?)" in each subdirectory$/ do |arg1, arg2|
   pending # express the regexp above with the code you wish you had
 end
+
+
+Then /^I want to save "(.*?)" in single files formatted in "(.*?)" format$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
