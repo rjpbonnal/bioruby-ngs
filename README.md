@@ -36,12 +36,12 @@ _We are working on these and other tasks, if you find some bugs, please open an 
 
 ### bwa
 
-    biongs bwa:aln:long [FASTQ] --file-out=FILE_OUT --prefix=PREFIX                                      # Run the aligment for LONG query sequences
-    biongs bwa:aln:short [FASTQ] --file-out=FILE_OUT --prefix=PREFIX                                     # Run the aligment for SHORT query sequences
-    biongs bwa:index:long [FASTA]                                                                        # Make the BWT index for a LONG FASTA database
-    biongs bwa:index:short [FASTA]                                                                       # Make the BWT index for a SHORT FASTA database
-    biongs bwa:sam:paired --fastq=one two three --file-out=FILE_OUT --prefix=PREFIX --sai=one two three  # Convert SAI alignment output into SAM format (paired ends)
-    biongs bwa:sam:single [SAI] --fastq=FASTQ --file-out=FILE_OUT --prefix=PREFIX                        # Convert SAI alignment output into SAM format (single end)
+    biongs bwa:aln [PREFIX] [FASTA/Q]                                                      # Run BWA aln (short reads)
+    biongs bwa:bwasw [PREFIX] [FASTA/Q]                                                    # Run BWA bwasw (long reads)
+    biongs bwa:fastmap [PREFIX] [FASTA/Q]                                                  # Run BWA Fastmap (identify super-maximal exact matches)
+    biongs bwa:index [FASTA]                                                               # Create BWA index
+    biongs bwa:sampe [PREFIX] [SAI-1 FILE] [SAI-2 FILE] [FASTA/Q-1 FILE] [FASTA/Q-2 FILE]  # Run BWA SAM Paired End conversion
+    biongs bwa:samse [PREFIX] [SAI FILE] [FASTA/Q FILE]                                    # Run BWA SAM Single End conversion
 
 ### convert
 Most of this tasks create sub-processes to speed up conversions
@@ -86,6 +86,10 @@ Most of this tasks create sub-processes to speed up conversions
     biongs homology:load:goa                                           # Import GO Annotation file
     biongs homology:report:blast                                       # Output a graphical report on the Blast homology search
 
+### install
+
+    biongs install:tools  # Download and install NGS tools
+
 ### ontology
 
     biongs ontology:db:export [TABLE] --fileout=FILEOUT  # Export the data from a table to a tab-separated file
@@ -108,7 +112,6 @@ Most of this tasks create sub-processes to speed up conversions
 ### project
 
     biongs project:new [NAME]     # Create a new NGS project directory
-    biongs project:update [TYPE]  # Update the working dir to a new type of project
 
 ### quality
 
@@ -207,28 +210,28 @@ if you want to give a priority to short notation or if your program has only the
 We defined a new property for add_option called `:collapse => true` is used only with `use_aliases` and it collapse the passed parameter to the short notation. An example coming from _fastx.rb_ wrapper, _note last row_:
 
     module Bio
-	    module Ngs    
-	      module Fastx
-	        class Trim
-	          include Bio::Command::Wrapper
-	          set_program Bio::Ngs::Utils.binary("fastq_quality_trimmer")
-	          use_aliases
-	          add_option :min_size, :type=>:numeric, :default=>20, :aliases => "-l", :desc=>"Minimum length - sequences shorter than this (after trimming)
-	          will be discarded. Default = 0 = no minimum length."
-	          add_option :min_quality, :type=>:numeric, :default=>10, :aliases => "-t", :desc=>"Quality threshold - nucleotides with lower 
-	          quality will be trimmed (from the end of the sequence)."
-	          add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file.", :collapse=>true
-	          add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file.", :collapse=>true
-	          add_option :gzip, :type => :boolean, :aliases => "-z", :desc => "Compress output with GZIP."
-	          add_option :verbose, :type => :boolean, :aliases => "-v", :desc => "[-v]         = Verbose - report number of sequences.
-	          If [-o] is specified,  report will be printed to STDOUT.
-	          If [-o] is not specified (and output goes to STDOUT),
-	          report will be printed to STDERR."
-	          add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
-	        end
-	      end
-	    end
-	  end
+      module Ngs    
+        module Fastx
+          class Trim
+            include Bio::Command::Wrapper
+            set_program Bio::Ngs::Utils.binary("fastq_quality_trimmer")
+            use_aliases
+            add_option :min_size, :type=>:numeric, :default=>20, :aliases => "-l", :desc=>"Minimum length - sequences shorter than this (after trimming)
+            will be discarded. Default = 0 = no minimum length."
+            add_option :min_quality, :type=>:numeric, :default=>10, :aliases => "-t", :desc=>"Quality threshold - nucleotides with lower 
+            quality will be trimmed (from the end of the sequence)."
+            add_option :output, :type=>:string, :aliases => "-o", :desc => "FASTQ output file.", :collapse=>true
+            add_option :input, :type=>:string, :aliases => "-i", :desc => "FASTQ input file.", :collapse=>true
+            add_option :gzip, :type => :boolean, :aliases => "-z", :desc => "Compress output with GZIP."
+            add_option :verbose, :type => :boolean, :aliases => "-v", :desc => "[-v]         = Verbose - report number of sequences.
+            If [-o] is specified,  report will be printed to STDOUT.
+            If [-o] is not specified (and output goes to STDOUT),
+            report will be printed to STDERR."
+            add_option :quality_type,  :type=>:numeric, :default => 33, :aliases => "-Q", :desc=>"Quality of fastq file"
+          end
+        end
+      end
+    end
 
 fastq_quality_trimmer accepts only short notation options and we need to pass an input file, but for some reason popen used internally doesn't work properly with the standard behavior so using `:collapse=>true` the application will be called:
 
