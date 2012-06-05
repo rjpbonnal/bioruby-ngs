@@ -60,6 +60,7 @@ require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'
 require 'bio/appl/ngs/blast'
 require 'bio/appl/ngs/bwa'
+require 'bio/appl/ngs/casava'
 
 #Illumina utility for projects
 require 'bio/ngs/illumina/illumina'

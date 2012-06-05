@@ -206,13 +206,13 @@ module Convert
           module Bcl 
             class Qseq < Thor
               desc "convert RUN OUTPUT [JOBS]", "Convert a bcl dataset in qseq"
-              def converts (run_basecalls_root, output, jobs=1)
+              def convert (run_basecalls_root, output, jobs=1)
                 invoke :configure_conversion, [run_basecalls_root, output]
                 invoke :run_bcl_to_qseq, [run_basecalls_root, jobs]
               end #bcl_to_qseq
 
               desc "configure_conversion RUN_DIR OUTPUT ", "Configure the specific Run to be converted", :hide => true
-              Bio::Ngs::Bclqseq.new.thor_task(self, :configure_conversion) do |wrapper, task, run_basecalls_root, output|
+              Bio::Ngs::CASAVA::Bclqseq.new.thor_task(self, :configure_conversion) do |wrapper, task, run_basecalls_root, output|
                 #wrapper.params={"base-calls-directory" => "#{run_basecalls_root}/Data/Intensities/BaseCalls", "output-directory" => output}
                 task.options.base_calls_directory=run_basecalls_root
                 #puts "Test parametri #{task.inspect}"
@@ -227,6 +227,34 @@ module Convert
                 puts "make recursive -j #{jobs} -f #{run_basecalls_root}/Data/Intensities/BaseCalls/Makefile -C #{run_basecalls_root}/Data/Intensities/BaseCalls"
               end #run_bcl_to_qseq
             end #Qseq
+
+            class Fastq < Thor
+
+
+
+              desc "convert RUNDIR DATAOUTDIR [SAMPLESHEET]", "Convert a bcl dataset in fastq. By default it creates a directory with the same name of the rawdata dir attaching a postfix _DATA"
+              method_option :cpu, :type => :numeric, :desc => "number of cpu to use for demultiplexing", :default => 1
+              def convert(run_basecalls_root, dataoutdir, samplesheet=nil)
+                configure_conversion(run_basecalls_root, dataoutdir)
+                start_conversion(dataoutdir, options[:cpu])
+              end #convert bcl to fastq
+
+              desc "configure_conversion RUNDIR DATAOUTDIR", "Configure the specific Run to be converted"
+              Bio::Ngs::CASAVA::ConfigBclFastq.new.thor_task(self, :configure_conversion) do |wrapper, task, run_basecalls_root, dataoutdir|
+                wrapper.params={"input-dir" => "#{run_basecalls_root}/Data/Intensities/BaseCalls", "output-dir" => dataoutdir}
+                wrapper.params["sample-sheet"] ||= task.options["sample-sheet"]
+                wrapper.run
+              end
+
+
+              desc "start_conversion CONF_DATA_DIR", "Start the conversion"
+              def start_conversion(conf_data_dir, cpu)
+                Dir.chdir(conf_data_dir) do 
+                  `make -j "#{cpu}"`
+                end
+              end #start_conversion
+
+            end #Fastq
           end #Bcl
 
 
