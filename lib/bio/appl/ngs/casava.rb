@@ -4,6 +4,7 @@
 #     Raoul Bonnal <@bioruby.org>
 # License:: The Ruby License
 #
+# CASAVA v1.8.2
 #
 # configureQseqToFastq.pl 
 # Usage:
