@@ -208,7 +208,7 @@ module Bio
           add_option "filter_dir", :type => :string, :desc => 'Path to a directory containing filter files. (defaults depending on RTA version)'
           add_option "output-dir",:type => :string, :aliases => '-o', :desc => 'Path to the demultiplexed output (defaults to base_calls_dir/../../../Unaligned)'
           add_option "sample-sheet", :type => :string, :desc => 'Path to SampleSheet.csv (defaults to base_call_dir/SampleSheet.csv)' #, :default => 'SampleSheet.csv'
-          add_option "mismatches", :type => :numeric, :desc => 'Comma-separated list of mismatches allowed for each barcode component. Either 0 or 1 (defaults to 0)', :defaults=> 1
+          add_option "mismatches", :type => :numeric, :desc => 'Comma-separated list of mismatches allowed for each barcode component. Either 0 or 1 (defaults to 0)', :default=> 1
           add_option "fastq-cluster-count", :type => :numeric, :desc => 'Maximum number of fastq records per fastq file (default: 4000000).'
           add_option "ignore-missin-stats", :type => :boolean, :desc => 'Fill in with zeros when *.stats files are missing'
           add_option "ignore-missing-bcl", :type => :boolean, :desc => 'Interpret missing *.bcl files as no call'
