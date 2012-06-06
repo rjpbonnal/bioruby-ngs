@@ -14,6 +14,7 @@ Provides a framework for handling NGS data with Bioruby.
 * http://hannonlab.cshl.edu/fastx_toolkit/ (the gem tries to install this tool by itself)
 * http://www.gnuplot.info/ tested on version 4.6
 * libxslt1-dev
+* CASAVA 1.8.2 <http://support.illumina.com/sequencing/sequencing_software/casava.ilmn>
 
 ## Install
 ### Quick Start
@@ -49,6 +50,10 @@ Most of this tasks create sub-processes to speed up conversions
     biongs convert:bam:extract_genes BAM GENES --ensembl-release=N -o, --output=OUTPUT  # Extract GENES from bam. It connects to Ensembl Humnan,...
     biongs convert:bam:merge -i, --input-bams=one two three                             # Merge multiple bams in a single one, BAMS separated by...
     biongs convert:bam:sort BAM [PREFIX]                                                # Sort and create and index for the BAM file name
+    biongs convert:bcl:fastq:configure_conversion RUNDIR DATAOUTDIR                     # Configure the specific Run to be converted
+    biongs convert:bcl:fastq:convert RUNDIR DATAOUTDIR [SAMPLESHEET]                    # Convert a bcl dataset in fastq. By default it creates a
+                                                                                          directory with the same name of the dir attachin...
+    biongs convert:bcl:fastq:start_conversion CONF_DATA_DIR                             # Start the conversion
     biongs convert:bcl:qseq:convert RUN OUTPUT [JOBS]                                   # Convert a bcl dataset in qseq
     biongs convert:illumina:de:gene DIFF GTF                                            # extract the transcripts
     biongs convert:illumina:de:isoform DIFF GTF                                         # extract the transcripts
@@ -62,6 +67,9 @@ Most of this tasks create sub-processes to speed up conversions
     biongs convert:qseq:fastq:samples_by_lane SAMPLES LANE OUTPUT                       # Convert the qseqs for each sample in a specific lane. 
                                                                                           SAMPLES is an array of index codes separated by commas lane
                                                                                           is an integer
+
+
+
 
 ### filter
 
@@ -143,7 +151,55 @@ Most of this tasks create sub-processes to speed up conversions
 ## TasksExamples
 
 ### Conversion
+
+#### Extract gene(s) alignment from a BAM
+
    biongs convert:bam:extract_genes your_original.bam BLID,GATA3,PTPRC --ensembl_release=61 --ensembl_specie=homo_sapiens
+
+#### Demultiplex an Illumina Run.
+By default Illumina uses `SampleSheet.csv` file to describe the layout of your run
+
+    FCID,Lane,SampleID,SampleRef,Index,Description,Control,Recipe,Operator,SampleProject
+    D0C0DACXX,1,0113,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,1,0114,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,1,0115,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,1,0116,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+    D0C0DACXX,2,0117,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,2,0118,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,2,0119,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,2,0120,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+    D0C0DACXX,3,0121,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,3,0122,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,3,0123,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,3,0124,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+    D0C0DACXX,4,0125,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,4,0126,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,4,0127,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,4,0128,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+    D0C0DACXX,5,0095,Ensembl,ATCACG,Y1,N,R2,Doe,X
+    D0C0DACXX,5,0096,Ensembl,TTAGGC,Y1,N,R2,Doe,X
+    D0C0DACXX,5,0097,Ensembl,ACTTGA,X1,N,R2,Doe,Y
+    D0C0DACXX,5,0098,Ensembl,GATCAG,X1,N,R2,Doe,Y
+    D0C0DACXX,6,0109,Ensembl,ACTTGA,Y1,N,R2,Doe,X
+    D0C0DACXX,6,0110,Ensembl,GATCAG,Y1,N,R2,Doe,X
+    D0C0DACXX,6,0111,Ensembl,TAGCTT,X1,N,R2,Doe,Y
+    D0C0DACXX,6,0112,Ensembl,GGCTAC,X1,N,R2,Doe,Y
+    D0C0DACXX,7,0129,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,7,0130,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,7,0131,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,7,0132,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+    D0C0DACXX,8,0133,Ensembl,CGATGT,Y1,N,R2,Doe,X
+    D0C0DACXX,8,0134,Ensembl,TGACCA,Y1,N,R2,Doe,X
+    D0C0DACXX,8,0135,Ensembl,ACAGTG,X1,N,R2,Doe,Y
+    D0C0DACXX,8,0136,Ensembl,GCCAAT,X1,N,R2,Doe,Y
+
+We expect to find `SampleSheet.csv` in your run directory, in case of acustom name, user can pass it as last parameter.  
+To demultiplex your experiment
+
+    ngs biongs convert:bcl:fastq:convert /bio/ngs/raw/110321_H001_0100_AD10TMACXX/ /bio/ngs/data/110321_H001_0100_AD10TMACXX_DATA --cpu=8 > 110321_H125_0100_AD10TMACXX.log 2>&1
+
+This command will save the stdout on a log file in the current directory. You must specify the source directory and the destination. You can select the number of CPU to use for demultiplexing, 8 is the maximum value becase 8 lanes.  
+Typing `biongs help convert:bcl:fastq:convert` you can have a list of sub tasks. Where `biongs convert:bcl:fastq:configure_conversion RUNDIR DATAOUTDIR` corresponds to `configureBclToFastq.pl`and `biongs convert:bcl:fastq:start_conversion` to `make` in the demultiplexed directory. 
 
 ### Filtering
 When you have your mapped reads to a reference genome, you can decide to filter the output (GTF) to extract only those transcripts which have your desired requirements. You can filter for lenght, if it's multi or mono exon, the coverage, if it's a brand new transcript or an altrady annotated gene but with a new isoform or just the annotated transcripts.
@@ -169,6 +225,7 @@ Then in some case I need to extract only some of them or maybe parsing them from
     biongs filter:cufflinks:tra_at_idx my_filtered_data.gtf #of_the_transcript_to_retrieve -u 
 
 The first time tra_at_idx is used, it will take more time than usual becase it creates an internal index: a simple HASH mashalled and dumped, stored in a file with the name similar to the imput with an idx as postfix.
+
 
 
 # ForDevelopers
