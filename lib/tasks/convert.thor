@@ -234,6 +234,7 @@ module Convert
 
               desc "convert RUNDIR DATAOUTDIR [SAMPLESHEET]", "Convert a bcl dataset in fastq. By default it creates a directory with the same name of the rawdata dir attaching a postfix _DATA"
               method_option :cpu, :type => :numeric, :desc => "number of cpu to use for demultiplexing", :default => 1
+              method_option "sample-sheet", :type=> :string, :default => 'SampleSheet.csv'
               def convert(run_basecalls_root, dataoutdir, samplesheet=nil)
                 configure_conversion(run_basecalls_root, dataoutdir)
                 start_conversion(dataoutdir, options[:cpu])
@@ -241,8 +242,24 @@ module Convert
 
               desc "configure_conversion RUNDIR DATAOUTDIR", "Configure the specific Run to be converted"
               Bio::Ngs::CASAVA::ConfigBclFastq.new.thor_task(self, :configure_conversion) do |wrapper, task, run_basecalls_root, dataoutdir|
-                wrapper.params={"input-dir" => "#{run_basecalls_root}/Data/Intensities/BaseCalls", "output-dir" => dataoutdir}
-                wrapper.params["sample-sheet"] ||= task.options["sample-sheet"]
+                base_calls_dir = File.join(run_basecalls_root, "Data/Intensities/BaseCalls")
+
+                if sample_sheet=task.options["sample-sheet"]
+                  if File.dirname(sample_sheet) == '.'
+                    if File.exists?(File.join(base_calls_dir,sample_sheet))
+                      #default place
+                      sample_sheet = File.join(base_calls_dir,sample_sheet)
+                    elsif File.exists?(File.join(run_basecalls_root,sample_sheet))
+                      #search for sample sheet in the root of raw data directoy
+                      sample_sheet = File.join(run_basecalls_root,sample_sheet)
+                    else
+                      raise "Unable to find a valid sample sheet: #{sample_sheet}"
+                    end
+                  elsif !File.exists?(sample_sheet)
+                    raise "Unable to find a valid sample sheet: #{sample_sheet}"
+                  end
+                end
+                wrapper.params={"input-dir" => "#{run_basecalls_root}/Data/Intensities/BaseCalls", "output-dir" => dataoutdir, "sample-sheet" => sample_sheet}
                 wrapper.run
               end
 

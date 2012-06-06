@@ -157,7 +157,7 @@ Most of this tasks create sub-processes to speed up conversions
    biongs convert:bam:extract_genes your_original.bam BLID,GATA3,PTPRC --ensembl_release=61 --ensembl_specie=homo_sapiens
 
 #### Demultiplex an Illumina Run.
-By default Illumina uses `SampleSheet.csv` file to describe the layout of your run
+By default Illumina uses `SampleSheet.csv` in the `your_run/Data/Intensities/BaseCalls` file to describe the layout of your run
 
     FCID,Lane,SampleID,SampleRef,Index,Description,Control,Recipe,Operator,SampleProject
     D0C0DACXX,1,0113,Ensembl,CGATGT,Y1,N,R2,Doe,X
@@ -193,7 +193,7 @@ By default Illumina uses `SampleSheet.csv` file to describe the layout of your r
     D0C0DACXX,8,0135,Ensembl,ACAGTG,X1,N,R2,Doe,Y
     D0C0DACXX,8,0136,Ensembl,GCCAAT,X1,N,R2,Doe,Y
 
-We expect to find `SampleSheet.csv` in your run directory, in case of acustom name, user can pass it as last parameter.  
+We expect to find `SampleSheet.csv` in your run directory, in case of a custom name user can pass it as last parameter `--sample_sheet=your_sample_sheet.csv`.  
 To demultiplex your experiment
 
     ngs biongs convert:bcl:fastq:convert /bio/ngs/raw/110321_H001_0100_AD10TMACXX/ /bio/ngs/data/110321_H001_0100_AD10TMACXX_DATA --cpu=8 > 110321_H125_0100_AD10TMACXX.log 2>&1
