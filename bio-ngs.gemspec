@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-ngs"
-  s.version = "0.5.0"
+  s.version = "0.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-06-04"
+  s.date = "2012-06-06"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
     "lib/bio/appl/ngs/blast.rb",
     "lib/bio/appl/ngs/bowtie-inspect.rb",
     "lib/bio/appl/ngs/bwa.rb",
+    "lib/bio/appl/ngs/casava.rb",
     "lib/bio/appl/ngs/cufflinks.rb",
     "lib/bio/appl/ngs/cufflinks/gtf/gtf.rb",
     "lib/bio/appl/ngs/cufflinks/gtf/gtf_parser.rb",
@@ -188,7 +189,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/helios/bioruby-ngs"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.15"
   s.summary = "bio-ngs provides a framework for handling NGS data with BioRuby"
 
   if s.respond_to? :specification_version then
