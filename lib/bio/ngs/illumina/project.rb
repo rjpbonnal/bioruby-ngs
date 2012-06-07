@@ -15,15 +15,15 @@ module Bio
           metadata[:path]=root_dir
         end
 
-        alias :samples :pool
+        alias :each_sample :each
 
         def path
           File.join(@root_dir, (name=~/Undetermined_indices/ ? name : "Project_#{name}"))
         end
 
         def samples_path
-          @samples.each_key.map do |sample_name|
-            @samples[sample_name].filenames_paths
+          samples.each_key.map do |sample_name|
+            samples[sample_name].filenames_paths
           end.flatten
         end
         def to_json(*a)

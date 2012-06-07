@@ -41,15 +41,17 @@ module Bio
 
           Dir.chdir(path) do
             Dir.glob(["**/Project_*","**/Undetermined_indices"]).each do |project_dir|
-              project = Project.new(project_dir.sub(/.*Project_/,""),project_dir)
-              projects.add(project)
-              Dir.chdir(project_dir) do
-                Dir.glob("Sample*").each do |sample_dir|
-                  sample = Sample.new(sample_dir.sub(/Sample_/,""), sample_dir, project)
-                  project.add(sample)
-                  Dir.chdir(sample_dir) do
-                    Dir.glob(["**/*.fastq", "**/*.fastq.gz"]) do |reads_filename|
-                      sample.add_filename(reads_filename)
+              unless File.dirname(project_dir) =~ /[Tt]e?mp/  || File.file?(project_dir)#skip temporary directories
+                project = Project.new(project_dir.sub(/.*Project_/,""),File.dirname(project_dir))
+                projects.add(project)
+                Dir.chdir(project_dir) do
+                  Dir.glob("Sample*").each do |sample_dir|
+                    sample = Sample.new(sample_dir.sub(/Sample_/,""), project_dir, project)
+                    project.add(sample)
+                    Dir.chdir(sample_dir) do
+                      Dir.glob(["**/*.fastq", "**/*.fastq.gz"]) do |reads_filename|
+                        sample.add_filename(reads_filename)
+                      end
                     end
                   end
                 end

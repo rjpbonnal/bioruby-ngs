@@ -4,8 +4,8 @@ module Meta
     attr_accessor :metadata
 
     def initialize(name, metadata={})
-      @metadata={}
-      @metadata[:name]=name
+      @metadata = {}
+      @metadata[:name] = name
       @metadata.merge! metadata
     end
 
@@ -89,7 +89,7 @@ module Meta
     end
 
     def each &block
-      @pool.each_pair{|name, member| block.call(member)}
+      pool.each_pair{|name, member| block.call(name, member)}
     end
 
     # TODO implement <=>

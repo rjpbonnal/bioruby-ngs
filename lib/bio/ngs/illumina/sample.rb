@@ -24,6 +24,21 @@ module Bio
         def self.json_create(o)
           me = new(o["name"], o["metadata"])
         end
+
+        # Gives access to metadata values, creating 
+        # a method with the name of the field
+        def method_missing(method_name, *args, &block)
+          if metadata.key? method_name
+            self.define_singleton_method(method_name) do
+              metadata[method_name]
+            end
+            send(method_name)
+          else
+            super
+          end
+        end
+
+
       end #File
 
       class Sample < Meta::Pool
@@ -33,6 +48,8 @@ module Bio
           metadata[:path]=path
           @parent = parent
         end
+
+        alias :each_file :each
 
         def path
           File.join @parent.path,"Sample_#{name}"
@@ -73,10 +90,6 @@ module Bio
             end
             self.add MetaReads.new(SecureRandom.uuid, metadata)
           end
-
-          #REMOVE          # def get(tag=filtered)
-          #   @files.get(tag)
-          # end
 
           def filenames_paths
             @filenames.keys.map do |filename|
