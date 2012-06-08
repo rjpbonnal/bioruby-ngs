@@ -13,6 +13,7 @@
 module Convert
 
   class Bam < Thor 
+
     # Sort and index the input bam filename
     # the sorted/indexed output is created in the same directory of the input file
     desc "sort BAM [PREFIX]", "Sort and create and index for the BAM file name"

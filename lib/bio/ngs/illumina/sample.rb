@@ -24,21 +24,6 @@ module Bio
         def self.json_create(o)
           me = new(o["name"], o["metadata"])
         end
-
-        # Gives access to metadata values, creating 
-        # a method with the name of the field
-        def method_missing(method_name, *args, &block)
-          if metadata.key? method_name
-            self.define_singleton_method(method_name) do
-              metadata[method_name]
-            end
-            send(method_name)
-          else
-            super
-          end
-        end
-
-
       end #File
 
       class Sample < Meta::Pool
@@ -51,9 +36,14 @@ module Bio
 
         alias :each_file :each
 
-        def path
+        def project_path
           File.join @parent.path,"Sample_#{name}"
         end
+
+        def path
+          File.join "Sample_#{name}"
+        end
+
 
         def paired?
           @filenames.key?(:left) && @filenames.key?(:right)
@@ -72,8 +62,15 @@ module Bio
             metadata[:filtered] = true
             metadata[:filtered_aggregated] =true unless filename=~/_\d+\./
           end
-          metadata[:left] = true if filename=~/.*_R1_.*/
-          metadata[:right] = true if filename=~/.*_R2_.*/
+          if filename=~/.*_R1_.*/
+            metadata[:left] = true 
+            metadata[:side] = :left
+          end
+          if filename=~/.*_R2_.*/
+            metadata[:right] = true 
+            metadata[:side] = :right
+          end
+
           metadata[:zipped] = true if filename=~/\.gz/
           metadata[:aggregated] = true unless metadata[:trimmed_aggregated] || metadata[:filtered_aggregated] || filename=~/_\d+\./
 
@@ -97,6 +94,30 @@ module Bio
             end.flatten
           end
 
+          def chunks
+            chunks_id = []
+            each_file do |file_name, reads|
+              chunks_id << reads.metadata[:chunks]
+            end
+            chunks_id.uniq.sort
+          end
+
+          def lanes
+            lanes_id = []
+            each_file do |file_name, reads|
+              lanes_id << reads.metadata[:lane]
+            end
+            lanes_id.uniq.sort
+          end
+
+          def right
+            get :side, :right
+          end
+
+          def left
+            get :side, :left
+          end
+
           def to_json(*a)
             {
               "json_class"   => self.class.name,
@@ -104,6 +125,18 @@ module Bio
               "metadata"     => metadata,
               "files"        => pool
             }.to_json(*a)
+          end
+
+          # Return an hash with forward/reverse
+          def aggregate_by_chunks
+            forward = []
+            reverse = []
+            chunks.each do |chunk|
+              reads=get :chunks, chunk
+               forward << (get :side, :left)
+               reverse << (get :side, :right)
+            end
+            [forward,reverse]
           end
 
           # def self.json_create(o)

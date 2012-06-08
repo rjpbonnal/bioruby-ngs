@@ -14,6 +14,10 @@ module Bio
           metadata[:path]=path
         end
         alias :projects :pool
+
+        def path
+          metadata[:path]
+        end
       end
 
       require 'find'

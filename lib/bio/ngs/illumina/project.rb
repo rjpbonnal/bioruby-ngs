@@ -34,47 +34,57 @@ module Bio
             "samples"       => samples#each_key.map{|k| samples[k].to_json }
           }.to_json(*a)
         end
+
+        def each_file
+          each_sample do |sample_name, sample|
+              sample.each_file do |file_name, reads|
+                #projects, sample, reads
+                yield self, sample, reads
+              end
+          end
+        end
+
       end
 
       # require 'find'
       # class << self
-        # def project_directory?(path=".")
-        #   Dir.chdir(path) do
-        #     projects = Dir.glob(["Project_*","Undetermined_indices"])
-        #     return false if projects.empty?
-        #     into_projects = projects.map do |project|
-        #       Dir.chdir(project) do |sample|
-        #         Dir.glob("Sample*").size>0
-        #       end
-        #     end.uniq
+      # def project_directory?(path=".")
+      #   Dir.chdir(path) do
+      #     projects = Dir.glob(["Project_*","Undetermined_indices"])
+      #     return false if projects.empty?
+      #     into_projects = projects.map do |project|
+      #       Dir.chdir(project) do |sample|
+      #         Dir.glob("Sample*").size>0
+      #       end
+      #     end.uniq
 
-        #     if (into_projects.size>1 || (into_projects.first==false))
-        #       return false
-        #     end
-        #   end
-        #   true
-        # end
+      #     if (into_projects.size>1 || (into_projects.first==false))
+      #       return false
+      #     end
+      #   end
+      #   true
+      # end
 
-        # def build(path=".")
-        #   Dir.chdir(path) do
-        #     Dir.glob(["Project_*","Undetermined_indices"]).inject({}) do |projects, project_dir|
-        #       project = Project.new(project_dir.sub(/Project_/,""), path)
-        #       projects[project.name] = project
-        #       Dir.chdir(project_dir) do
-        #         Dir.glob("Sample*").each do |sample_dir|
-        #           sample = Sample.new(sample_dir.sub(/Sample_/,""), project)
-        #           project.samples[sample.name] = sample
-        #           Dir.chdir(sample_dir) do
-        #             Dir.glob(["**/*.fastq", "**/*.fastq.gz"]) do |reads_filename|
-        #               sample.add_filename(reads_filename)
-        #             end
-        #           end
-        #         end
-        #       end
-        #       projects
-        #     end
-        #   end
-        # end
+      # def build(path=".")
+      #   Dir.chdir(path) do
+      #     Dir.glob(["Project_*","Undetermined_indices"]).inject({}) do |projects, project_dir|
+      #       project = Project.new(project_dir.sub(/Project_/,""), path)
+      #       projects[project.name] = project
+      #       Dir.chdir(project_dir) do
+      #         Dir.glob("Sample*").each do |sample_dir|
+      #           sample = Sample.new(sample_dir.sub(/Sample_/,""), project)
+      #           project.samples[sample.name] = sample
+      #           Dir.chdir(sample_dir) do
+      #             Dir.glob(["**/*.fastq", "**/*.fastq.gz"]) do |reads_filename|
+      #               sample.add_filename(reads_filename)
+      #             end
+      #           end
+      #         end
+      #       end
+      #       projects
+      #     end
+      #   end
+      # end
       # end
     end #Illumina
   end #Ngs

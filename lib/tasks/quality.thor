@@ -62,8 +62,7 @@ class Quality < Thor
       send graph.first, graph.last
     end
   end
-  
-  desc "illumina_projects_stats", "Reports quality of FASTQ files in an Illumina project directory"
+
   method_option :cpus, :type=>:numeric, :default=>4, :aliases=>'-c', :desc=>'Number of processes to use.'
   def illumina_projects_stats(directory=".")
     if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
@@ -158,7 +157,7 @@ class Quality < Thor
 
   desc "scatterplot EXPR1 EXPR2 OUTPUT", "plot quantification values as scatterplot in png format"
   method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title plotted on the graph."
-  def scatterplot (expr1, expr2, output)
+  def scatterplot(expr1, expr2, output)
                                                                                                   
     [expr1, expr2].each do |file_name|                                                            #controllo sul file!
       unless File.exists?(file_name)
@@ -178,6 +177,46 @@ class Quality < Thor
     system "cat tmp_gnuplot"
     system "rm tmp_1 tmp_2 tmp_gnuplot"    
   end 
+
+
+  desc "aggregate DIR PROJECT [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
+  def aggregate(dir, project_name, outdir=nil)
+    outdir = Dir.pwd if outdir.nil?
+    projects=Bio::Ngs::Illumina.build(dir)
+      project=projects.get(project_name)
+      project.each_sample do |n,sample|
+        sample_base_name = File.join(projects.path, project.path, sample.path)
+        file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
+        file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
+        file_merge_forward = "#{sample.path}_R1.fastq.gz"
+        file_merge_reverse = "#{sample.path}_R2.fastq.gz"
+        Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
+          dest_dir = outdir
+          if outdir
+            Dir.chdir(outdir) do
+              rel_projects_path = File.basename(projects.path)
+              Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
+              Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
+              Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
+              dest_dir = File.join(rel_projects_path,project.path, sample.path)
+            end 
+          end 
+          `zcat #{data.first} > #{File.join(dest_dir,data.last)}`
+        end
+      end
+  end
+  desc "reads_per_projects_and_samples [DIR]", "count the number of reads for each sample"
+  def reads_per_projects_and_samples(dir='.')
+    Bio::Ngs::Illumina.build(dir).each do |project_name, project|
+      project.each_file do |project, sample, reads|
+       nreads = Bio::Ngs::Illumina::FastqGz.gets_uncompressed(File.join(dir, project.path, sample.path, reads.filename)) do
+          yield if block_given?
+      end
+      puts "#{project.name},#{sample.name},#{reads.lane},#{reads.chunks},#{reads.side},#{nreads}"
+    end
+  end
+  
+  desc "illumina_projects_stats", "Reports quality of FASTQ files in an Illumina project directory"
+
+
 end
-
-

@@ -58,6 +58,27 @@ module Meta
     #   include Data
 
 
+        # Gives access to metadata values, creating 
+        # a method with the name of the field. Works only
+        # def method_missing(method_name, *args, &block)
+        #   get_method_name = method_name.to_s.sub(/\=/,'').to_sym
+        #   set_method_name = ("#{get_method_name}=").to_sym
+        #   if metadata.key? get_method_name
+        #     self.define_singleton_method(get_method_name) do
+        #       metadata[get_method_name]
+        #     end
+        #     self.define_singleton_method(set_method_name) do |value|
+        #       metadata[get_method_name]=args[0][0]
+        #     end
+        #     send(method_name, args)
+        #   elsif method_name=~/\=/
+        #     metadata[get_method_name]=nil
+        #     send(method_name, args)
+        #   else
+        #     super
+        #   end
+        # end
+
     #TODO: make this class generic and available to other classes
     #TODO: include or subclass original class File, I need to borrow most of its methods. File.exists? File.open File.read
 
@@ -148,7 +169,11 @@ module Meta
           ret_pool.add meta
         else
           @pool.each_pair do |name, element|
-            ret_pool.add element.get_by_tag_and_value(tag, val) if element.respond_to?(:get_by_tag_and_value) && element.respond_to?(:pool)
+            if element.respond_to?(:get_by_tag_and_value) && element.respond_to?(:pool)
+              element.get_by_tag_and_value(tag, val).each do |name, meta|
+                ret_pool.add meta
+              end
+            end
           end
         end
       end
