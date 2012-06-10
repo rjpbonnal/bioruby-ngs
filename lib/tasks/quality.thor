@@ -45,6 +45,7 @@ class Quality < Thor
   desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
+    puts "[#{Time.now}] Processing #{fastq} stats"
     output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}_stats.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
     if fastq=~/\.gz/
@@ -55,35 +56,16 @@ class Quality < Thor
     end
     stats.run
     require 'parallel'
-    go_in_parallel = [[:boxplot,[output_file]],
-                      [:reads_coverage,[output_file]],
-                      [:nucleotide_distribution,[output_file]]]
+    go_in_parallel = [[:boxplot,output_file],
+                      [:reads_coverage,output_file],
+                      [:nucleotide_distribution,output_file]]
     Parallel.map(go_in_parallel, in_processes:go_in_parallel.size) do |graph|
+      puts "[#{Time.now}] Plotting #{graph.first} #{graph.last}"
       send graph.first, graph.last
     end
+    puts "[#{Time.now}] Finished #{fastq}"
   end
 
-  method_option :cpus, :type=>:numeric, :default=>4, :aliases=>'-c', :desc=>'Number of processes to use.'
-  def illumina_projects_stats(directory=".")
-    if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
-      projects = Bio::Ngs::Illumina.build(directory)
-      files = []
-      projects.each do |project_name, project|
-        project.samples_path.each do |reads_file|
-          #reads_file is an hash with right or left, maybe single also but I didn't code anything for it yet.
-          #TODO: refactor these calls
-          
-          files<<File.join(directory, reads_file[:left]) if reads_file.key?(:left)
-          files<<File.join(directory, reads_file[:right]) if reads_file.key?(:right)
-        end
-      end
-      Parallel.map(files, in_processes:options[:cpus]) do |file|
-        fastq_stats file
-      end
-    else
-      STDERR.puts "illumina_projects_stats: Not an Illumina directory"
-    end
-  end
 
   desc "boxplot FASTQ_QUALITY_STATS", "plot reads quality as boxplot"
   method_option :title, :type=>:string, :aliases =>"-t", :desc  => "Title (usually the solexa file name) - will be plotted on the graph."
@@ -183,40 +165,66 @@ class Quality < Thor
   def aggregate(dir, project_name, outdir=nil)
     outdir = Dir.pwd if outdir.nil?
     projects=Bio::Ngs::Illumina.build(dir)
-      project=projects.get(project_name)
-      project.each_sample do |n,sample|
-        sample_base_name = File.join(projects.path, project.path, sample.path)
-        file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
-        file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
-        file_merge_forward = "#{sample.path}_R1.fastq.gz"
-        file_merge_reverse = "#{sample.path}_R2.fastq.gz"
-        Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-          dest_dir = outdir
-          if outdir
-            Dir.chdir(outdir) do
-              rel_projects_path = File.basename(projects.path)
-              Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
-              Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
-              Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
-              dest_dir = File.join(rel_projects_path,project.path, sample.path)
-            end 
-          end 
-          `zcat #{data.first} > #{File.join(dest_dir,data.last)}`
-        end
+    project=projects.get(project_name)
+    project.each_sample do |n,sample|
+      sample_base_name = File.join(projects.path, project.path, sample.path)
+      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
+      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
+      file_merge_forward = "#{sample.path}_R1.fastq.gz"
+      file_merge_reverse = "#{sample.path}_R2.fastq.gz"
+      dest_dir = outdir
+      if outdir
+        Dir.chdir(outdir) do
+          rel_projects_path = File.basename(projects.path)
+          puts rel_projects_path
+          Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
+          puts File.join(rel_projects_path,project.path)
+          Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
+          puts File.join(rel_projects_path,project.path, sample.path)
+          Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
+          dest_dir = File.join(rel_projects_path,project.path, sample.path)
+        end 
+      end 
+      Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
+        `cat #{data.first} > #{File.join(dest_dir,data.last)}`
       end
+    end
   end
+
   desc "reads_per_projects_and_samples [DIR]", "count the number of reads for each sample"
   def reads_per_projects_and_samples(dir='.')
     Bio::Ngs::Illumina.build(dir).each do |project_name, project|
       project.each_file do |project, sample, reads|
-       nreads = Bio::Ngs::Illumina::FastqGz.gets_uncompressed(File.join(dir, project.path, sample.path, reads.filename)) do
+        nreads = Bio::Ngs::Illumina::FastqGz.gets_uncompressed(File.join(dir, project.path, sample.path, reads.filename)) do
           yield if block_given?
+        end
+        puts "#{project.name},#{sample.name},#{reads.lane},#{reads.chunks},#{reads.side},#{nreads}"
       end
-      puts "#{project.name},#{sample.name},#{reads.lane},#{reads.chunks},#{reads.side},#{nreads}"
     end
   end
   
   desc "illumina_projects_stats", "Reports quality of FASTQ files in an Illumina project directory"
+  method_option :cpus, :type=>:numeric, :default=>4, :aliases=>'-c', :desc=>'Number of processes to use.'
+  def illumina_projects_stats(directory=".")
+    if File.directory?(directory) && Bio::Ngs::Illumina.project_directory?(directory)
+      projects = Bio::Ngs::Illumina.build(directory)
+      files = []
+      projects.each do |project_name, project|
+        project.samples.each do |sample_name, sample|
+          #reads_file is an hash with right or left, maybe single also but I didn't code anything for it yet.
+          #TODO: refactor these calls
+          
+          files<<File.join(directory, reads_file[:left]) if reads_file.key?(:left)
+          files<<File.join(directory, reads_file[:right]) if reads_file.key?(:right)
+        end
+      end
+      Parallel.map(files, in_processes:options[:cpus]) do |file|
+        fastq_stats file
+      end
+    else
+      STDERR.puts "illumina_projects_stats: Not an Illumina directory"
+    end
+  end
 
 
 end
