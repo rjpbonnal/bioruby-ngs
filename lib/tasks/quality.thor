@@ -187,9 +187,47 @@ class Quality < Thor
         end 
       end 
       Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-        `cat #{data.first} > #{File.join(dest_dir,data.last)}`
+        `zcat #{data.first} | pigz -p 4 > #{File.join(dest_dir,data.last)}`
       end
     end
+  end
+
+  desc "aggregate_sample DIR PROJECT SAMPLE [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
+  def aggregate_sample(dir, project_name, sample_name, outdir=nil)
+    outdir = Dir.pwd if outdir.nil?
+    projects=Bio::Ngs::Illumina.build(dir)
+    project = projects.get(project_name)
+    
+    if project
+      sample = project.get(sample_name)
+    if sample
+      sample_base_name = File.join(projects.path, project.path, sample.path)
+      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
+      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
+      file_merge_forward = "#{sample.path}_R1.fastq.gz"
+      file_merge_reverse = "#{sample.path}_R2.fastq.gz"
+      dest_dir = outdir
+      if outdir
+        Dir.chdir(outdir) do
+          rel_projects_path = File.basename(projects.path)
+          puts rel_projects_path
+          Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
+          puts File.join(rel_projects_path,project.path)
+          Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
+          puts File.join(rel_projects_path,project.path, sample.path)
+          Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
+          dest_dir = File.join(rel_projects_path,project.path, sample.path)
+        end 
+      end 
+      Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
+        `zcat #{data.first} | pigz > #{File.join(dest_dir,data.last)}`
+      end
+    else
+       puts "Sample #{sample_name} does not exist."
+    end
+  else
+    puts "Project #{project_name} does not exist."
+  end
   end
 
   desc "reads_per_projects_and_samples [DIR]", "count the number of reads for each sample"
@@ -228,12 +266,14 @@ class Quality < Thor
   end
 
   desc "trim_momatic_pe FORWARD REVERSE", "Trim reads on quality by using Trimmomatic, Paired Ends"
-  # method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
+  method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
+  method_option :log, :type => :string, :desc => 'Log Trimmomatic activities'
   def trim_momatic_pe(forward, reverse)
     uuid = SecureRandom.uuid
     puts "[#{Time.now}] #{uuid} Start trimming #{forward} and #{reverse} paired end reads by Trimmomatic"
     puts "#{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar"
-    puts "java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -phred33 #{forward} #{reverse} #{forward.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{forward.gsub(/fastq\.gz/,'unpaired.fastq.gz')}  #{reverse.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{reverse.gsub(/fastq\.gz/,'unpaired.fastq.gz')} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36"
+    # -threads #{options[:threads]} {'-trimlog' if options[:log]} #{options[:log]} 
+    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 #{forward} #{reverse} #{forward.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{forward.gsub(/fastq\.gz/,'unpaired.fastq.gz')}  #{reverse.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{reverse.gsub(/fastq\.gz/,'unpaired.fastq.gz')} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
     puts "[#{Time.now}] #{uuid} Finished "
   end
 
@@ -265,6 +305,12 @@ class Quality < Thor
     end
   end
 
+  desc "illumina_sample_aggregate_trim SRCDIR PROJECT SAMPLE", "Aggregate and trim and sample"
+  def illumina_sample_aggregate_trim(src_dir, out_dir, project_name, sample_name)
+    aggregate_sample(src_dir, project_name, sample_name)
+    illumina_aggregated_sample_trim(out_dir, project_name, sample_name)
+  end
+
   desc "list_projects_samples DIR", "list projects and samples in a run"
   def list_projects_samples(directory)
     Bio::Ngs::Illumina.build(directory).each do |project_name, project|
@@ -291,11 +337,22 @@ class Quality < Thor
   desc "clean_from_trimming [DIR]", "remove trimmomatic files from direcoty recursively"
   def clean_from_trimming(dir=".")
     files = Dir.glob(["**/*trimmed*", "**/*unpaired*"])
-    files_size = files.inject(0){|c,v| c+=v}
+    files_size = files.inject(0){|c,v| c+=File.size(v)}
     Dir.glob(["**/*trimmed*", "**/*unpaired*"]) do |file|
       File.delete file
     end
     puts "Deleted #{files_size}"
   end
+
+  desc "clean_from_aggregated [DIR]", "remove aggreagated files from direcoty recursively"
+  def clean_from_aggregated(dir=".")
+    files = Dir.glob(["**/*R?\.fastq.gz"])
+    files_size = files.inject(0){|c,v| c+=File.size(v)}
+    files.each do |file|
+      File.delete file
+    end
+    puts "Deleted #{files_size}"
+  end
+
 
 end

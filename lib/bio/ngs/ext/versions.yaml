@@ -34,7 +34,13 @@ common:
         suffix:   zip
         desc:     "Trimmomatic: A flexible read trimming tool for Illumina NGS data"
         type:     binary
-
+    pigz:
+        version:  2.2.4
+        url:      http://zlib.net/pigz/pigz-2.2.4.tar.gz
+        basename: pigz-2.2.4
+        suffix:   tar.gz
+        desc:     A parallel implementation of gzip for modern multi-processor multi-core machines
+        type:     make
         
 linux:
     cufflinks:

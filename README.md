@@ -16,6 +16,7 @@ Provides a framework for handling NGS data with Bioruby.
 * libxslt1-dev
 * CASAVA 1.8.2 <http://support.illumina.com/sequencing/sequencing_software/casava.ilmn>
 * Java SE for running Trimmomatic
+* pigz A parallel implementation of gzip for modern multi-processor, multi-core machines <http://zlib.net/pigz/>
 
 ## Install
 ### Quick Start
