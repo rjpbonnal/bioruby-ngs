@@ -62,11 +62,11 @@ module Bio
             metadata[:filtered] = true
             metadata[:filtered_aggregated] =true unless filename=~/_\d+\./
           end
-          if filename=~/.*_R1_.*/
+          if filename=~/.*_R1_?.*/
             metadata[:left] = true 
             metadata[:side] = :left
           end
-          if filename=~/.*_R2_.*/
+          if filename=~/.*_R2_?.*/
             metadata[:right] = true 
             metadata[:side] = :right
           end
