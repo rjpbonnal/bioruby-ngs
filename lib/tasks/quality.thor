@@ -45,7 +45,8 @@ class Quality < Thor
   desc "fastq_stats FASTQ", "Reports quality of FASTQ file"
   method_option :output, :type=>:string, :aliases =>"-o", :desc => "Output file name. default is input file_name with .txt."
   def fastq_stats(fastq)
-    puts "[#{Time.now}] Processing #{fastq} stats"
+    uuid = SecureRandom.uuid
+    puts "[#{Time.now}] #{uuid} Processing #{fastq} stats"
     output_file = options.output || "#{fastq.gsub(/\.fastq\.gz/,'')}_stats.txt"
     stats = Bio::Ngs::Fastx::FastqStats.new
     if fastq=~/\.gz/
@@ -60,7 +61,7 @@ class Quality < Thor
                       [:reads_coverage,output_file],
                       [:nucleotide_distribution,output_file]]
     Parallel.map(go_in_parallel, in_processes:go_in_parallel.size) do |graph|
-      puts "[#{Time.now}] Plotting #{graph.first} #{graph.last}"
+      puts "[#{Time.now}] #{uuid} Plotting #{graph.first} #{graph.last}"
       send graph.first, graph.last
     end
     puts "[#{Time.now}] Finished #{fastq}"
@@ -226,5 +227,75 @@ class Quality < Thor
     end
   end
 
+  desc "trim_momatic_pe FORWARD REVERSE", "Trim reads on quality by using Trimmomatic, Paired Ends"
+  # method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
+  def trim_momatic_pe(forward, reverse)
+    uuid = SecureRandom.uuid
+    puts "[#{Time.now}] #{uuid} Start trimming #{forward} and #{reverse} paired end reads by Trimmomatic"
+    puts "#{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar"
+    puts "java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -phred33 #{forward} #{reverse} #{forward.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{forward.gsub(/fastq\.gz/,'unpaired.fastq.gz')}  #{reverse.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{reverse.gsub(/fastq\.gz/,'unpaired.fastq.gz')} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36"
+    puts "[#{Time.now}] #{uuid} Finished "
+  end
+
+  desc "illumina_aggregated_sample_trim DIR PROJECT [SAMPLE]", "Trim aggregated data from Illumina project"
+  method_option :aggregated, :type => :boolean, :default => true, :desc => 'Process only reads with aggregated by biongs quality:aggregate'
+  def illumina_aggregated_sample_trim(directory, project_name, sample_name=nil)
+    projects = Bio::Ngs::Illumina.build(directory)
+    if (project = projects.get project_name)
+      if (sample = project.get sample_name)
+        forward = (sample.get :side, :left ).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        reverse = (sample.get :side, :right).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        trim_momatic_pe(File.join(directory,project.path,sample.path,forward), File.join(directory,project.path,sample.path,reverse))
+      else
+        puts "Sample #{sample_name} does not exist."
+      end
+    else
+      puts "Project #{project_name} does not exist."
+    end
+  end
+
+  desc "illumina_trim_run DIR","trim all fastq file in projects and samples directories as paired ends" 
+  def illumina_trim_run(directory)
+    Bio::Ngs::Illumina.build(directory).each do |project_name, project|
+      project.each_sample do |sample_name, sample|
+        forward = (sample.get :side, :left ).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        reverse = (sample.get :side, :right).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        trim_momatic_pe(File.join(directory,project.path,sample.path,forward), File.join(directory,project.path,sample.path,reverse))
+      end
+    end
+  end
+
+  desc "list_projects_samples DIR", "list projects and samples in a run"
+  def list_projects_samples(directory)
+    Bio::Ngs::Illumina.build(directory).each do |project_name, project|
+      project.each_sample do |sample_name, sample|
+        puts "#{directory} #{project_name} #{sample_name}"
+      end
+    end
+  end
+
+
+  desc "list_samples DIR PROJECT", "list samples in a project run"
+  def list_samples(directory, project_name)
+    project = Bio::Ngs::Illumina.build(directory).get project_name
+    if project
+      project.each_sample do |sample_name, sample|
+        puts "#{directory} #{project_name} #{sample_name}"
+      end
+    else
+      puts "Project #{project_name} does not exist."
+    end
+  end
+
+
+  desc "clean_from_trimming [DIR]", "remove trimmomatic files from direcoty recursively"
+  def clean_from_trimming(dir=".")
+    files = Dir.glob(["**/*trimmed*", "**/*unpaired*"])
+    files_size = files.inject(0){|c,v| c+=v}
+    Dir.glob(["**/*trimmed*", "**/*unpaired*"]) do |file|
+      File.delete file
+    end
+    puts "Deleted #{files_size}"
+  end
 
 end

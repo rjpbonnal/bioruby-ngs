@@ -15,6 +15,7 @@ Provides a framework for handling NGS data with Bioruby.
 * http://www.gnuplot.info/ tested on version 4.6
 * libxslt1-dev
 * CASAVA 1.8.2 <http://support.illumina.com/sequencing/sequencing_software/casava.ilmn>
+* Java SE for running Trimmomatic
 
 ## Install
 ### Quick Start
@@ -29,6 +30,7 @@ Provides a framework for handling NGS data with Bioruby.
 * Using system wide software
 
 Pleas follow the instruction for your own distribution/operating system
+
 
 
 ## Tasks

@@ -26,7 +26,14 @@ common:
         basename: samtools-0.1.18
         suffix:   tar.bz2
         desc:     "SAMtools"
-        type:     make       
+        type:     make
+    trimmomatic:
+        version:  0.22
+        url:      http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.22.zip
+        basename: Trimmomatic-0.22
+        suffix:   zip
+        desc:     "Trimmomatic: A flexible read trimming tool for Illumina NGS data"
+        type:     binary
 
         
 linux:
