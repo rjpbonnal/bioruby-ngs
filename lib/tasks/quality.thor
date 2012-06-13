@@ -187,7 +187,7 @@ class Quality < Thor
         end 
       end 
       Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-        `zcat #{data.first} | pigz -p 4 > #{File.join(dest_dir,data.last)}`
+        `zcat #{data.first} | pigz -p 2  > #{File.join(dest_dir,data.last)}`
       end
     end
   end
@@ -220,7 +220,7 @@ class Quality < Thor
         end 
       end 
       Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-        `zcat #{data.first} | pigz > #{File.join(dest_dir,data.last)}`
+        `zcat #{data.first} | pigz -p 2 > #{File.join(dest_dir,data.last)}`
       end
     else
        puts "Sample #{sample_name} does not exist."
