@@ -265,15 +265,23 @@ class Quality < Thor
     end
   end
 
-  desc "trim_momatic_pe FORWARD REVERSE", "Trim reads on quality by using Trimmomatic, Paired Ends"
+  desc "trim_momatic_pe FORWARD REVERSE [DESTDIR]", "Trim reads on quality by using Trimmomatic, Paired Ends"
   method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
   method_option :log, :type => :string, :desc => 'Log Trimmomatic activities'
-  def trim_momatic_pe(forward, reverse)
+  def trim_momatic_pe(forward, reverse, destdir=nil)
     uuid = SecureRandom.uuid
     puts "[#{Time.now}] #{uuid} Start trimming #{forward} and #{reverse} paired end reads by Trimmomatic"
     puts "#{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar"
     # -threads #{options[:threads]} {'-trimlog' if options[:log]} #{options[:log]} 
-    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 #{forward} #{reverse} #{forward.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{forward.gsub(/fastq\.gz/,'unpaired.fastq.gz')}  #{reverse.gsub(/fastq\.gz/,'trimmed.fastq.gz')} #{reverse.gsub(/fastq\.gz/,'unpaired.fastq.gz')} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
+    forward_filename = File.basename(forward)
+    forward_dir = File.dirname(forward)
+    reverse_filename = File.basename(reverse)
+    reverse_dir = File.dirname(reverse)
+    forward_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
+    reverse_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
+    forward_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
+    reverse_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
+    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 #{forward} #{reverse} #{forward_trimmed_filename} #{forward_unpaired_filename}  #{reverse_trimmed_filename} #{reverse_unpaired_filename} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
     puts "[#{Time.now}] #{uuid} Finished "
   end
 
