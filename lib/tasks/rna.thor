@@ -78,9 +78,11 @@ class Rna < Thor
                                                                          and .fastq'
   def mapquant(dist, index, outputdir, fastqs)
     #tophat
-    invoke :tophat, [dist, index, outputdir, fastqs], :paired=>options.paired
+    #invoke :tophat, [dist, index, outputdir, fastqs], :paired=>options.paired
+    tophat(dist, index, outputdir, fastqs)
     #cufflinks quantification on gtf
-    invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits_sort.bam")]
+    #invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits_sort.bam")]
+    quant("#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits_sort.bam"))
   end
 
 #TODO: write test to verify the behaviour
@@ -211,7 +213,8 @@ class Rna < Thor
       log.warn("mapquant_illumina_trimmed: skip quantification because already there")
     else
       log.info("mapquant_illumina_trimmed: Start quantification quant #{run_dir} #{project_name} #{sample_name}")
-      invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam")]
+      #invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam")]
+      quant("#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam"))
       log.info("mapquant_illumina_trimmed: quantification over #{run_dir} #{project_name} #{sample_name}")
     end
     
@@ -219,7 +222,7 @@ class Rna < Thor
       log.warn("mapquant_illumina_trimmed: skip quantification DENOVO because already there")
     else
       log.info("mapquant_illumina_trimmed: Start quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
-      invoke :quantdenovo, ["#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam")]
+      quantdenovo("#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam"))
       log.info("mapquant_illumina_trimmed: quantification DENOVO over #{run_dir} #{project_name} #{sample_name}")
     end
   end
