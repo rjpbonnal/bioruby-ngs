@@ -188,27 +188,9 @@ class Rna < Thor
     data_forward = File.join(abs_dir, data_forward)
     data_reverse = File.join(abs_dir, data_reverse)
     #tophat
-    begin 
-      Dir.mkdir("MAPQUANT") unless File.exists?("MAPQUANT")
-    rescue
-      log.warn("mapquant_illumina_trimmed: Concurrent creation for MAPQUANT")
-    end
-    begin
-      Dir.mkdir("MAPQUANT/#{run_dir}") unless File.exists?("MAPQUANT/#{run_dir}")
-    rescue
-      log.warn("mapquant_illumina_trimmed: Concurrent creation for MAPQUANT/#{run_dir}")
-    end
-    begin
-      Dir.mkdir("MAPQUANT/#{run_dir}/Project_#{project_name}") unless File.exists?("MAPQUANT/#{run_dir}/Project_#{project_name}")
-    rescue
-      log.warn("mapquant_illumina_trimmed: Concurrent creation for MAPQUANT/#{run_dir}/Project_#{project_name}")
-    end
-    begin
-      Dir.mkdir("MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}") unless File.exists?("MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}")
-    rescue
-      log.warn("mapquant_illumina_trimmed: Concurrent creation for MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}")
-    end  
+      
     outputdir = "MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}"
+    FileUtils.mkdir_p(outputdir) #unless File.exists?("MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}")
     #invoke :tophat_illumina, [dist, index, outputdir, "#{data_forward},#{data_reverse}"], :paired=>options.paired
     begin
       if File.exists?(File.join(outputdir,"accepted_hits.bam"))
