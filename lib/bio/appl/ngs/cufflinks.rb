@@ -142,7 +142,7 @@ module Bio
 
     class QuantificationDenovo  < Quantification
       #set_program Bio::Ngs::Utils.binary("cufflinks")
-      delete_option "GTF"
+      #delete_option "GTF"
       #add_option "GTF-guide", :type => :string, :aliases => '-g'
       #        add_alias "GTF", "GTF-guide"
 
