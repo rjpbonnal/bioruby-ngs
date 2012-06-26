@@ -123,7 +123,7 @@ module Bio
       add_option "integer-quals", :type => :boolean
       add_option :color, :type => :boolean, :aliases => '-C'
       add_option "library-type", :type => :string
-      add_option "num-threads", :type => :numeric, :aliases => '-p'
+      add_option "num-threads", :type => :numeric, :aliases => '-p', :default => 2
       add_option "GTF", :type => :string, :aliases => '-G'
       add_option "transcriptome-index", :type => :string
       add_option "transcriptome-only", :type => :boolean
