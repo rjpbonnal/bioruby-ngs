@@ -23,16 +23,27 @@ class Rna < Thor
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
     wrapper.params = task.options
-    wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF" => gtf }
+    wrapper.params = {"output-dir" => outputdir, "GTF" => gtf } #"num-threads" => 6, 
     wrapper.run :arguments=>[bam], :separator => "="
   end
 
   desc "quantdenovo GTF_guide OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
+#  mehtod_option :cufftag, :type => :string
   Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf_guide, outputdir, bam|
     wrapper.params = task.options
-    wrapper.params = {"num-threads" => 6, "output-dir" => outputdir, "GTF-guide" => gtf_guide }
+    wrapper.params = {"output-dir" => outputdir, "GTF-guide" => gtf_guide } #"num-threads" => 6, 
     wrapper.run :arguments=>[bam], :separator => "="
+    # if prefix=task.options[:cufftag]
+    #   wrapper.gsub_cuff(outputdir, prefix)
+    # end
   end
+
+  desc "denovo_gsub_cuff PATH PREFIX", "Change assembled transcripts have CUFF prefix to PREFIX"
+  def denovo_gsub_cuff(path, prefix)
+    cuff_denovo =  Bio::Ngs::Cufflinks::QuantificationDenovo.new
+    cuff_denovo.gsub_cuff(path, prefix)
+  end
+
 
   #GTFS_QUANTIFICATION is a comma separated list of gtf file names
   desc "compare GTF_REF OUTPUTDIR GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
@@ -53,7 +64,7 @@ class Rna < Thor
   end
 
 
-  desc "merge GTF_REF FASTA_REF ASSEMBLY_GTF_LIST", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
+  desc "merge GTF_REF FASTA_REF ASSEMBLY_GTF_LIST", "ASSEMBLY_GTF_LIST, a file which contains a list of transcript gtf from quantification"
   Bio::Ngs::Cufflinks::Merge.new.thor_task(self, :merge) do |wrapper, task, gtf_ref, fasta_ref, assembly_gtf_list|
     # unless Dir.exists?(outputdir)
     #   Dir.mkdir(outputdir)
@@ -154,6 +165,9 @@ class Rna < Thor
   #   # Bio::Ngs.qseq_to_fastq_pe(path)
   # end
 
+
+  class Illumina< Thor
+
 #"DIST INDEX OUTPUTDIR FASTQS", "map and quantify"
   desc "tophat_illumina DIST INDEX OUTPUTDIR FASTQS", "run tophat as from command line, default 6 processors and then create a sorted bam indexed."
   method_option :paired, :type => :boolean, :default => false, :desc => 'Are reads paired? If you chose this option pass just the basename of the file without forward/reverse and .fastq'
@@ -177,6 +191,8 @@ class Rna < Thor
                                                                          this option pass just the basename
                                                                          of the file without forward/reverse
                                                                          and .fastq'
+  method_option :requantify, :type => :boolean, :default => false, :desc => 'Force requantification also if the files are there.'                                                                       
+  method_option "num-threads", :type => :numeric, :aliases => '-p', :default => 6
   def mapquant_illumina_trimmed(run_dir, project_name, sample_name, dist, index)
     require 'logger'
     log = Logger.new(STDOUT)
@@ -199,7 +215,7 @@ class Rna < Thor
         log.warn("mapquant_illumina_trimmed: skip alignment because accepted_hits.bam is there")
       else
         log.info("mapquant_illumina_trimmed: Start mapping reads against reference genome: tophat_illumina #{run_dir} #{project_name} #{sample_name}")
-        tophat_illumina dist, index, outputdir, "#{data_forward},#{data_reverse}"
+        tophat_illumina(dist, index, outputdir, "#{data_forward},#{data_reverse}")
         log.info("mapquant_illumina_trimmed: mapping over #{run_dir} #{project_name} #{sample_name}")
       end
     rescue
@@ -209,22 +225,37 @@ class Rna < Thor
       File.join(outputdir,"quantification",name)
     end.sort
 
-    if Dir.exists?(File.join(outputdir,"quantification")) && Dir.glob(File.join(outputdir,"quantification","*")).sort==quantification_map_files
+    quantification_denovo_map_files = %w(genes.fpkm_tracking  isoforms.fpkm_tracking  skipped.gtf  transcripts.gtf).map do |name|
+      File.join(outputdir,"quantification_denovo",name)
+    end.sort
+
+    if !options[:requantify] && Dir.exists?(File.join(outputdir,"quantification")) && Dir.glob(File.join(outputdir,"quantification","*")).sort==quantification_map_files
       log.warn("mapquant_illumina_trimmed: skip quantification because already there")
-    else
+    else 
       log.info("mapquant_illumina_trimmed: Start quantification quant #{run_dir} #{project_name} #{sample_name}")
       #invoke :quant, ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam")]
-      quant("#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam"))
+      FileUtils.remove_entry_secure(File.join(outputdir,'quantification')) if ( options[:requantify] &&  Dir.exists?(File.join(outputdir,"quantification")))
+      invoke "rna:quant", ["#{index}.gtf", File.join(outputdir,"quantification"), File.join(outputdir,"accepted_hits.bam")]
       log.info("mapquant_illumina_trimmed: quantification over #{run_dir} #{project_name} #{sample_name}")
     end
-    
-    if Dir.exists?(File.join(outputdir,"quantification_denovo")) && Dir.glob(File.join(outputdir,"quantification_denovo","*")).sort==quantification_map_files
+
+    if !options[:requantify] && Dir.exists?(File.join(outputdir,"quantification_denovo")) && Dir.glob(File.join(outputdir,"quantification_denovo","*")).sort==quantification_denovo_map_files
       log.warn("mapquant_illumina_trimmed: skip quantification DENOVO because already there")
     else
+      FileUtils.remove_entry_secure(File.join(outputdir,'quantification_denovo')) if (options[:requantify] && Dir.exists?(File.join(outputdir,"quantification_denovo")))
       log.info("mapquant_illumina_trimmed: Start quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
-      quantdenovo("#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam"))
+      invoke "rna:quantdenovo", ["#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam")], :label => sample_name #substitute CUFF with SAMPLENAME
       log.info("mapquant_illumina_trimmed: quantification DENOVO over #{run_dir} #{project_name} #{sample_name}")
     end
   end
 
+  desc "denovo_gsub_cuff RUN PROJECT SAMPLENAME", "Change assembled transcripts have CUFF prefix to SAMPLE NAME"
+  def denovo_gsub_cuff(run_dir, project_name, sample_name)
+    # projects = Bio::Ngs::Illumina.build(run_dir)
+    # project = projects.get project_name
+    # sample = project.get sample_name      
+    outputdir = File.join("MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}", 'quantification_denovo')
+    invoke "rna:denovo_gsub_cuff", [outputdir, sample_name]
+    end
+  end
 end
