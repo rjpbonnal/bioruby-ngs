@@ -105,6 +105,7 @@ class Rna < Thor
      wrapper.run :arguments=>[index], :output_file=>fasta
    end 
 
+
   # desc "idx_fasta [INDEX] [FASTA]", "Create a fasta file from an indexed genome, using bowtie-inspect"
   # method_option :index, :type => :string, :require => true
   # method_option :fasta, :type => :string
@@ -194,7 +195,7 @@ class Rna < Thor
   method_option :requantify, :type => :boolean, :default => false, :desc => 'Force requantification also if the files are there.'                                                                       
   method_option "num-threads", :type => :numeric, :aliases => '-p', :default => 6
   def mapquant_illumina_trimmed(run_dir, project_name, sample_name, dist, index)
-    require 'logger'
+
     log = Logger.new(STDOUT)
 
     projects = Bio::Ngs::Illumina.build(run_dir)
@@ -258,4 +259,66 @@ class Rna < Thor
     invoke "rna:denovo_gsub_cuff", [outputdir, sample_name]
     end
   end
+
+
+  # output directory is named DE plus a list of projects name separated by underscaore
+  # DE_P1_P2_P3_P4
+  # This task looks for every bam from the current directory and save there the output
+#  cuffdiff -o DE_Naive_Th1_Th17_Th2_Treg_Tfh -b /mnt/iscsi/ngs/data/genome/ensembl/release-66/fasta/Homo_sapiens/Hsa_GRCh37_66.fa -p 10 -N -L Naive,Th1,Th17,Th2,Treg,Tfh -u /mnt/iscsi/ngs/LincRNAs_PROJECT/DATI/CuffMerge_Naive_Th1_Th17_Th2_Treg_Tfh/merged_asm/merged.gtf 110908NaiveT0/Sample_SQ_0080/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,110908NaiveT0/Sample_SQ_0081/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,110908NaiveT0/Sample_SQ_0082/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,110714Naive/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 111013Th1/Sample_SQ_0007/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th1/Sample_SQ_0046/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th1/Sample_SQ_0047/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th1/Sample_SQ_0048/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th1/Sample_SQ_0050/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 111013Th17/Sample_SQ_0011/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th17/Sample_SQ_0051/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th17/Sample_SQ_0052/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th17/Sample_SQ_0053/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th17/Sample_SQ_0055/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 111013Th2/Sample_SQ_0014/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th2/Sample_SQ_0015/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th2/Sample_SQ_0056/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th2/Sample_SQ_0058/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Th2/Sample_SQ_0059/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 111013Treg/Sample_SQ_0021/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Treg/Sample_SQ_0022/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Treg/Sample_SQ_0023/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Treg/Sample_SQ_0065/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Treg/Sample_SQ_0067/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam 111013Tfh/Sample_SQ_0074/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0075/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0076
+# /filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0078/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0079/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam
+
+#### FIX ###### some parameters does not work properly like frag-bias-correct
+  desc "de FASTAREF GTFMERGED PROJECTLIST", "Perform a differential expression"
+  method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
+  Bio::Ngs::Cufflinks::Diff.new.thor_task(self, :de) do |wrapper, task, fasta, gtf, projects_list|
+    log = Logger.new(STDOUT)
+    projects= Hash.new {|h,k| h[k]=[]}
+     #search using symlonks too
+    Dir.glob([File.join(task.options[:rootdir],'**/*/**','accepted_hits.bam')]).select do |bam_path|
+      pfound = projects_list.split(',').find do |project|
+        bam_path=~/Project_#{project}\//
+      end
+      if pfound
+        projects[pfound] << bam_path
+      end #if I can not find a project for a bam may be that bam is not coming from the projects of interest
+    end
+
+    projects_params=[]
+    projects_list.split(',').each do |name|
+      projects_params << projects[name].join(',')
+    end
+
+    wrapper.params = task.options
+    wrapper.params = {"output-dir" => "DE_#{projects_list.tr(',','_')}", 
+                      "frag-bias-correct" => fasta,
+                      "emit-count-tables" => true,
+                      "label" => projects_list,
+                      "upper-quartile-norm" => true }
+    #TODO: check if all the projects has data otherwise fire up a warning message.
+    wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
+  end 
+
+  desc "projects_to_bams PROJECTLIST", "search for bams related to specific projest"
+  method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
+  def projects_to_bams(projects_list)
+    log = Logger.new(STDOUT)
+    projects= Hash.new {|h,k| h[k]=[]}
+     #search using symlonks too
+    Dir.glob([File.join(options[:rootdir],'**/*/**','accepted_hits.bam')]).select do |bam_path|
+      pfound = projects_list.split(',').find do |project|
+        bam_path=~/Project_#{project}\//
+      end
+      if pfound
+        projects[pfound] << bam_path
+      end #if I can not find a project for a bam may be that bam is not coming from the projects of interest
+    end
+
+    projects_params=[]
+    projects_list.split(',').each do |name|
+      projects_params << projects[name].join(',')
+    end
+
+    puts projects_params.join(' ')
+  end 
+
 end

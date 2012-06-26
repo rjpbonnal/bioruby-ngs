@@ -28,6 +28,9 @@ if defined?(JRUBY_VERSION)
 else
 	require 'sqlite3'
 end
+
+require 'logger'
+
 #Generic classes
 require 'enumerable'
 require 'wrapper'

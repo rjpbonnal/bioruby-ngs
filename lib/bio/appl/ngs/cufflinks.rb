@@ -252,7 +252,7 @@ module Bio
           #TODO:FIX        add_option "frag-bias-correct", :type =>
           add_option "multi-read-correct", :type => :boolean, :aliases => '-u'
           add_option "upper-quartile-norm", :type => :boolean, :aliases => 'N'
-          add_option "labels", :type => :array, :aliases => '-L'
+          add_option "label", :type => :array, :aliases => '-L'
           add_option "num-threads", :type => :numeric, :aliases => '-p'
           add_option "library-type", :type => :string, :aliases => '-l'
           add_option "frag-len-mean", :type => :numeric, :aliases => '-m'
