@@ -121,14 +121,14 @@ module Bio
             if (option_values.has_key?(:type) && option_values[:type]==:boolean && option_values[:default])
               "--#{option_name}"
             else
-              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]} #{option_values[:default]}" : "--#{option_name}#{separator}#{option_values[:default]}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? '#{options[option_name][:aliases]}#{option_values[:default]}' : "--#{option_name}#{separator}#{option_values[:default]}"
             end
             #deprecated up to here
           else #is a value of the main hash. (mostly a parameter)
             if option_values == true
               use_aliases? && options[option_name].has_key?(:aliases) ? options[option_name][:aliases] : "--#{option_name}"
             elsif option_values != false
-              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]}#{options[option_name][:collapse] ? "": " "}#{option_values}" : "--#{option_name}#{separator}#{option_values}"
+              use_aliases? && options[option_name].has_key?(:aliases) ? "#{options[option_name][:aliases]}#{options[option_name][:collapse] ? "": ''}#{option_values}" : "--#{option_name}#{separator}#{option_values}"
             end
           end
         end
