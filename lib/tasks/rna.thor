@@ -49,7 +49,7 @@ class Rna < Thor
 
 
   #GTFS_QUANTIFICATION is a comma separated list of gtf file names
-  desc "compare GTF_REF OUTPUTDIRPREDIX GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
+  desc "compare GTF_REF OUTPUTDIRPREFIX GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
   Bio::Ngs::Cufflinks::Compare.new.thor_task(self, :compare) do |wrapper, task, gtf_ref, outputdir, gtfs_quantification|
     # unless Dir.exists?(outputdir)
     #   Dir.mkdir(outputdir)
