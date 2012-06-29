@@ -41,12 +41,15 @@ class Rna < Thor
   desc "denovo_gsub_cuff PATH PREFIX", "Change assembled transcripts have CUFF prefix to PREFIX"
   def denovo_gsub_cuff(path, prefix)
     cuff_denovo =  Bio::Ngs::Cufflinks::QuantificationDenovo.new
+    Dir.chdir(path) do 
+    `tar cvfz quantification_denovo.raw.tar.gz #{cuff_denovo.ofiles.join(' ')}` unless File.exists?("quantification_denovo.raw.tar.gz")
+    end
     cuff_denovo.gsub_cuff(path, prefix)
   end
 
 
   #GTFS_QUANTIFICATION is a comma separated list of gtf file names
-  desc "compare GTF_REF OUTPUTDIR GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
+  desc "compare GTF_REF OUTPUTDIRPREDIX GTFS_QUANTIFICATION", "GTFS_QUANTIFICATIONS, use a comma separated list of gtf"
   Bio::Ngs::Cufflinks::Compare.new.thor_task(self, :compare) do |wrapper, task, gtf_ref, outputdir, gtfs_quantification|
     # unless Dir.exists?(outputdir)
     #   Dir.mkdir(outputdir)
