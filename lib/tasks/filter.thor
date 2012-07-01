@@ -6,7 +6,7 @@ class Filter < Thor
   class Quant
     class Denovo
       class Cufflinks < Thor
-        desc "brand_new_transcript [SAMPLE]", "Extract transcripts from Cufflinks' GTF"
+        desc "brand_new_transcript [SAMPLE]", "Extract transcripts from Cufflinks' GTF searching in the current directory tree for the sample name"
         def brand_new_transcript(sample_name=nil)
           if sample_name
             if sample_path=Dir.glob("**/*/**/Sample_#{sample_name}/quantification_denovo").first
