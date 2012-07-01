@@ -12,7 +12,7 @@ module Bio
         require 'tempfile'
         def each_transcript(&block)
           if @blocks.nil? || @blocks.empty?
-            transcript = Transcript.new
+            transcript = Transcript.new(tag:new_tag)
             @fh.rewind
             transcript.tra = @fh.readline
             @fh.each_line do |line|

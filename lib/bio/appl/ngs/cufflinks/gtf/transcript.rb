@@ -8,13 +8,14 @@ module Bio
         Attr_to_Integer = %w(exon_number)
         ChrNotation = {ensembl:"", ucsc:"chr"}
 
-        attr_accessor :seqname, :source, :feature, :start, :stop, :score, :strand, :frame, :chr_notation
+        attr_accessor :seqname, :source, :feature, :start, :stop, :score, :strand, :frame, :chr_notation, :new_tag
 
-        def initialize()
+        def initialize(opt={})
           @tra = nil
           @exons = []
           @attributes = {}
           @chr_notation = :ensembl #ensembl/ucsc
+          @new_tag = opt[:tag] || "CUFF"
         end
 
         def tra
@@ -125,15 +126,15 @@ module Bio
       end
 
       def brand_new_isoform?
-        attributes[:gene_id]=~/CUFF\.\d+/ && attributes[:transcript_id]=~/CUFF\.\d+\.\d+/
+        attributes[:gene_id]=~/#{new_tag}\.\d+/ && attributes[:transcript_id]=~/#{new_tag}\.\d+\.\d+/
       end
 
       def new_isoform?
-        attributes[:gene_id]=~/CUFF\.\d+/ && attributes[:transcript_id]!~/CUFF\.\d+\.\d+/
+        attributes[:gene_id]=~/#{new_tag}\.\d+/ && attributes[:transcript_id]!~/#{new_tag}\.\d+\.\d+/
       end
 
       def annotated_isoform?
-        attributes[:gene_id]!~/CUFF\.\d+/ && attributes[:transcript_id]!~/CUFF\.\d+\.\d+/
+        attributes[:gene_id]!~/#{new_tag}\.\d+/ && attributes[:transcript_id]!~/#{new_tag}\.\d+\.\d+/
       end
 
       def byte_length

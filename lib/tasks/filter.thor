@@ -3,6 +3,31 @@ require File.expand_path(File.dirname(__FILE__) + '/../wrapper')
 require File.expand_path(File.dirname(__FILE__) + '/../bio/appl/ngs/cufflinks')
 class Filter < Thor
 
+  class Quant
+    class Denovo
+      class Cufflinks < Thor
+        desc "brand_new_transcript [SAMPLE]", "Extract transcripts from Cufflinks' GTF"
+        def brand_new_transcript(sample_name=nil)
+          if sample_name
+            if sample_path=Dir.glob("**/*/**/Sample_#{sample_name}/quantification_denovo").first
+              if File.exists?(File.join(sample_path,"transcripts.gtf"))
+                invoke "filter:cufflinks:transcripts", [File.join(sample_path, "transcripts.gtf")], :brand_new=>true, :tag => sample_name
+              else
+                puts "Missing transcripts.gtf file in quantification_denovo directory"
+              end
+            else
+              puts "#{sample_name} does not exist or there is no denovo quantification available, please check..."
+            end
+          elsif File.exists?("transcripts.gtf")
+            invoke "filter:cufflinks:transcripts", :brand_new=>true
+          else
+            puts "No quantification file present."
+          end
+        end
+      end
+    end 
+  end 
+
 class Cufflinks < Thor
    #TODO method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
 
@@ -19,6 +44,7 @@ class Cufflinks < Thor
    method_option :discover, :type => :boolean,    :aliases => '-d', :desc => "discovers transcripts.gtf files from within the current directory"
    method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
    method_option :output, :type => :string,       :aliases => '-o', :desc => "save the results in the output file"
+   method_option :tag, :type => :string, :aliases => '-g', :desc => "use a different tag instead of CUFF",  :default=> "CUFF"
    def transcripts(gtf=nil)
     if gtf.nil? && options[:discover]
       options.remove(:discover)
@@ -26,7 +52,7 @@ class Cufflinks < Thor
         transcripts(gtf_file)
       end
     elsif !gtf.nil? && File.exists?(gtf)
-      data = Bio::Ngs::Cufflinks::Gtf.new gtf
+      data = Bio::Ngs::Cufflinks::Gtf.new gtf, tag:options[:tag]
       data.set_lazy
       data.brand_new_isoforms if options[:brand_new]
       data.new_isoforms if options[:new]
