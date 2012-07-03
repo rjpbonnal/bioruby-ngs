@@ -6,12 +6,22 @@ class Filter < Thor
   class Quant
     class Denovo
       class Cufflinks < Thor
+        #this tasks uses by default the sample name as tag for idenifying new trascripts instead of CUFF
         desc "brand_new_transcript [SAMPLE]", "Extract transcripts from Cufflinks' GTF searching in the current directory tree for the sample name"
+        method_option :multi_exons, :type => :boolean, :aliases => '-m', :desc => "get multi exons transcripts"
+        method_option :length, :type => :numeric,      :aliases => '-l', :desc => "transcripts with a length gt"
+        method_option :coverage, :type => :numeric,    :aliases => '-c', :desc => "transcripts with a coverage gt"
         def brand_new_transcript(sample_name=nil)
+          opts={brand_new:true}
+          opts[:multi_exons]=options[:multi_exons] if options[:multi_exons]
+          opts[:length]=options[:length] if options[:length]
+          opts[:coverage]=options[:coverage] if options[:coverage]
           if sample_name
             if sample_path=Dir.glob("**/*/**/Sample_#{sample_name}/quantification_denovo").first
               if File.exists?(File.join(sample_path,"transcripts.gtf"))
-                invoke "filter:cufflinks:transcripts", [File.join(sample_path, "transcripts.gtf")], :brand_new=>true, :tag => sample_name
+                 #:brand_new=>true, :tag => sample_name
+                 opts[:tag]=sample_name
+                invoke "filter:cufflinks:transcripts", [File.join(sample_path, "transcripts.gtf")], opts
               else
                 puts "Missing transcripts.gtf file in quantification_denovo directory"
               end
@@ -19,7 +29,8 @@ class Filter < Thor
               puts "#{sample_name} does not exist or there is no denovo quantification available, please check..."
             end
           elsif File.exists?("transcripts.gtf")
-            invoke "filter:cufflinks:transcripts", :brand_new=>true
+
+            invoke "filter:cufflinks:transcripts", opts
           else
             puts "No quantification file present."
           end
@@ -94,7 +105,7 @@ class Cufflinks < Thor
    method_option :split, :type => :boolean,       :aliases => '-j', :desc => "split each transcript in a file"
    method_option :extract, :type => :numeric,     :aliases => '-e', :desc => "extract the n-th transcript"
    method_option :ucsc, :type => :boolean,        :aliases => '-u', :desc => "use chr as UCSC a prefix for chromosomes, otherwise uses ENSEMBL notation without chr"
-   method_option :exons, :type => :boolean,       :aliases => '-x', :desc => "proved in output only exons without transcripts", :default => true
+   method_option :exons, :type => :boolean,       :aliases => '-x', :desc => "provide in output only exons without transcripts", :default => true
    def tra_at_idx(gtf, idx)
       data = Bio::Ngs::Cufflinks::Gtf.new gtf
       t=data[idx]
