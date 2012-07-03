@@ -511,6 +511,11 @@ module Convert
           #     puts "#{key} #{values.join('  ')}"
           #   end
           # end
-
-        end #Convert
+  class Cuff < Thor
+    desc "fix_compare GTF", "transform Cuffcompare output from only exons to transcripts/exons relationship. Send result in stdout"
+    def fix_compare(gtf)
+      Bio::Ngs::Cufflinks::Compare.fix_gtf(gtf)
+    end
+  end
+end #Convert
         #  Add methods to Enumerable, which makes them available to Array
