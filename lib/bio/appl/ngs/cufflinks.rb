@@ -588,23 +588,23 @@ module Bio
               last_line = nil
               header = buffer.split
               header[2] = 'transcript'
-                        # @stop = data[4].to_i
               file.each_line do |line|
-                if line.match(header[11])
-                  #add to buffer
-                  buffer+=last_line=line
-                else
-                  header[4]=last_line.split[4]
-                  print header[0..7].join("\t") + "\t" + header[8..-1].join(" ") + "\n"
-                  print buffer
-                  last_line = nil
-                  buffer = line
-                  header = buffer.split
-                  header[2] = 'transcript'
-                  #new transcript
-                end #if
+                unless line.empty? || line.match('^#')
+                  if line.match(header[11])
+                    #add to buffer
+                    buffer+=last_line=line
+                  else
+                    header[4]=last_line.split[4]
+                    print header[0..7].join("\t") + "\t" + header[8..-1].join(" ") + "\n"
+                    print buffer
+                    buffer = last_line = line
+                    header = buffer.split
+                    header[2] = 'transcript'
+                    #new transcript
+                  end #if
+                end
               end #line
-              header[4]=last_line.split[4]
+              header[4]=last_line.split[4] unless last_line.empty?
               print header[0..7].join("\t") + "\t" + header[8..-1].join(" ") + "\n"
               print buffer+ "\n"
             end
