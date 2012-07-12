@@ -201,9 +201,21 @@ class Rna < Thor
 
     log = Logger.new(STDOUT)
 
-    projects = Bio::Ngs::Illumina.build(run_dir)
-    project = projects.get project_name
-    sample = project.get sample_name
+    begin
+      projects = Bio::Ngs::Illumina.build(run_dir)
+    rescue
+      puts "Error: Run dir #{run_dir} does not exist."
+    end
+    begin
+      project = projects.get project_name
+    rescue
+      puts "Error: Project #{project} does not exist"
+    end
+    begin
+      sample = project.get sample_name
+    rescue
+      puts "Error: Samepl #{sample} does not exist"
+    end
     data_forward = (sample.get :trimmed_aggregated, true).get(:side,:left).first.last.metadata[:filename]
     data_reverse = (sample.get :trimmed_aggregated, true).get(:side,:right).first.last.metadata[:filename]
     abs_dir = "#{run_dir}/Project_#{project_name}/Sample_#{sample_name}"
@@ -223,6 +235,7 @@ class Rna < Thor
         log.info("mapquant_illumina_trimmed: mapping over #{run_dir} #{project_name} #{sample_name}")
       end
     rescue
+      puts "Error: something went wrong with tophat"
     end
     #cufflinks quantification on
     quantification_map_files = %w(genes.fpkm_tracking  isoforms.fpkm_tracking  skipped.gtf  transcripts.gtf).map do |name|
