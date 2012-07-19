@@ -56,9 +56,11 @@ require 'bio/appl/ngs/bcl2qseq' #TODO: FIX THIS BUGGY CODE in THOR TASK
 
 require 'bio/appl/ngs/cufflinks/iterators'
 require 'bio/appl/ngs/cufflinks/gtf/gtf_parser'
+require 'bio/appl/ngs/cufflinks/gtf/rdf'
 require 'bio/appl/ngs/cufflinks/gtf/gtf'
 require 'bio/appl/ngs/cufflinks/gtf/transcript'
 require 'bio/appl/ngs/cufflinks/gtf/exon'
+
 require 'bio/appl/ngs/cufflinks'
 require 'bio/appl/ngs/samtools'
 require 'bio/appl/ngs/fastx'

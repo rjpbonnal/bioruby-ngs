@@ -5,6 +5,7 @@ module Bio
         #include MarkCall
         attr_accessor :new_tag
         include GtfParser
+        include RDF
         def initialize(file, opt={})
           @fh=File.open(File.absolute_path(file))
           @new_tag = opt[:tag] || "CUFF"
@@ -19,7 +20,6 @@ module Bio
         end
 
       end #Gtf
-
-    end
-  end
-end
+    end #Cufflinks
+  end #Ngs
+end #Bio

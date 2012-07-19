@@ -38,6 +38,7 @@ module Bio
             result.send(:each_transcript, &block)
           end #lazy or not?
         end
+        alias :transcripts :each_transcript
 
         def select(&block)
           if is_lazy?

@@ -516,6 +516,16 @@ module Convert
     def fix_compare(gtf)
       Bio::Ngs::Cufflinks::Compare.fix_gtf(gtf)
     end
+
+    desc "to_ttl GTF", "convert a Cufflinks GTF quantification file in RDF Turtle format. Data are sent in stdout."
+    def to_ttl(gtf)
+      if File.exists?(gtf)
+        data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
+        data.to_ttl
+      else
+        raise 
+      end
+    end
   end
 end #Convert
         #  Add methods to Enumerable, which makes them available to Array
