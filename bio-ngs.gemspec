@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-ngs"
-  s.version = "0.5.2"
+  s.version = "0.5.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-06-07"
+  s.date = "2012-07-19"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -29,9 +29,11 @@ Gem::Specification.new do |s|
     "bin/biongs",
     "bio-ngs.gemspec",
     "ext/mkrf_conf.rb",
+    "features/cuffcompare_fix_gtf.feature",
     "features/cufflinks_gtf_parser.feature",
     "features/cufflinks_gtf_parser_indexing.feature",
     "features/illumina_project_rebuild.feature",
+    "features/step_definitions/cuffcompare_fix_gtf.rb",
     "features/step_definitions/cufflinks_gtf.rb",
     "features/step_definitions/cufflinks_gtf_parser_indexing.rb",
     "features/step_definitions/illumina_project_rebuild.rb",
@@ -44,8 +46,10 @@ Gem::Specification.new do |s|
     "lib/bio/appl/ngs/bwa.rb",
     "lib/bio/appl/ngs/casava.rb",
     "lib/bio/appl/ngs/cufflinks.rb",
+    "lib/bio/appl/ngs/cufflinks/gtf/exon.rb",
     "lib/bio/appl/ngs/cufflinks/gtf/gtf.rb",
     "lib/bio/appl/ngs/cufflinks/gtf/gtf_parser.rb",
+    "lib/bio/appl/ngs/cufflinks/gtf/rdf.rb",
     "lib/bio/appl/ngs/cufflinks/gtf/transcript.rb",
     "lib/bio/appl/ngs/cufflinks/iterators.rb",
     "lib/bio/appl/ngs/fastx.rb",
