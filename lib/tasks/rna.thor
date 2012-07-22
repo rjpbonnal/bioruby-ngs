@@ -197,6 +197,7 @@ class Rna < Thor
                                                                          and .fastq'
   method_option :requantify, :type => :boolean, :default => false, :desc => 'Force requantification also if the files are there.'                                                                       
   method_option "num-threads", :type => :numeric, :aliases => '-p', :default => 6
+  method_option "skip-cuff-denovo", :type => :boolean, :defatul => true, :desc => 'Skip Denovo Transcripts identification by Cufflinks'
   def mapquant_illumina_trimmed(run_dir, project_name, sample_name, dist, index)
 
     log = Logger.new(STDOUT)
@@ -260,9 +261,14 @@ class Rna < Thor
       log.warn("mapquant_illumina_trimmed: skip quantification DENOVO because already there")
     else
       FileUtils.remove_entry_secure(File.join(outputdir,'quantification_denovo')) if (options[:requantify] && Dir.exists?(File.join(outputdir,"quantification_denovo")))
-      log.info("mapquant_illumina_trimmed: Start quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
-      invoke "rna:quantdenovo", ["#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam")], :label => sample_name #substitute CUFF with SAMPLENAME
-      log.info("mapquant_illumina_trimmed: quantification DENOVO over #{run_dir} #{project_name} #{sample_name}")
+      if options["skip-cuff-denovo"]
+        log.info("mapquant_illumina_trimmed: Skip quantification DENOVO  #{run_dir} #{project_name} #{sample_name}"))
+      else  
+        log.info("mapquant_illumina_trimmed: Start quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
+        invoke "rna:quantdenovo", ["#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam")], :label => sample_name #substitute CUFF with SAMPLENAME
+        log.info("mapquant_illumina_trimmed: quantification DENOVO over #{run_dir} #{project_name} #{sample_name}")
+      end
+
     end
   end
 
