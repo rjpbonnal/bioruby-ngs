@@ -520,14 +520,10 @@ module Convert
     desc "quant_to_ttl GTF", "convert a Cufflinks GTF quantification file in RDF Turtle format. Data are sent in stdout."
     method_option :output, :type => :string, :desc => "output file name"
     def quant_to_ttl(gtf)
-      if File.exists?(gtf)
         data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
         $stdout=File.open(options[:output],'w') if options[:output]
         data.to_ttl
         $stdout=STDOUT if options[:output]
-      else
-        raise 
-      end
     end
   end
 end #Convert
