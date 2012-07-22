@@ -262,7 +262,7 @@ class Rna < Thor
     else
       FileUtils.remove_entry_secure(File.join(outputdir,'quantification_denovo')) if (options[:requantify] && Dir.exists?(File.join(outputdir,"quantification_denovo")))
       if options["skip-cuff-denovo"]
-        log.info("mapquant_illumina_trimmed: Skip quantification DENOVO  #{run_dir} #{project_name} #{sample_name}"))
+        log.info("mapquant_illumina_trimmed: Skip quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
       else  
         log.info("mapquant_illumina_trimmed: Start quantification DENOVO  #{run_dir} #{project_name} #{sample_name}")
         invoke "rna:quantdenovo", ["#{index}.gtf", File.join(outputdir,"quantification_denovo"), File.join(outputdir,"accepted_hits.bam")], :label => sample_name #substitute CUFF with SAMPLENAME
