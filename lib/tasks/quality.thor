@@ -281,12 +281,13 @@ class Quality < Thor
     reverse_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
     forward_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
     reverse_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
-    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 2 -phred33 #{forward} #{reverse} #{forward_trimmed_filename} #{forward_unpaired_filename}  #{reverse_trimmed_filename} #{reverse_unpaired_filename} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
+    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads #{options[:threads]} -phred33 #{forward} #{reverse} #{forward_trimmed_filename} #{forward_unpaired_filename}  #{reverse_trimmed_filename} #{reverse_unpaired_filename} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
     puts "[#{Time.now}] #{uuid} Finished "
   end
 
   desc "illumina_aggregated_sample_trim DIR PROJECT [SAMPLE]", "Trim aggregated data from Illumina project"
   method_option :aggregated, :type => :boolean, :default => true, :desc => 'Process only reads with aggregated by biongs quality:aggregate'
+  method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
   def illumina_aggregated_sample_trim(directory, project_name, sample_name=nil)
     projects = Bio::Ngs::Illumina.build(directory)
     if (project = projects.get project_name)
@@ -303,6 +304,7 @@ class Quality < Thor
   end
 
   desc "illumina_trim_run DIR","trim all fastq file in projects and samples directories as paired ends" 
+  method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'  
   def illumina_trim_run(directory)
     Bio::Ngs::Illumina.build(directory).each do |project_name, project|
       project.each_sample do |sample_name, sample|
@@ -352,7 +354,7 @@ class Quality < Thor
     puts "Deleted #{files_size}"
   end
 
-  desc "clean_from_aggregated [DIR]", "remove aggreagated files from direcoty recursively"
+  desc "clean_from_aggregated [DIR]", "remove aggregated files from direcoty recursively"
   def clean_from_aggregated(dir=".")
     files = Dir.glob(["**/*R?\.fastq.gz"])
     files_size = files.inject(0){|c,v| c+=File.size(v)}
