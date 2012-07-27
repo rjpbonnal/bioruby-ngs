@@ -21,9 +21,18 @@ class Rna < Thor
   end
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
+  method_option :date, :type => :boolean, :default => false, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
+    config = {:gtf => gtf}
+    if (task.options[:date])
+      outputdir = File.join(outputdir, Time.now.strftime("%y-%m-%d"))
+    end
     wrapper.params = task.options
-    wrapper.params = {"output-dir" => outputdir, "GTF" => gtf } #"num-threads" => 6, 
+    wrapper.params = {"output-dir" => outputdir, "GTF" => gtf } #"num-threads" => 6,
+    FileUtils.mkdir_p(outputdir)
+    File.open(File.join(outputdir,"info.yaml"),'w') do |f|
+      f.puts YAML.dump(config.merge(wrapper.params))
+    end
     wrapper.run :arguments=>[bam], :separator => "="
   end
 
@@ -195,6 +204,7 @@ class Rna < Thor
                                                                          this option pass just the basename
                                                                          of the file without forward/reverse
                                                                          and .fastq'
+  method_option :remap, :type => :boolean, :default => false, :desc => 'Force remapping'
   method_option :requantify, :type => :boolean, :default => false, :desc => 'Force requantification also if the files are there.'                                                                       
   method_option "num-threads", :type => :numeric, :aliases => '-p', :default => 6
   method_option "skip-cuff-denovo", :type => :boolean, :defatul => true, :desc => 'Skip Denovo Transcripts identification by Cufflinks'
@@ -228,10 +238,15 @@ class Rna < Thor
     FileUtils.mkdir_p(outputdir) #unless File.exists?("MAPQUANT/#{run_dir}/Project_#{project_name}/Sample_#{sample_name}")
     #invoke :tophat_illumina, [dist, index, outputdir, "#{data_forward},#{data_reverse}"], :paired=>options.paired
     begin
-      if File.exists?(File.join(outputdir,"accepted_hits.bam"))
+      if !options[:remap] && File.exists?(File.join(outputdir,"accepted_hits.bam"))
         log.warn("mapquant_illumina_trimmed: skip alignment because accepted_hits.bam is there")
       else
         log.info("mapquant_illumina_trimmed: Start mapping reads against reference genome: tophat_illumina #{run_dir} #{project_name} #{sample_name}")
+        if options[:remap]
+          Dir.chdir(outputdir) do
+            FileUtils.rm %w( accepted_hits.bam deletions.bed junctions.bed unmapped_left.fq.z accepted_hits.bam_flagstat insertions.bed left_kept_reads.info right_kept_reads.info  unmapped_right.fq.z )
+          end            
+        end
         tophat_illumina(dist, index, outputdir, "#{data_forward},#{data_reverse}")
         log.info("mapquant_illumina_trimmed: mapping over #{run_dir} #{project_name} #{sample_name}")
       end
