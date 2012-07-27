@@ -355,6 +355,12 @@ module Convert
                   report.puts "#{count_total},#{count_trimmed},#{count_removed},#{count_total-count_trimmed-count_removed}"
                 end #Write report
               end #trim_b
+
+
+              desc "split FILE NREADS", "split a fastq.gz file in multiple files with the "
+              def split(file, nreads)
+                Bio::Ngs::Illumina::FastqGz.split(file, nreads.to_i)
+              end 
             end #Fastq
 
             class Humanize < Thor
@@ -519,10 +525,11 @@ module Convert
 
     desc "quant_to_ttl GTF", "convert a Cufflinks GTF quantification file in RDF Turtle format. Data are sent in stdout."
     method_option :output, :type => :string, :desc => "output file name"
+    method_option :name, :type => :string, :desc => "tag these transcripts with a specific name, sample ?"
     def quant_to_ttl(gtf)
         data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
         $stdout=File.open(options[:output],'w') if options[:output]
-        data.to_ttl
+        data.to_ttl(options[:name])
         $stdout=STDOUT if options[:output]
     end
   end

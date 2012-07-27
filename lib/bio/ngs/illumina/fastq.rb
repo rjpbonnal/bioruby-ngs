@@ -55,11 +55,34 @@ module Bio
            if header=~/^@.* [^:]*:N:[^:]*:/ 
             n_reads+=1
                 #pass to the block header, fasta, quality splitter, quality
-                yield header, seq, splitter, qual
+                yield header, seq, splitter, qual, n_reads if block_given?
               end
           end #GzipReader
           n_reads
         end #gets_filtered
+
+
+        # splits a fastq gz file in many files each with at most n reads defined by size
+        def split(file, size)
+          postfix = 1
+          counter = 1
+          ofile = "#{file}".sub(/fastq\.gz/, "fastq.#{postfix}.gz")
+          ofh = Zlib::GzipWriter.open(ofile)
+          gets_filtered(file) do |header, seq, splitter, qual, n_reads|
+              if counter<=size
+                ofh.write(header + seq + splitter + qual)
+                counter+=1
+              else
+                postfix+=1
+                ofile = "#{file}".sub(/fastq\.gz/, "fastq.#{postfix}.gz")
+                ofh.close
+                counter = 1
+                ofh = Zlib::GzipWriter.open(ofile)
+                ofh.write(header + seq + splitter + qual)
+              end
+          end #filtered
+          ofh.close
+        end #split
       end #FastqGz
 
   # desc "illumina_filter [DIR(s)]", "Filter the data using Y/N flag in FastQ headers (Illumina). Search for fastq.gz files within directory(ies) passed."
