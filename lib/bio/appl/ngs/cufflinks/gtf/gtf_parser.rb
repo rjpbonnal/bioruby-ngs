@@ -40,7 +40,6 @@ module Bio
             else
               result.send(:each_transcript, &block)
             end
-            end
           end #lazy or not?
         end
         alias :transcripts :each_transcript
