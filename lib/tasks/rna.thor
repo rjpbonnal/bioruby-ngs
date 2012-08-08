@@ -22,6 +22,7 @@ class Rna < Thor
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
   method_option :date, :type => :boolean, :default => false, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
+  method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
     config = {:gtf => gtf}
     if (task.options[:date])
@@ -38,6 +39,7 @@ class Rna < Thor
 
   desc "quantdenovo GTF_guide OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
 #  mehtod_option :cufftag, :type => :string
+  method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf_guide, outputdir, bam|
     wrapper.params = task.options
     wrapper.params = {"output-dir" => outputdir, "GTF-guide" => gtf_guide } #"num-threads" => 6, 
@@ -308,25 +310,31 @@ class Rna < Thor
 # /filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0078/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam,111013Tfh/Sample_SQ_0079/filtered/TopHat_Alignment_PE_genomeV66/accepted_hits.bam
 
 #### FIX ###### some parameters does not work properly like frag-bias-correct
-  desc "de FASTAREF GTFMERGED PROJECTLIST", "Perform a differential expression"
+  desc "de FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression"
   method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
-  Bio::Ngs::Cufflinks::Diff.new.thor_task(self, :de) do |wrapper, task, fasta, gtf, projects_list|
+  Bio::Ngs::Cufflinks::Diff.new.thor_task(self, :de) do |wrapper, task, fasta, gtf, projects_list, exclude|
     log = Logger.new(STDOUT)
     projects= Hash.new {|h,k| h[k]=[]}
      #search using symlonks too
-    Dir.glob([File.join(task.options[:rootdir],'**/*/**','accepted_hits.bam')]).select do |bam_path|
-      pfound = projects_list.split(',').find do |project|
-        bam_path=~/Project_#{project}\//
-      end
-      if pfound
-        projects[pfound] << bam_path
-      end #if I can not find a project for a bam may be that bam is not coming from the projects of interest
-    end
+    # Dir.glob([File.join(task.options[:rootdir],'**/*/**','accepted_hits.bam')]).select do |bam_path|
+    #   pfound = projects_list.split(',').find do |project|
+    #     bam_path=~/Project_#{project}\//
+    #   end
+    #   if pfound
+    #     projects[pfound] << bam_path
+    #   end #if I can not find a project for a bam may be that bam is not coming from the projects of interest
+    # end
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << projects[name].join(',')
-    end
+      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+                                                           :files=>true, 
+                                                           :exclude => exclude.split(','), 
+                                                           :from => :tophat, 
+                                                           :to=> :cuffdiff
+                         ).join(',')
+    #   projects_params << projects[name].join(',')
+     end
 
     wrapper.params = task.options
     wrapper.params = {"output-dir" => "DE_#{projects_list.tr(',','_')}", 
@@ -335,6 +343,7 @@ class Rna < Thor
                       "label" => projects_list,
                       "upper-quartile-norm" => true }
     #TODO: check if all the projects has data otherwise fire up a warning message.
+    puts [:arguments =>[gtf, projects_params.join(' ')], :separator => "="]
     wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
   end 
 
