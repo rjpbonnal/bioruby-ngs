@@ -101,7 +101,8 @@ module Bio
 
       #Return an array of elements of the command line
       def to_cmd_ary(opts={arguments:[],separator:"="})
-        [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
+      #  [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
+      [program, sub_program, normalize_params(opts[:separator]), opts[:arguments].map{|a| a.split}].flatten.compact
       end
 
       # Return the options and parameters formmatted as typed in the command line as a string
@@ -181,9 +182,14 @@ module Bio
         else
           # puts "Normlized #{normalize_params(opts[:separator])}"
           # puts "Arguments #{opts[:arguments]}"
-          puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact.inspect
+          # puts [program, sub_program, normalize_params(opts[:separator]), opts[:arguments].map{|x| x.split}]
+          #puts to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments])
+          # .flatten.compact.inspect
         #Note: maybe seprator could be defined as a method  for each wrapped program ?
-        Bio::Command.query_command(to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]))
+        #Bio::Command.query_command(to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]))
+        cmd = to_cmd_ary(separator:opts[:separator], arguments:opts[:arguments]).flatten
+        puts cmd.inspect
+        system(*cmd)
         #[program, sub_program, normalize_params(opts[:separator]), opts[:arguments]].flatten.compact
         end #if
       end #run
