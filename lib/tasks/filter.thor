@@ -7,26 +7,29 @@ class Filter < Thor
     class Denovo
       class Cufflinks < Thor
         #this tasks uses by default the sample name as tag for idenifying new trascripts instead of CUFF
-        desc "brand_new_transcript [SAMPLE]", "Extract transcripts from Cufflinks' GTF searching in the current directory tree for the sample name"
+        desc "brand_new_transcript [NAME]", "Extract transcripts from Cufflinks' GTF searching in the current directory tree for the sample name"
         method_option :multi_exons, :type => :boolean, :aliases => '-m', :desc => "get multi exons transcripts"
         method_option :length, :type => :numeric,      :aliases => '-l', :desc => "transcripts with a length gt"
         method_option :coverage, :type => :numeric,    :aliases => '-c', :desc => "transcripts with a coverage gt"
-        def brand_new_transcript(sample_name=nil)
+        method_option :project, :type => :boolean,     :aliases => '-p', :desc => "looks for data at Project level. Default at Sample level"
+        method_option :tag, :type => :string,      :aliases => '-t', :desc => "specify a tag name, used internally from cufflinks, different from the project/sample name"
+        def brand_new_transcript(name=nil)
           opts={brand_new:true}
           opts[:multi_exons]=options[:multi_exons] if options[:multi_exons]
           opts[:length]=options[:length] if options[:length]
           opts[:coverage]=options[:coverage] if options[:coverage]
-          if sample_name
-            if sample_path=Dir.glob("**/*/**/Sample_#{sample_name}/quantification_denovo").first
-              if File.exists?(File.join(sample_path,"transcripts.gtf"))
-                 #:brand_new=>true, :tag => sample_name
-                 opts[:tag]=sample_name
-                invoke "filter:cufflinks:transcripts", [File.join(sample_path, "transcripts.gtf")], opts
+          opts[:tag] = options[:tag] || name
+          if name
+            what = options[:project] ? 'Project' : 'Sample'
+            if path=Dir.glob("**/*/**/#{what}_#{name}/quantification_denovo").first
+              if File.exists?(File.join(path,"transcripts.gtf"))
+                 #:brand_new=>true, :tag => name
+                invoke "filter:cufflinks:transcripts", [File.join(path, "transcripts.gtf")], opts
               else
                 puts "Missing transcripts.gtf file in quantification_denovo directory"
               end
             else
-              puts "#{sample_name} does not exist or there is no denovo quantification available, please check..."
+              puts "#{name} does not exist or there is no denovo quantification available, please check..."
             end
           elsif File.exists?("transcripts.gtf")
 
@@ -35,6 +38,8 @@ class Filter < Thor
             puts "No quantification file present."
           end
         end
+
+
       end
     end 
   end 
@@ -72,6 +77,7 @@ class Cufflinks < Thor
       data.multi_exons if options[:multi_exons]
       data.length_gt(options[:length]) if options[:length]
       data.coverage_gt(options[:coverage]) if options[:coverage]
+
 
       default_stdout = (options[:output] && File.open(options[:output], 'w')) || $stdout
 
@@ -138,6 +144,7 @@ end #Cufflinks
   method_option :zero_index_system, :type => :boolean, :default => true,   :aliases => '-s', :desc => 'Starts Index from ZERO ? Otherwise starts from ONE'
   method_option :fuse, :type => :boolean, :default => false,               :aliases => '-f', :desc => 'JOIN two input file using a specific key'
   method_option :in_column_delimiter, :type => :string,                    :aliases => '-i', :desc => 'Define a delimiter for table key, if setted we assume to split the key columns by this separator'
+  method_option :remove_quotes_from_match, :type => :boolean, :default => :false, :aliases => '-q', :desc => 'Remove quotes from matching columns'
   def by_list(table, list)
   	 unless File.exists?(table)
   	 	STDERR.puts "by_list: #{table} does not exist."
@@ -184,7 +191,10 @@ end #Cufflinks
     	  #split row
     	  #store the list key
     	  #populate an hash wich keys 
-        list_dictionary[line.split(delimiter)[list_key_idx]]=:fool
+        
+        key = line.split(delimiter)[list_key_idx]
+        key = key.tr('"','') if options[:remove_quotes_from_match]
+        list_dictionary[key]=:fool
       end
     end
     flist.close
@@ -213,7 +223,9 @@ end #Cufflinks
     ftable.each_line do |line|
       #search for a key in the dictionary/list 
       #if list_dictionary.key?(line.split(delimiter)[table_key_idx]) || options[:exclude]
-      if find_key_in_dictionary(line.split(delimiter)[table_key_idx], list_dictionary, options[:in_column_delimiter]) || options[:exclude]
+      key = line.split(delimiter)[table_key_idx]
+      key = key.tr('"','') if options[:remove_quotes_from_match]
+      if find_key_in_dictionary(key, list_dictionary, options[:in_column_delimiter]) || options[:exclude]
         fout.puts line
       end
     end
