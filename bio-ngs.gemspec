@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-07-19"
+  s.date = "2012-08-08"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -96,6 +96,7 @@ Gem::Specification.new do |s|
     "lib/tasks/pre.thor",
     "lib/tasks/project.thor",
     "lib/tasks/quality.thor",
+    "lib/tasks/report.thor",
     "lib/tasks/rna.thor",
     "lib/tasks/sff_extract.thor",
     "lib/templates/README.tt",
@@ -193,7 +194,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/helios/bioruby-ngs"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.15"
+  s.rubygems_version = "1.8.24"
   s.summary = "bio-ngs provides a framework for handling NGS data with BioRuby"
 
   if s.respond_to? :specification_version then

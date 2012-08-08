@@ -36,6 +36,11 @@ require 'enumerable'
 require 'wrapper'
 require 'meta'
 
+#Illumina utility for projects
+require 'bio/ngs/illumina/illumina'
+require 'bio/ngs/fs'
+
+
 # NGS classes
 require 'bio/ngs/utils'
 require 'bio/ngs/record'
@@ -68,9 +73,6 @@ require 'bio/appl/ngs/blast'
 require 'bio/appl/ngs/bwa'
 require 'bio/appl/ngs/casava'
 
-#Illumina utility for projects
-require 'bio/ngs/illumina/illumina'
-require 'bio/ngs/fs'
 
 # history
 Bio::Ngs::HISTORY_FILE = Dir.pwd+"/.task-history.yml"
