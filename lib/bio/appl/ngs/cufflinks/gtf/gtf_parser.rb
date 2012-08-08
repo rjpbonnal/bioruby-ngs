@@ -35,7 +35,12 @@ module Bio
               !(bool_blocks.include?(nil) || bool_blocks.include?(false))
             end
             set_lazy
-            result.send(:each_transcript, &block)
+            if result.nil?
+              raise "No transcripts selected from your criteria."
+            else
+              result.send(:each_transcript, &block)
+            end
+            end
           end #lazy or not?
         end
         alias :transcripts :each_transcript
