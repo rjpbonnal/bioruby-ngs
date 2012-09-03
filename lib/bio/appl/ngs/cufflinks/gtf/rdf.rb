@@ -28,12 +28,13 @@ module Bio
               "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .",
               "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
               "@prefix obo: <http://purl.obolibrary.org/obo/> .",
-              "@prefix gtf: <http://genome.db/gtf/> ."
+              "@prefix gtf: <http://genome.db/gtf/> .",
+              "@prefix ngs: <http://genome.db/ngs/> .",
             ]
           end
 
 
-          def to_ttl
+          def to_ttl(opts={})#name=nil, project = nil, run = nil)
 
             puts prefix
 
@@ -50,28 +51,34 @@ module Bio
             each_transcript do |transcript|
               transcript_id = transcript.attributes[:gene_id]
               transcript_uri = uri(transcript_id)
+              transcript_iid = uri
 
               triple(transcript_uri, "rdf:type", "obo:SO_0000673") # so:transcript
               triple(transcript_uri, "rdfs:label", quote(transcript_id))
               triple(transcript_uri, "gtf:parent_gene", gene_uri)
+              triple(transcript_uri, "gtf:iid", transcript_iid)
+              triple(transcript_uri, "ngs:sample", quote(opts[:sample])) if opts[:sample]
+              triple(transcript_uri, "ngs:project", quote(opts[:project])) if opts[:project] 
+              triple(transcript_uri, "ngs:run", quote(opts[:run])) if opts[:run]
 
               ## Common with GFF
               # int
+              triple(transcript_iid, "gtf:seqname", quote(transcript.seqname))
               %w(start stop score).each do |key|
-                triple(transcript_uri, "gtf:#{key}", transcript.send(key))
+                triple(transcript_iid, "gtf:#{key}", transcript.send(key))
               end
               # string
               %w(strand frame).each do |key|
-                triple(transcript_uri, "gtf:#{key}", quote(transcript.send(key)))
+                triple(transcript_iid, "gtf:#{key}", quote(transcript.send(key)))
               end
               ## Specific to GTF (cufflinks)
               # float
               %w(FPKM frac conf_lo conf_hi cov).each do |key|
-                triple(transcript_uri, "gtf:#{key}", transcript.attributes[key.to_sym])
+                triple(transcript_iid, "gtf:#{key}", transcript.attributes[key.to_sym])
               end
               # string
               %w(full_read_support).each do |key|
-                triple(transcript_uri, "gtf:#{key}", quote(transcript.attributes[key.to_sym]))
+                triple(transcript_iid, "gtf:#{key}", quote(transcript.attributes[key.to_sym]))
               end
 
               transcript.each_exon do |e|
@@ -83,7 +90,7 @@ module Bio
 
                 triple(exon_uri, "rdf:type", "obo:SO_0000147") # so:exon
                 # triple(exon_uri, "rdfs:label", quote(exon_id))
-                triple(exon_uri, "gtf:parent_transcript", gene_uri)
+                triple(exon_uri, "gtf:parent_transcript", transcript_iid)
 
                 ## Common with GFF
                 # int

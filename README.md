@@ -229,7 +229,15 @@ Then in some case I need to extract only some of them or maybe parsing them from
 
 The first time tra_at_idx is used, it will take more time than usual becase it creates an internal index: a simple HASH mashalled and dumped, stored in a file with the name similar to the imput with an idx as postfix.
 
+### Converting data to RDF
 
+After quantification with Cufflinks data can be converted into RDF and this is a simple example of it
+    `biongs convert:cuff:quant_to_ttl transcripts.gtf --output=transcripts.ttl --sample=SQ_0080 --project=Naive_T0 --run=110908_H125_0119_AB01W2ABXX`
+
+in case the user do not want to specify sample, project, run and the path of the file reflects this structure:
+    `110908_H125_0119_AB01W2ABXX_DATA/Project_Naive_T0/Sample_SQ_0080`
+
+the software can extract those information automatically, just selecting the option `--get_info_from_path`
 
 # ForDevelopers
 

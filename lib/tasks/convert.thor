@@ -523,13 +523,34 @@ module Convert
       Bio::Ngs::Cufflinks::Compare.fix_gtf(gtf)
     end
 
+#Example of calling the conversion to ttl for quantification:
+#biongs convert:cuff:quant_to_ttl transcripts.gtf --output=transcripts.ttl --sample=SQ_0080 --project=Naive_T0 --run=110908_H125_0119_AB01W2ABXX
+
     desc "quant_to_ttl GTF", "convert a Cufflinks GTF quantification file in RDF Turtle format. Data are sent in stdout."
     method_option :output, :type => :string, :desc => "output file name"
-    method_option :name, :type => :string, :desc => "tag these transcripts with a specific name, sample ?"
+    method_option :sample, :type => :string, :desc => "tag these transcripts with a specific name, sample ?"
+    method_option :project, :type => :string, :desc => "attach to these data their are coming from a specific project"
+    method_option :run, :type => :string, :desc => "attach to these data the run date/illumina name"
+    method_option :get_info_from_path, :type => :boolean, :default=>false, :desc => "try to extract information from run project sample from the current directory or filename"
     def quant_to_ttl(gtf)
         data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
         $stdout=File.open(options[:output],'w') if options[:output]
-        data.to_ttl(options[:name])
+        opts = {}
+        opts[:run] = options[:run] if options[:run]
+        opts[:project] = options[:project] if options[:project]
+        opts[:sample] = options[:sample] if options[:sample]
+
+        if options[:get_info_from_path]
+          file_path = File.expand_path(gtf)
+          file_path=~/(\d{6,6}_.\d{3,3}_\d{4,4}_.{10,10})/
+          opts[:run] = $1 unless options[:run]
+          file_path=~/Project_(.*?)\//
+          opts[:project] = $1 unless options[:project]
+          file_path=~/Sample_(.*?)\//
+          opts[:sample] = $1 unless options[:sample]
+        end
+
+        data.to_ttl(opts)
         $stdout=STDOUT if options[:output]
     end
   end
