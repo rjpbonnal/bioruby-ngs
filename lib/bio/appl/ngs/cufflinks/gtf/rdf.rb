@@ -42,7 +42,7 @@ module Bio
 
             #gff.each_gene do |gene|
             #  gene_id = gene.label
-            gene_uri = uri
+            #gene_uri = uri
 
             #  triple(gene_uri, "rdf:type", "obo:SO_0000704") # so:gene
             #  triple(gene_uri, "rdfs:label", quote(gene_id))
@@ -51,50 +51,51 @@ module Bio
             each_transcript do |transcript|
               transcript_id = transcript.attributes[:gene_id]
               transcript_uri = uri(transcript_id)
-              transcript_iid = uri
+              transcript_uuid = uri
 
               triple(transcript_uri, "rdf:type", "obo:SO_0000673") # so:transcript
               triple(transcript_uri, "rdfs:label", quote(transcript_id))
-              triple(transcript_uri, "gtf:parent_gene", gene_uri)
-              triple(transcript_uri, "gtf:iid", transcript_iid)
-              triple(transcript_uri, "ngs:sample", quote(opts[:sample])) if opts[:sample]
-              triple(transcript_uri, "ngs:project", quote(opts[:project])) if opts[:project] 
-              triple(transcript_uri, "ngs:run", quote(opts[:run])) if opts[:run]
+              #triple(transcript_uri, "gtf:parent_gene", gene_uri)
+              triple(transcript_uri, "gtf:uuid", transcript_uuid)
+              triple(transcript_uuid, "ngs:sample", quote(opts[:sample])) if opts[:sample]
+              triple(transcript_uuid, "ngs:project", quote(opts[:project])) if opts[:project] 
+              triple(transcript_uuid, "ngs:run", quote(opts[:run])) if opts[:run]
 
               ## Common with GFF
               # int
-              triple(transcript_iid, "gtf:seqname", quote(transcript.seqname))
+              triple(transcript_uuid, "gtf:seqname", quote(transcript.seqname))
               %w(start stop score).each do |key|
-                triple(transcript_iid, "gtf:#{key}", transcript.send(key))
+                triple(transcript_uuid, "gtf:#{key}", transcript.send(key))
               end
               # string
               %w(strand frame).each do |key|
-                triple(transcript_iid, "gtf:#{key}", quote(transcript.send(key)))
+                triple(transcript_uuid, "gtf:#{key}", quote(transcript.send(key)))
               end
               ## Specific to GTF (cufflinks)
               # float
               %w(FPKM frac conf_lo conf_hi cov).each do |key|
-                triple(transcript_iid, "gtf:#{key}", transcript.attributes[key.to_sym])
+                triple(transcript_uuid, "gtf:#{key}", transcript.attributes[key.to_sym])
               end
               # string
               %w(full_read_support).each do |key|
-                triple(transcript_iid, "gtf:#{key}", quote(transcript.attributes[key.to_sym]))
+                triple(transcript_uuid, "gtf:#{key}", quote(transcript.attributes[key.to_sym]))
               end
 
+              exon = Bio::Ngs::Cufflinks::Exon.new
+
               transcript.each_exon do |e|
-                #TODO Fix this ugly call
-                exon=Bio::Ngs::Cufflinks::Exon.new
-                exon=e
+
+                exon.set e
                 #exon_id = exon.attrbutes[:gene_id]
                 exon_uri = uri
 
                 triple(exon_uri, "rdf:type", "obo:SO_0000147") # so:exon
                 # triple(exon_uri, "rdfs:label", quote(exon_id))
-                triple(exon_uri, "gtf:parent_transcript", transcript_iid)
+                triple(exon_uri, "gtf:parent_transcript", transcript_uuid)
 
                 ## Common with GFF
                 # int
-                %w(start end).each do |key|
+                %w(start stop).each do |key|
                   triple(exon_uri, "gtf:#{key}", exon.send(key))
                 end
                 ## Specific to GTF (cufflinks/cuffcompare)

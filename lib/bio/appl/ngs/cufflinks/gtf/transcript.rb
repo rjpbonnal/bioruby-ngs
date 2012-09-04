@@ -31,7 +31,12 @@ module Bio
         def exons
           @exons
         end
-        alias :each_exon :exons
+        
+        def each_exon
+          exons.each do |exon|
+            yield exon
+          end
+        end
 
         def exons=(ary)
           @exons=ary

@@ -15,6 +15,7 @@ module Bio
           @attributes = {}
           @chr_notation = :ensembl #ensembl/ucsc
           @new_tag = opt[:tag] || "CUFF"
+          set(opt[:exon]) if opt[:exon]
         end
 
         def exon
@@ -31,7 +32,7 @@ module Bio
         def attributes
           @attributes
         end
-        def exon=(line)
+        def set(line)
           @exon = line
           data=line.split
           @seqname = data[0]
