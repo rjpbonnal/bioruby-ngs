@@ -528,17 +528,21 @@ module Convert
 
     desc "quant_to_ttl GTF", "convert a Cufflinks GTF quantification file in RDF Turtle format. Data are sent in stdout."
     method_option :output, :type => :string, :desc => "output file name"
+    method_option :renamettl, :type => :boolean, :desc => "rename the origina file name to ttl and use it as output"
     method_option :sample, :type => :string, :desc => "tag these transcripts with a specific name, sample ?"
     method_option :project, :type => :string, :desc => "attach to these data their are coming from a specific project"
     method_option :run, :type => :string, :desc => "attach to these data the run date/illumina name"
     method_option :get_info_from_path, :type => :boolean, :default=>false, :desc => "try to extract information from run project sample from the current directory or filename"
+    method_option :remove_zero, :type => :boolean, :default => true, :desc => "remove transcripts with FPKM == 0.0"
     def quant_to_ttl(gtf)
         data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
         $stdout=File.open(options[:output],'w') if options[:output]
+        $stdout=File.open(gtf.gsub(/gtf/,'ttl'),'w') if options[:renamettl]
         opts = {}
         opts[:run] = options[:run] if options[:run]
         opts[:project] = options[:project] if options[:project]
         opts[:sample] = options[:sample] if options[:sample]
+        opts[:remove_zero] = options[:remove_zero]
 
         if options[:get_info_from_path]
           file_path = File.expand_path(gtf)
