@@ -165,12 +165,12 @@ class Quality < Thor
   desc "aggregate DIR PROJECT [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
   def aggregate(dir, project_name, outdir=nil)
     outdir = Dir.pwd if outdir.nil?
-    projects=Bio::Ngs::Illumina.build(dir)
+    projects = Bio::Ngs::Illumina.build(dir)
     project=projects.get(project_name)
     project.each_sample do |n,sample|
       sample_base_name = File.join(projects.path, project.path, sample.path)
-      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
-      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
+      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
+      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
       file_merge_forward = "#{sample.path}_R1.fastq.gz"
       file_merge_reverse = "#{sample.path}_R2.fastq.gz"
       dest_dir = outdir
@@ -202,8 +202,8 @@ class Quality < Thor
       sample = project.get(sample_name)
     if sample
       sample_base_name = File.join(projects.path, project.path, sample.path)
-      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1*")).sort.join(" ")
-      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2*")).sort.join(" ")
+      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
+      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
       file_merge_forward = "#{sample.path}_R1.fastq.gz"
       file_merge_reverse = "#{sample.path}_R2.fastq.gz"
       dest_dir = outdir
@@ -308,8 +308,12 @@ class Quality < Thor
   def illumina_trim_run(directory)
     Bio::Ngs::Illumina.build(directory).each do |project_name, project|
       project.each_sample do |sample_name, sample|
-        forward = (sample.get :side, :left ).map{|uid, readsfile| readsfile.metadata[:filename]}.first
-        reverse = (sample.get :side, :right).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        sample.chunks do |chunk|
+          sample.get(:chunks, chunk)
+
+        end
+        #forward = (sample.get :side, :left ).map{|uid, readsfile| readsfile.metadata[:filename]}.first
+        #reverse = (sample.get :side, :right).map{|uid, readsfile| readsfile.metadata[:filename]}.first
         trim_momatic_pe(File.join(directory,project.path,sample.path,forward), File.join(directory,project.path,sample.path,reverse))
       end
     end
