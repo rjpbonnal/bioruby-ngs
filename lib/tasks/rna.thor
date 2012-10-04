@@ -22,7 +22,7 @@ class Rna < Thor
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
   method_option :date, :type => :boolean, :default => false, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
-  method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
+  #method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
     config = {:gtf => gtf}
     if (task.options[:date])
@@ -39,7 +39,7 @@ class Rna < Thor
 
   desc "quantdenovo GTF_guide OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
 #  mehtod_option :cufftag, :type => :string
-  method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
+ # method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf_guide, outputdir, bam|
     wrapper.params = task.options
     wrapper.params = {"output-dir" => outputdir, "GTF-guide" => gtf_guide } #"num-threads" => 6, 
@@ -341,11 +341,40 @@ class Rna < Thor
                       "frag-bias-correct" => fasta,
                       "emit-count-tables" => true,
                       "label" => projects_list,
+                      "upper-quartile-norm" => false }
+    #TODO: check if all the projects has data otherwise fire up a warning message.
+    puts [:arguments =>[gtf, projects_params.join(' ')], :separator => "="]
+    wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
+  end 
+
+
+  desc "dequartile FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression using UPPER QUARTILE normalization"
+  method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
+  Bio::Ngs::Cufflinks::Diff.new.thor_task(self, :dequartile) do |wrapper, task, fasta, gtf, projects_list, exclude|
+    log = Logger.new(STDOUT)
+    projects= Hash.new {|h,k| h[k]=[]}
+
+    projects_params=[]
+    projects_list.split(',').each do |name|
+      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+                                                           :files=>true, 
+                                                           :exclude => exclude.split(','), 
+                                                           :from => :tophat, 
+                                                           :to=> :cuffdiff
+                         ).join(',')
+     end
+
+    wrapper.params = task.options
+    wrapper.params = {"output-dir" => "DE_#{projects_list.tr(',','_')}", 
+                      "frag-bias-correct" => fasta,
+                      "emit-count-tables" => true,
+                      "label" => projects_list,
                       "upper-quartile-norm" => true }
     #TODO: check if all the projects has data otherwise fire up a warning message.
     puts [:arguments =>[gtf, projects_params.join(' ')], :separator => "="]
     wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
   end 
+
 
   desc "projects_to_bams PROJECTLIST", "search for bams related to specific projest"
   method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
