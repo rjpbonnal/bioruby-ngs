@@ -103,6 +103,7 @@ module Bio
     class Tophat
 
       include Bio::Command::Wrapper
+      include Bio::Ngs::FS::Type
 
       set_program Bio::Ngs::Utils.binary("tophat")
 
@@ -168,6 +169,15 @@ module Bio
       add_option "rg-center", :type => :string
       add_option "rg-date", :type => :string
       add_option "rg-platform", :type => :string
+
+      # output_file "accepted_hits.bam", :as=>"alignment"
+      # output_file "deletions.bed"
+      # output_file "insertions.bed"
+      # output_file "junctions.bed"
+      # output_file "left_kept_reads.info"
+      # output_file "right_kept_reads.info"
+      # output_file "unmapped_left.fq.z"
+      # output_file "unmapped_right.fq.z"
 
     end #That
   end #Ngs
