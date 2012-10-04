@@ -156,13 +156,12 @@ end #Cufflinks
   	end
     table_key_idx = options[:tablekey]  || 0 # by default the first element of the table.
     list_key_idx = options[:listkey] || 0
+    table_key_idx -= 1 if (!options[:zero_index_system] && options[:tablekey])
+    list_key_idx -= 1 if (!options[:zero_index_system] && options[:listkey])
+
     fuse = options[:fuse] || false
     #increment indexes in case user wants to start from 1 and not from 0
     #TODO: fix not increment but decrement, user will pass a +1 value
-    unless options[:zero_index_system]
-      table_key_idx+=1
-      list_key_idx+=1
-    end
     delimiter = options[:delimiter] || " " # useless it's by default a space, just for developers
     keep_skipped_lines  = options[:keep_skipped_lines] || false
     
@@ -191,9 +190,8 @@ end #Cufflinks
     	  #split row
     	  #store the list key
     	  #populate an hash wich keys 
-        
-        key = line.split(delimiter)[list_key_idx]
-        key = key.tr('"','') if options[:remove_quotes_from_match]
+        key = line.split(delimiter)[list_key_idx].chomp
+        key = key.tr('";','') if options[:remove_quotes_from_match]
         list_dictionary[key]=:fool
       end
     end
@@ -223,8 +221,8 @@ end #Cufflinks
     ftable.each_line do |line|
       #search for a key in the dictionary/list 
       #if list_dictionary.key?(line.split(delimiter)[table_key_idx]) || options[:exclude]
-      key = line.split(delimiter)[table_key_idx]
-      key = key.tr('"','') if options[:remove_quotes_from_match]
+      key = line.split(delimiter)[table_key_idx].chomp
+      key = key.tr('";','') if options[:remove_quotes_from_match]
       if find_key_in_dictionary(key, list_dictionary, options[:in_column_delimiter]) || options[:exclude]
         fout.puts line
       end
