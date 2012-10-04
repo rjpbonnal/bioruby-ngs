@@ -56,12 +56,32 @@ module Bio
           if filename=~/trimmed|TRIMMED/
             metadata[:trimmed] = true
             metadata[:trimmed_aggregated] = true unless filename=~/_\d+\./
+          else
+            metadata[:trimmed] = false
           end
+
+          if filename=~/unpaired|UNPAIRED/
+            metadata[:unpaired] = true
+            metadata[:unpaired_aggregated] = true unless filename=~/_\d+\./
+          else
+            metadata[:unpaired] = false
+          end
+
 
           if filename=~/filtered|FILTERED/
             metadata[:filtered] = true
             metadata[:filtered_aggregated] =true unless filename=~/_\d+\./
+          else
+            metadata[:filtered] = false
           end
+
+          if filename=~/Undetermined/
+            metadata[:undetermined] = true
+          else
+            metadata[:undetermined] = false
+          end
+
+
           if filename=~/.*_R1_?.*/
             metadata[:left] = true 
             metadata[:side] = :left
@@ -82,7 +102,7 @@ module Bio
           #filename_cleaned = filename.sub(/_R.*/,'')
           readsdata_name = File.basename(filename).sub(/TRIMMED/,'').sub(/trimmed/,'').sub(/filtered/,'').sub(/FILTERED/,'').sub(/_R\d+_\d+_?/,'').sub(/_R\d+_/,'').sub(/\..+$/,'') #TODO is not the best thing to do
 
-            if filename=~/R._(\d*).fastq(.gz)?/
+            if filename=~/R._(\d*).*.fastq(.gz)?/
               metadata[:chunks]=$1
             end
             self.add MetaReads.new(SecureRandom.uuid, metadata)
