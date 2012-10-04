@@ -197,6 +197,13 @@ module Bio
         set_sub_program "faidx" 
       end #faidx
 
+      class Flagstat
+        include Bio::Command::Wrapper
+        set_program Bio::Ngs::Utils.binary("samtools")
+        set_sub_program "flagstat"
+        #............. COMPLETE
+      end
+
 
     end #Samtools
   end #Ngs
