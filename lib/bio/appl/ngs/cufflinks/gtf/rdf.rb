@@ -35,6 +35,12 @@ module Bio
           end
 
 
+          # opts:
+          # :remove_zero remove values for which fpkms is zero
+          # :sample name of the sample
+          # :project name of the project
+          # :run name of the run
+          # :compact remove data that are repeated inside the knowledgebase like location information
           def to_ttl(opts={})#name=nil, project = nil, run = nil)
 
             puts prefix
@@ -77,6 +83,7 @@ unless opts[:remove_zero] && transcript.attributes[:FPKM] == 0.0
           
 
 # http://genome.db/coords/1-62948-63887-f
+              unless opts[:compact] == true
 strand = case transcript.strand
 when '+' then 'f'
 when '-' then 'r'
@@ -101,6 +108,7 @@ triple(uri(domain:"coords",entity:coord), "gtf:seqname", quote(transcript.seqnam
 triple(uri(domain:"coords",entity:coord), "gtf:start", transcript.start)
 triple(uri(domain:"coords",entity:coord), "gtf:stop", transcript.stop)
 triple(uri(domain:"coords",entity:coord), "gtf:strand", quote(transcript.strand))
+end #if compact transcript
 
 # http://genome.db/coords/1-62948-63887-f rdf:type genome:Location
 # http://genome.db/coords/1-62948-63887-f gtf:start 62948
@@ -130,7 +138,7 @@ triple(uri(domain:"coords",entity:coord), "gtf:strand", quote(transcript.strand)
               end
 
               # exon = Bio::Ngs::Cufflinks::Exon.new
-
+unless opts[:compact]==true
               transcript.each_exon do |e|
 
                 exon.set e
@@ -167,6 +175,7 @@ triple(uri(domain:"coords",entity:coord), "gtf:exon_number", exon.attributes[:ex
                   triple(exon_uri, "gtf:#{key}", quote(exon.attributes[key.to_sym])) unless exon.attributes[key.to_sym].nil?
                 end
               end #each_exon
+            end #if compact exons
             end #unless
             end #each_transcript
             #end #Gene

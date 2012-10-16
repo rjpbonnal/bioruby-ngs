@@ -534,6 +534,7 @@ module Convert
     method_option :run, :type => :string, :desc => "attach to these data the run date/illumina name"
     method_option :get_info_from_path, :type => :boolean, :default=>false, :desc => "try to extract information from run project sample from the current directory or filename"
     method_option :remove_zero, :type => :boolean, :default => true, :desc => "remove transcripts with FPKM == 0.0"
+    method_option :compact, :type => :boolean, :default => false, :desc => "do not convert location information for both transcripts and exons"
     def quant_to_ttl(gtf)
         data = Bio::Ngs::Cufflinks::Gtf.new(gtf)
         $stdout=File.open(options[:output],'w') if options[:output]
@@ -543,6 +544,7 @@ module Convert
         opts[:project] = options[:project] if options[:project]
         opts[:sample] = options[:sample] if options[:sample]
         opts[:remove_zero] = options[:remove_zero]
+        opts[:compact] = options[:compact]
 
         if options[:get_info_from_path]
           file_path = File.expand_path(gtf)
