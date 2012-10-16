@@ -33,11 +33,22 @@ module Bio
           @@skip_check_binaries
         end
 
-        def binary(name)
+        # version is used to select a different version of the programs
+        # by convertion if there are multiple version of a same program it
+        # is intalled in a directory with the same name but a progressive
+        # number as a prefix
+        # from find this should result in an array of elements ordered in 
+        # traditional way
+        # for instance:
+        # cufflinks
+        # cufflinks2
+        # they return [cufflinks/cufflinks,cufflinks2/cufflinks] and 
+        # i want to run version 2 I can pass 2
+        def binary(name,version=1)
           unless skip_check_binaries?
             begin
               if !(plugin_binaries_found = find_binary_files(name)).empty?
-                return plugin_binaries_found.first
+                return plugin_binaries_found[version-1]
               elsif (os_binary = Bio::Command.query_command ["which", name]) != ""
                 return os_binary.tr("\n","")
               else

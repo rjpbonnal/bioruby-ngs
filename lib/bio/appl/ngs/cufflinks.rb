@@ -1644,6 +1644,16 @@ module Bio
 #-------------------------------------------------
 # NEW VERSION OF CUFFLINKS
 #-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
 
     module Cufflinks2
       VERSION = "2.0.2"
@@ -1668,7 +1678,7 @@ module Bio
         include Bio::Ngs::Cufflinks::Utils
 
 
-        set_program Bio::Ngs::Utils.binary("cufflinks")
+        set_program Bio::Ngs::Utils.binary("cufflinks",2)
 
         add_option "output-dir", :type => :string, :aliases => '-o', :default => "./"
         add_option "num-threads", :type => :numeric, :aliases => '-p', :default => 1
@@ -1832,7 +1842,7 @@ module Bio
         include Bio::Command::Wrapper
         include Bio::Ngs::Cufflinks::Utils
 
-        set_program Bio::Ngs::Utils.binary("cuffdiff")
+        set_program Bio::Ngs::Utils.binary("cuffdiff",2)
 
         add_option "output-dir", :type => :string, :aliases => '-o', :default => "./"
         add_option "seed", :type => :numeric
@@ -2147,7 +2157,7 @@ module Bio
     class Compare
       include Bio::Command::Wrapper
 
-      set_program Bio::Ngs::Utils.binary("cuffcompare")
+      set_program Bio::Ngs::Utils.binary("cuffcompare",2)
       use_aliases
       #TODO: add descriptions
       add_option "outprefix", :type => :string, :aliases => '-o', :default => "Comparison"
@@ -2304,7 +2314,7 @@ module Bio
                 class Merge
                   include Bio::Command::Wrapper
 
-                  set_program Bio::Ngs::Utils.binary("cuffmerge")
+                  set_program Bio::Ngs::Utils.binary("cuffmerge",2)
 
                   add_option "output-dir", :type => :string, :aliases => '-o', :default => "merged_asm"
                   add_option "ref-gtf", :type => :string, :aliases => '-g'
@@ -2387,7 +2397,7 @@ module Bio
                 class GffRead
                   include Bio::Command::Wrapper
 
-                  set_program Bio::Ngs::Utils.binary("gffread")
+                  set_program Bio::Ngs::Utils.binary("gffread",2)
                   use_aliases
 
                   add_option "genomic-sequence", :type => :string, :aliases => '-g'
