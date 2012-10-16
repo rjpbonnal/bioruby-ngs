@@ -377,7 +377,7 @@ class Rna < Thor
 
 desc "de2 FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression and CUFFLINKS v2"
   method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
-  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :de) do |wrapper, task, fasta, gtf, projects_list, exclude|
+  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :de2) do |wrapper, task, fasta, gtf, projects_list, exclude|
     log = Logger.new(STDOUT)
     projects= Hash.new {|h,k| h[k]=[]}
      #search using symlonks too
@@ -415,7 +415,7 @@ desc "de2 FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential exp
 
   desc "de2quartile FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression using UPPER QUARTILE normalization and CUFFLINKS v2"
   method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
-  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :dequartile) do |wrapper, task, fasta, gtf, projects_list, exclude|
+  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :de2quartile) do |wrapper, task, fasta, gtf, projects_list, exclude|
     log = Logger.new(STDOUT)
     projects= Hash.new {|h,k| h[k]=[]}
 
