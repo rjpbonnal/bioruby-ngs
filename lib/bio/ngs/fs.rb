@@ -91,21 +91,26 @@ module Bio
           end #sample
 
           def smart_path(opts={})
+            root = opts[:root] || './'
+            path = [root]
             #by default temp|Temp directories are skipped from final result.
-            path=["**/*"]
-            path << File.join([raw_run(opts[:run]), project(opts[:project]), sample(opts[:sample])].select{|dir| dir})
+            # path=[ File.join(root,"**/*")]
+            #puts "xxxx #{File.join([raw_run(opts[:run]), project(opts[:project]), sample(opts[:sample])].select{|dir| File.join(root,dir)})}"
+            ary_path = [raw_run(opts[:run]), project(opts[:project]), sample(opts[:sample])].select{|dir| dir}
+            path << File.join(ary_path) unless ary_path.empty?
+puts "#{path.inspect}"
             if opts[:quant]
               path << "**/*" unless opts[:sample]
               path<<"quantification"
-            end
-            if opts[:quantdenovo]
+            elsif opts[:quantdenovo]
               path<<"quantification_denovo"
             end
 
             if opts[:files]
               path<<"**/*"
             end
-            #puts File.join(path)
+puts "#{path.inspect}"
+puts "#{File.join("**/*",path).inspect}"
             data = aggregate_by_topic(skip_temp(Dir.glob(File.join("**/*",path))), opts)
             if opts[:from] && data.key?(opts[:from]) && opts[:to].nil?
               data[opts[:from]]
