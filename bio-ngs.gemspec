@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-ngs"
-  s.version = "0.5.3"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-08-08"
+  s.date = "2012-10-17"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -79,6 +79,7 @@ Gem::Specification.new do |s|
     "lib/bio/ngs/illumina/illumina.rb",
     "lib/bio/ngs/illumina/project.rb",
     "lib/bio/ngs/illumina/sample.rb",
+    "lib/bio/ngs/labs.rb",
     "lib/bio/ngs/ontology.rb",
     "lib/bio/ngs/quality.rb",
     "lib/bio/ngs/record.rb",
@@ -167,18 +168,6 @@ Gem::Specification.new do |s|
     "test/data/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R1_002.fastq.gz",
     "test/data/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R2_001.fastq.gz",
     "test/data/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R2_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0001/SQ_0001_CGATGT_L010_R1_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0001/SQ_0001_CGATGT_L010_R1_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0001/SQ_0001_CGATGT_L010_R2_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0001/SQ_0001_CGATGT_L010_R2_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0002/SQ_0002_CGATGT_L003_R1_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0002/SQ_0002_CGATGT_L003_R1_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0002/SQ_0002_CGATGT_L003_R2_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0002/SQ_0002_CGATGT_L003_R2_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R1_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R1_002.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R2_001.fastq.gz",
-    "test/data/RemoteDir/Project_Human/Sample_SQ_0003/SQ_0003_CGATGT_L003_R2_002.fastq.gz",
     "test/data/blastoutput.xml",
     "test/data/gene-GO.json",
     "test/data/goa_uniprot",
