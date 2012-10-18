@@ -327,7 +327,8 @@ class Rna < Thor
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
@@ -356,7 +357,8 @@ class Rna < Thor
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
@@ -392,7 +394,8 @@ desc "de2 FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential exp
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
@@ -421,7 +424,8 @@ desc "de2 FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential exp
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name,
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
