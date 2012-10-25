@@ -41,7 +41,6 @@ class Rna < Thor
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :smart_quant) do |wrapper, task, gtf, project, samples|
     params = {:root => task.options[:root], :project => project, :files=>true, :from => :tophat, :to => :cufflinks}
     params[:samples] = samples unless samples=="ALL"
-    puts params
     Bio::Ngs::FS::Project.smart_path(params).each do |bam_file|
       outputdir = File.join(File.dirname(bam_file), "quantification")
       task.send :quant, gtf, outputdir, bam_file
