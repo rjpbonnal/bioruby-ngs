@@ -16,20 +16,17 @@ class Rna < Thor
       wrapper.run :arguments=>[index, fastq_files ].flatten, :separator=>"="
 
       accepted_hits_bam_fn = File.join(outputdir, "accepted_hits.bam")
-      #DEPRECATED tophat sort data by default 
-      #task.invoke "convert:bam:sort", [accepted_hits_bam_fn] # call the sorting procedure.
   end
 
   desc "quant GTF OUTPUTDIR BAM ", "Genes and transcripts quantification"
   method_option :date, :type => :boolean, :default => false, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
-  #method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :quant) do |wrapper, task, gtf, outputdir, bam|
     config = {:gtf => gtf}
     if (task.options[:date])
       outputdir = File.join(outputdir, Time.now.strftime("%y-%m-%d"))
     end
     wrapper.params = task.options
-    wrapper.params = {"output-dir" => outputdir, "GTF" => gtf } #"num-threads" => 6,
+    wrapper.params = {"output-dir" => outputdir, "GTF" => gtf }
     FileUtils.mkdir_p(outputdir)
     File.open(File.join(outputdir,"info.yaml"),'w') do |f|
       f.puts YAML.dump(config.merge(wrapper.params))
@@ -37,12 +34,26 @@ class Rna < Thor
     wrapper.run :arguments=>[bam], :separator => "="
   end
 
+  desc "smart_quant GTF PROJECT SAMPLES", "Genes and transcripts quantification, using only project reference. Each sample is processed indipendentely. Outputdir is
+   computed automatically by smart_quant, by default the directory is SAMPLE/quantification/[date/]. Sample = ALL TO PROCESS ALL SAMPLES IN THE DIRECTORY ASSOCIATED TO THAT PROJECT."
+  method_option :date, :type => :boolean, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
+  method_option :root, :type => :string, :default => './', :desc => 'define the root directory for this quantification.'
+  Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :smart_quant) do |wrapper, task, gtf, project, samples|
+    params = {:root => task.options[:root], :project => project, :files=>true, :from => :tophat, :to => :cufflinks}
+    params[:samples] = samples unless samples=="ALL"
+    puts params
+    Bio::Ngs::FS::Project.smart_path(params).each do |bam_file|
+      outputdir = File.join(File.dirname(bam_file), "quantification")
+      task.send :quant, gtf, outputdir, bam_file
+    end
+  end
+
   desc "quantdenovo GTF_guide OUTPUTDIR BAM ", "Genes and transcripts quantification discovering de novo transcripts"
 #  mehtod_option :cufftag, :type => :string
  # method_option "num-threads", :type=>:numeric, :default => 6, :desc => 'number of threads to use'
   Bio::Ngs::Cufflinks::QuantificationDenovo.new.thor_task(self, :quantdenovo) do |wrapper, task, gtf_guide, outputdir, bam|
     wrapper.params = task.options
-    wrapper.params = {"output-dir" => outputdir, "GTF-guide" => gtf_guide } #"num-threads" => 6, 
+    wrapper.params = {"output-dir" => outputdir, "GTF-guide" => gtf_guide }
     wrapper.run :arguments=>[bam], :separator => "="
     # if prefix=task.options[:cufftag]
     #   wrapper.gsub_cuff(outputdir, prefix)
