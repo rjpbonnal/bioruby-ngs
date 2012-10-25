@@ -40,6 +40,7 @@ class Rna < Thor
   method_option :date, :type => :boolean, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
   method_option :root, :type => :string, :default => './', :desc => 'define the root directory for this quantification.'
   method_option :grid, :type => :string, :default => 'single', :desc => 'select a method for parallelize computations: single=no parallelization, parallel=uses parallel library, slurm=submit a job to slurm queue, pbs=submit a job to pbs queue. Note slurm and pbs are not yet supported.'
+  method_option :n_parallel, :type => :numeric, :default => 7, :desc => 'when using parallel, 7 is the number of processes that can run simultaniously'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :smart_quant) do |wrapper, task, gtf, project, samples|
     params = {:root => task.options[:root], :project => project, :files=>true, :from => :tophat, :to => :cufflinks}
     params[:sample] = samples unless samples=="ALL"
@@ -51,7 +52,7 @@ class Rna < Thor
           task.send :quant, gtf, outputdir, bam_file
         end
       when "parallel" then
-        Parallel.map(dataset, :in_processes=>7) do |bam_file|
+        Parallel.map(dataset, :in_processes=>task.options[:n_parallel]) do |bam_file|
           outputdir = File.join(File.dirname(bam_file), "quantification")
           task.send :quant, gtf, outputdir, bam_file
         end
