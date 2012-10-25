@@ -3,6 +3,64 @@
 module Bio
   module Ngs
     module FS
+
+
+      CATEGORIES ={
+            :cufflinks=>[/genes\.fpkm_traking/, #same for denovo
+                         /isoforms\.fpkm_traking/, #same for denovo
+                         /transcripts\.gtf/, #same for denovo
+                         /skipped\.gtf/,
+                         /genes\.fpkm_tracking/,
+                         /isoforms\.fpkm_tracking/], #same for denovo
+              
+            :cuffdiff=>[/cds\.diff/,
+                        /cds_exp\.diff/,
+                       /cds\.fpkm_tracking/,
+                       /gene_exp\.diff/,
+                       /genes\.fpkm_tracking/,
+                       /isoform_exp\.diff/,
+                       /isoforms\.fpkm_tracking/,
+                       /promoters\.diff/,
+                       /splicing\.diff/,
+                       /tss_group_exp\.diff/,
+                       /tss_groups\.fpkm_tracking/],
+            :quantification =>[/quantification/],
+            :cuffcompare =>[/.*\.tracking/,
+                           /.*\.combined\.gtf/,
+                           /.*\.loci/,
+                           /.*\.stats/],
+            :tophat => [/accepted_hits\.bam$/,
+                        /deletions\.bed/,
+                        /insertions\.bed/,
+                        /junctions\.bed/,
+                        /left_kept_reads\.info/,
+                        /right_kept_reads\.info/,
+                        /unmapped_left\.fq\.z/,
+                        /unmapped_right\.fq\.z/
+                        ],
+            :rtfc => [/_L\d{3,3}_R1_\d{3,3}\.trimmed\.fastq\.gz/], #reads_trimmed_forward_chunks
+            :rtrc => [/_L\d{3,3}_R2_\d{3,3}\.trimmed\.fastq\.gz/], #reads_trimmed_reverse_chunks
+            :rtf => [/_R1\.trimmed\.fastq\.gz/], #reads_trimmed_forward
+            :rtr => [/_R2\.trimmed\.fastq\.gz/], #reads_trimmed_reverse
+            :rtufc => [/_L\d{3,3}_R1_\d{3,3}\.unpaired\.fastq\.gz/], #reads_trimemd_unpaired_forward_chunks
+            :rturc => [/_L\d{3,3}_R2_\d{3,3}\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_reverse_chunks
+            :rtuf => [/_R1\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_forward
+            :rtur => [/_R2\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_reverse
+            :rfc => [/_L\d{3,3}_R1_\d{3,3}\.fastq\.gz/], #reads_forward_chunks
+            # elsif file=~/trimmed/ && file=~/_L\d+_R._\d+\./
+            #   :trimmed_splitted
+            # elsif file=~/trimmed/ 
+            #   :trimmed
+            :rrc => [/_L\d{3,3}_R2_\d{3,3}\.fastq\.gz/], #reads_reverse_chunks                
+            :rf => [/_R1\.fastq\.gz/], #reads_forward  
+            :rr => [/_R2\.fastq\.gz/], #reads_reverse                
+            :logs => [/logs/],
+            :denovo => [/denovo/],
+            :rawdata => [/raw_data/,/rawdata/],
+            :mapquant => [/MAPQUANT/],
+            :mapquant_projects => [/MAPQUANT_Projects/]
+}
+
       # def self.included(base)
       #   base.extend(ClassMethods)
       # end
@@ -46,6 +104,7 @@ module Bio
       end  #self
       module Project
         RULES={:tophat_to_cuffdiff=>'accepted_hits.bam$',
+               :tophat_to_cufflinks=>'accepted_hits.bam$',
                :cufflinks_to_cuffmerge=>'transcripts.gtf'
         }
 
@@ -90,6 +149,12 @@ module Bio
             end
           end #sample
 
+          # Return
+          # 0) nil in case of any file
+          # 1) an array of files belonging to :from but not :to OR belonging to :to but not :from
+          # 2) an array of elements if :from and :to are specifid and exists as RULES
+          # 3) a Thor::CoreExt::HashWithIndifferentAccess instance in case :from and :to are not specified together.
+          #    to 
           def smart_path(opts={})
             #by default temp|Temp directories are skipped from final result.
             path=["**/*"]
@@ -106,16 +171,30 @@ module Bio
               path<<"**/*"
             end
             #puts File.join(path)
-            data = aggregate_by_topic(skip_temp(Dir.glob(File.join("**/*",path))), opts)
+            data = aggregate_by_topic2(skip_temp(Dir.glob(File.join("**/*",path))), opts)
             if opts[:from] && data.key?(opts[:from]) && opts[:to].nil?
               data[opts[:from]]
+            elsif opts[:to] && data.key?(opts[:to]) && opts[:from].nil?
+              data[opts[:to]]
             elsif opts[:from] && opts[:to] && rule=RULES["#{opts[:from]}_to_#{opts[:to]}".to_sym]
+               # data["#{opts[:from]}_to_#{opts[:to]}".to_sym] = data[opts[:from]].select do |file|
               data[opts[:from]].select do |file|
                 file.match(rule)
               end
             else
-              data
+            #define keys as method for the hash.
+            # Maybe better to use Thor::CoreExt::HashWithIndifferentAccess
+            # data.keys.each do |key|
+            #   data.class_eval do 
+            #     self.send :define_method, key do 
+            #        self[key]
+            #     end #define_method
+            #   end #instance_eval
+            # end #keys
+
+              Thor::CoreExt::HashWithIndifferentAccess.new data
             end
+
           end #smart_path
 
           # return an hash key value for Sample or Project
@@ -137,8 +216,6 @@ module Bio
 
           # regexps is an array or a single string of regular expression(s)
           def path_has_regexps?(path, regexps)
-            # puts path
-            # puts regexps
             if regexps.is_a? Regexp
               path=~regexps
             elsif regexps.is_a? String
@@ -148,6 +225,19 @@ module Bio
                 path_has_regexps?(path, regexp)
               end
             end
+          end
+
+          def aggregate_by_topic2(paths=[], opts={})
+            topics = Hash.new {|hash, key| hash[key]=[]}
+
+            paths.each do |path|
+              unless (opts[:exclude] && path_has_regexps?(path, opts[:exclude]))
+                file_type(path).each do |tag|
+                  topics[tag] << path
+                end
+              end #unless
+            end
+            topics
           end
 
           def aggregate_by_topic(paths=[], opts={})
@@ -180,100 +270,14 @@ module Bio
 
           #file type form filename
           def file_type(file)
-            if file=~/accepted_hits\.bam/
-              :tophat
-            elsif file=~/genes\.fpkm_traking/
-              :cufflinks #same for denovo
-            elsif file=~/isoforms\.fpkm_traking/
-              :cufflinks #same for denovo
-            elsif file=~/transcripts\.gtf/
-              :cufflinks #same for denovo
-            elsif file=~/skipped\.gtf/
-              :cufflinks #same for denovo
-            elsif file=~/cds\.diff/
-              :cuffdiff
-            elsif file=~/cds_exp\.diff/
-              :cuffdiff
-            elsif file=~/cds\.fpkm_tracking/
-              :cuffdiff
-            elsif file=~/gene_exp\.diff/
-              :cuffdiff
-            elsif file=~/genes\.fpkm_tracking/ && file=~/quantification/
-              :cufflinks
-            elsif file=~/genes\.fpkm_tracking/
-              :cuffdiff
-            elsif file=~/isoform_exp\.diff/
-              :cuffdiff
-            elsif file=~/isoforms\.fpkm_tracking/ && file=~/quantification/
-              :cufflinks              
-            elsif file=~/isoforms\.fpkm_tracking/
-              :cuffdiff
-            elsif file=~/promoters\.diff/
-              :cuffdiff
-            elsif file=~/splicing\.diff/
-              :cuffdiff
-            elsif file=~/tss_group_exp\.diff/
-              :cuffdiff                
-            elsif file=~/tss_groups\.fpkm_tracking/
-              :cuffdiff
-            elsif file=~/.*\.tracking/
-              :cuffcompare
-            elsif file=~/.*\.combined\.gtf/
-              :cuffcompare
-            elsif file=~/.*\.loci/
-              :cuffcompare
-            elsif file=~/.*\.stats/
-              :cuffcompare
-            elsif file=~/deletions\.bed/
-              :tophat
-            elsif file=~/insertions\.bed/
-              :tophat
-            elsif file=~/junctions\.bed/
-              :tophat
-            elsif file=~/left_kept_reads\.info/
-              :tophat
-            elsif file=~/right_kept_reads\.info/
-              :tophat
-            elsif file=~/unmapped_left\.fq\.z/
-              :tophat
-            elsif file=~/unmapped_right\.fq\.z/
-              :tophat
-            # elsif file=~/trimmed/ && file=~/_L\d+_R._\d+\./
-            #   :trimmed_splitted
-            # elsif file=~/trimmed/ 
-            #   :trimmed
-            elsif file=~/_L\d{3,3}_R1_\d{3,3}\.trimmed\.fastq\.gz/
-              :rtfc #reads_trimmed_forward_chunks
-            elsif file=~/_L\d{3,3}_R2_\d{3,3}\.trimmed\.fastq\.gz/                
-              :rtrc #reads_trimmed_reverse_chunks
-            elsif file=~/_R1\.trimmed\.fastq\.gz/
-              :rtf #reads_trimmed_forward
-            elsif file=~/_R2\.trimmed\.fastq\.gz/                
-              :rtr #reads_trimmed_reverse
-
-            elsif file=~/_L\d{3,3}_R1_\d{3,3}\.unpaired\.fastq\.gz/
-              :rtufc #reads_trimemd_unpaired_forward_chunks
-            elsif file=~/_L\d{3,3}_R2_\d{3,3}\.unpaired\.fastq\.gz/                
-              :rturc #reads_trimmed_unpaired_reverse_chunks
-            elsif file=~/_R1\.unpaired\.fastq\.gz/
-              :rtuf #reads_trimmed_unpaired_forward
-            elsif file=~/_R2\.unpaired\.fastq\.gz/                
-              :rtur #reads_trimmed_unpaired_reverse
-
-            elsif file=~/_L\d{3,3}_R1_\d{3,3}\.fastq\.gz/
-              :rfc #reads_forward_chunks
-            elsif file=~/_L\d{3,3}_R2_\d{3,3}\.fastq\.gz/                
-              :rrc #reads_reverse_chunks
-            elsif file=~/_R1\.fastq\.gz/
-              :rf #reads_forward
-            elsif file=~/_R2\.fastq\.gz/                
-              :rr #reads_reverse
-            elsif file=~/logs/
-              :logs
-              # Sample_SQ_0051_R2.fastq.gz
-            else 
-              :unk #unkown
+            CATEGORIES.each do |tag|
+              path_has_regexps?(file,tag[1])
+            end.map do |tag|
+              tag[0]
             end
+            # else 
+            #   :unk #unkown
+            # end
           end
 
           def skip_temp(files=[])
