@@ -1,0 +1,11 @@
+---
+:gtf: gtf
+output-dir: test/data/LandscapeBioNGS/MAPQUANT/111013_H125_0121_AC076LACXX_DATA/Project_Th2/Sample_SQ_0015/quantification/12-10-25
+num-threads: 6
+label: CUFF
+min-isoform-fraction: 0.15
+pre-mrna-fraction: 0.15
+max-intron-length: 300000
+junc-alpha: 0.01
+small-anchor-fraction: 0.12
+!binary "R1RG": gtf

@@ -34,16 +34,31 @@ class Rna < Thor
     wrapper.run :arguments=>[bam], :separator => "="
   end
 
+  #Todo Support all grid options with slurm/pbs
   desc "smart_quant GTF PROJECT SAMPLES", "Genes and transcripts quantification, using only project reference. Each sample is processed indipendentely. Outputdir is
    computed automatically by smart_quant, by default the directory is SAMPLE/quantification/[date/]. Sample = ALL TO PROCESS ALL SAMPLES IN THE DIRECTORY ASSOCIATED TO THAT PROJECT."
   method_option :date, :type => :boolean, :desc => 'the quantification is organized in date, it creates a new directory inside output with the current date.'
   method_option :root, :type => :string, :default => './', :desc => 'define the root directory for this quantification.'
+  method_option :grid, :type => :string, :default => 'single', :desc => 'select a method for parallelize computations: single=no parallelization, parallel=uses parallel library, slurm=submit a job to slurm queue, pbs=submit a job to pbs queue. Note slurm and pbs are not yet supported.'
   Bio::Ngs::Cufflinks::Quantification.new.thor_task(self, :smart_quant) do |wrapper, task, gtf, project, samples|
     params = {:root => task.options[:root], :project => project, :files=>true, :from => :tophat, :to => :cufflinks}
     params[:sample] = samples unless samples=="ALL"
-    Bio::Ngs::FS::Project.smart_path(params).each do |bam_file|
-      outputdir = File.join(File.dirname(bam_file), "quantification")
-      task.send :quant, gtf, outputdir, bam_file
+    dataset = Bio::Ngs::FS::Project.smart_path(params)
+    case task.options[:grid]
+      when "single" then 
+        dataset.each do |bam_file|
+          outputdir = File.join(File.dirname(bam_file), "quantification")
+          task.send :quant, gtf, outputdir, bam_file
+        end
+      when "parallel" then
+        Parallel.map(dataset, :in_processes=>7) do |bam_file|
+          outputdir = File.join(File.dirname(bam_file), "quantification")
+          task.send :quant, gtf, outputdir, bam_file
+        end
+      when "slurm" then
+        raise "Slurm is not yet supported as grid mechanism"
+      when "pbs" then
+        raise "PBS is not yet supported as grid mechanism"
     end
   end
 
