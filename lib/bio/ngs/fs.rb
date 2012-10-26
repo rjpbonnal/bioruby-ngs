@@ -157,22 +157,22 @@ module Bio
           # 3) a Thor::CoreExt::HashWithIndifferentAccess instance in case :from and :to are not specified together.
           #    to 
           def smart_path(opts={})
+            root = opts[:root] || './'
+            path = [root,"**/*"]
             #by default temp|Temp directories are skipped from final result.
-            path=["**/*"]
-            path << File.join([raw_run(opts[:run]), project(opts[:project]), sample(opts[:sample])].select{|dir| dir})
+            ary_path = [raw_run(opts[:run]), project(opts[:project]), sample(opts[:sample])].select{|dir| dir}
+            path << File.join(ary_path) unless ary_path.empty?
             if opts[:quant]
               path << "**/*" unless opts[:sample]
               path<<"quantification"
-            end
-            if opts[:quantdenovo]
+            elsif opts[:quantdenovo]
               path<<"quantification_denovo"
             end
 
             if opts[:files]
               path<<"**/*"
             end
-            #puts File.join(path)
-            puts File.join(path)
+            # puts File.join(path)
             data = aggregate_by_topic(skip_temp(Dir.glob(File.join(path))), opts)
             if opts[:from] && data.key?(opts[:from]) && opts[:to].nil?
               data[opts[:from]]

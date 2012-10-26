@@ -353,7 +353,8 @@ class Rna < Thor
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
@@ -382,7 +383,75 @@ class Rna < Thor
 
     projects_params=[]
     projects_list.split(',').each do |name|
-      projects_params << (Bio::Ngs::FS::Project.smart_path :project => name, 
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
+                                                           :files=>true, 
+                                                           :exclude => exclude.split(','), 
+                                                           :from => :tophat, 
+                                                           :to=> :cuffdiff
+                         ).join(',')
+     end
+
+    wrapper.params = task.options
+    wrapper.params = {"output-dir" => "DE_#{projects_list.tr(',','_')}", 
+                      "frag-bias-correct" => fasta,
+                      "emit-count-tables" => true,
+                      "label" => projects_list,
+                      "upper-quartile-norm" => true }
+    #TODO: check if all the projects has data otherwise fire up a warning message.
+    puts [:arguments =>[gtf, projects_params.join(' ')], :separator => "="]
+    wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
+  end 
+
+desc "de2 FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression and CUFFLINKS v2"
+  method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
+  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :de2) do |wrapper, task, fasta, gtf, projects_list, exclude|
+    log = Logger.new(STDOUT)
+    projects= Hash.new {|h,k| h[k]=[]}
+     #search using symlonks too
+    # Dir.glob([File.join(task.options[:rootdir],'**/*/**','accepted_hits.bam')]).select do |bam_path|
+    #   pfound = projects_list.split(',').find do |project|
+    #     bam_path=~/Project_#{project}\//
+    #   end
+    #   if pfound
+    #     projects[pfound] << bam_path
+    #   end #if I can not find a project for a bam may be that bam is not coming from the projects of interest
+    # end
+
+    projects_params=[]
+    projects_list.split(',').each do |name|
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name, 
+                                                           :files=>true, 
+                                                           :exclude => exclude.split(','), 
+                                                           :from => :tophat, 
+                                                           :to=> :cuffdiff
+                         ).join(',')
+    #   projects_params << projects[name].join(',')
+     end
+
+    wrapper.params = task.options
+    wrapper.params = {"output-dir" => "DE_#{projects_list.tr(',','_')}", 
+                      "frag-bias-correct" => fasta,
+                      "emit-count-tables" => true,
+                      "label" => projects_list,
+                      "upper-quartile-norm" => false }
+    #TODO: check if all the projects has data otherwise fire up a warning message.
+    puts [:arguments =>[gtf, projects_params.join(' ')], :separator => "="]
+    wrapper.run :arguments =>[gtf, projects_params.join(' ')], :separator => "="
+  end 
+
+
+  desc "de2quartile FASTAREF GTFMERGED PROJECTLIST [EXCLUDE]", "Perform a differential expression using UPPER QUARTILE normalization and CUFFLINKS v2"
+  method_option :rootdir, :type => :string, :default => './', :desc => 'From where to start for looking for projects data'
+  Bio::Ngs::Cufflinks2::Diff.new.thor_task(self, :de2quartile) do |wrapper, task, fasta, gtf, projects_list, exclude|
+    log = Logger.new(STDOUT)
+    projects= Hash.new {|h,k| h[k]=[]}
+
+    projects_params=[]
+    projects_list.split(',').each do |name|
+      projects_params << (Bio::Ngs::FS::Project.smart_path :root => task.options[:rootdir],
+                                                           :project => name,
                                                            :files=>true, 
                                                            :exclude => exclude.split(','), 
                                                            :from => :tophat, 
