@@ -136,6 +136,7 @@ module Bio
             data.each_pair do |key, paths|
               paths.each do |path|
                 info=strip_name(path)
+                # puts info.inspect
                 prjs[info[0]][key] << info[1]
               end
             end
@@ -171,7 +172,8 @@ module Bio
               path<<"**/*"
             end
             #puts File.join(path)
-            data = aggregate_by_topic2(skip_temp(Dir.glob(File.join("**/*",path))), opts)
+            puts File.join(path)
+            data = aggregate_by_topic(skip_temp(Dir.glob(File.join(path))), opts)
             if opts[:from] && data.key?(opts[:from]) && opts[:to].nil?
               data[opts[:from]]
             elsif opts[:to] && data.key?(opts[:to]) && opts[:from].nil?
@@ -182,15 +184,6 @@ module Bio
                 file.match(rule)
               end
             else
-            #define keys as method for the hash.
-            # Maybe better to use Thor::CoreExt::HashWithIndifferentAccess
-            # data.keys.each do |key|
-            #   data.class_eval do 
-            #     self.send :define_method, key do 
-            #        self[key]
-            #     end #define_method
-            #   end #instance_eval
-            # end #keys
 
               Thor::CoreExt::HashWithIndifferentAccess.new data
             end
@@ -227,7 +220,7 @@ module Bio
             end
           end
 
-          def aggregate_by_topic2(paths=[], opts={})
+          def aggregate_by_topic(paths=[], opts={})
             topics = Hash.new {|hash, key| hash[key]=[]}
 
             paths.each do |path|
@@ -239,34 +232,6 @@ module Bio
             end
             topics
           end
-
-          def aggregate_by_topic(paths=[], opts={})
-            #:exclude = remove something passing a regular expression
-            topics = Hash.new {|hash, key| hash[key]=[]}
-
-            paths.each do |path|
-              unless (opts[:exclude] && path_has_regexps?(path, opts[:exclude]))
-              if Dir.exists?(path)
-                if path=~/raw_data/
-                  topics[:raw_data] << path
-                elsif path=~/MAPQUANT\//
-                  topics[:map_quant] << path
-                elsif path=~/MAPQUANT_Projects\//
-                  topics[:map_quant_projects] << path
-                # elsif path=~/quantification\//
-                #   topics[:quant] << path
-                # elsif path=~/quantification_denovo\//
-                #   topics[:quantdenovo] << path
-                elsif path=~/logs\//
-                  topics[:logs] << path
-                end
-              elsif File.exists?(path)
-                  topics[file_type(path)] << path
-              end
-              end #unless
-            end
-            topics
-          end #aggregate_by_topic
 
           #file type form filename
           def file_type(file)

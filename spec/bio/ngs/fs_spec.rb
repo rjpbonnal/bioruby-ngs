@@ -66,5 +66,17 @@ describe Bio::Ngs::FS, ".files" do
   end 
 end #.files
 
+describe Bio::Ngs::FS::Project, ".projects" do
+  context "when requests for all projects" do
+    context "but not for files" do
+      it "gives back the list of all the projects" do
+        x = Bio::Ngs::FS::Project.projects
+         x.keys.should be_nil
+      end
+    end
+  end
+
+end
+
 
 end #File System utilities for BioNGS

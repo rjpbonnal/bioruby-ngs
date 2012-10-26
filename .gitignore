@@ -64,3 +64,4 @@ spec/fixture/*.gff*
 spec/fixture/*.idx
 spec/fixture/*.fastq.gz
 neo4j
+test/data/LandscapeBioNGS
