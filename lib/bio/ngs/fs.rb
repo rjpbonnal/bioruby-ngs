@@ -6,30 +6,30 @@ module Bio
 
 
       CATEGORIES ={
-            :cufflinks=>[/genes\.fpkm_traking/, #same for denovo
+            :cufflinks=>{rules:[/genes\.fpkm_traking/, #same for denovo
                          /isoforms\.fpkm_traking/, #same for denovo
                          /transcripts\.gtf/, #same for denovo
                          /skipped\.gtf/,
                          /genes\.fpkm_tracking/,
-                         /isoforms\.fpkm_tracking/], #same for denovo
+                         /isoforms\.fpkm_tracking/]}, #same for denovo
               
-            :cuffdiff=>[/cds\.diff/,
-                        /cds_exp\.diff/,
-                       /cds\.fpkm_tracking/,
-                       /gene_exp\.diff/,
-                       /genes\.fpkm_tracking/,
-                       /isoform_exp\.diff/,
-                       /isoforms\.fpkm_tracking/,
-                       /promoters\.diff/,
-                       /splicing\.diff/,
-                       /tss_group_exp\.diff/,
-                       /tss_groups\.fpkm_tracking/],
-            :quantification =>[/quantification/],
-            :cuffcompare =>[/.*\.tracking/,
-                           /.*\.combined\.gtf/,
-                           /.*\.loci/,
-                           /.*\.stats/],
-            :tophat => [/accepted_hits\.bam$/,
+            :cuffdiff=>{rules:[/.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds\.diff/,
+                        /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds_exp\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds\.fpkm_tracking/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*gene_exp\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*genes\.fpkm_tracking/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*isoform_exp\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*isoforms\.fpkm_tracking/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*promoters\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*splicing\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*tss_group_exp\.diff/,
+                       /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*tss_groups\.fpkm_tracking/]},
+            :quantification =>{rules:[/quantification/]},
+            :cuffcompare =>{rules:[/.*(compare).*\.tracking/,
+                           /.*(compare).*\.combined\.gtf/,
+                           /.*(compare).*\.loci/,
+                           /.*(compare).*\.stats/]},
+            :tophat => {rules:[/accepted_hits\.bam$/,
                         /deletions\.bed/,
                         /insertions\.bed/,
                         /junctions\.bed/,
@@ -37,28 +37,31 @@ module Bio
                         /right_kept_reads\.info/,
                         /unmapped_left\.fq\.z/,
                         /unmapped_right\.fq\.z/
-                        ],
-            :rtfc => [/_L\d{3,3}_R1_\d{3,3}\.trimmed\.fastq\.gz/], #reads_trimmed_forward_chunks
-            :rtrc => [/_L\d{3,3}_R2_\d{3,3}\.trimmed\.fastq\.gz/], #reads_trimmed_reverse_chunks
-            :rtf => [/_R1\.trimmed\.fastq\.gz/], #reads_trimmed_forward
-            :rtr => [/_R2\.trimmed\.fastq\.gz/], #reads_trimmed_reverse
-            :rtufc => [/_L\d{3,3}_R1_\d{3,3}\.unpaired\.fastq\.gz/], #reads_trimemd_unpaired_forward_chunks
-            :rturc => [/_L\d{3,3}_R2_\d{3,3}\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_reverse_chunks
-            :rtuf => [/_R1\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_forward
-            :rtur => [/_R2\.unpaired\.fastq\.gz/], #reads_trimmed_unpaired_reverse
-            :rfc => [/_L\d{3,3}_R1_\d{3,3}\.fastq\.gz/], #reads_forward_chunks
+                        ]},
+            :rtfc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.trimmed\.fastq\.gz/]}, #reads_trimmed_forward_chunks
+            :rtrc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.trimmed\.fastq\.gz/]}, #reads_trimmed_reverse_chunks
+            :rtf => {rules:[/_R1\.trimmed\.fastq\.gz/]}, #reads_trimmed_forward
+            :rtr => {rules:[/_R2\.trimmed\.fastq\.gz/]}, #reads_trimmed_reverse
+            :rtufc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.unpaired\.fastq\.gz/]}, #reads_trimemd_unpaired_forward_chunks
+            :rturc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_reverse_chunks
+            :rtuf => {rules:[/_R1\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_forward
+            :rtur => {rules:[/_R2\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_reverse
+            :rfc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.fastq\.gz/]}, #reads_forward_chunks
             # elsif file=~/trimmed/ && file=~/_L\d+_R._\d+\./
             #   :trimmed_splitted
             # elsif file=~/trimmed/ 
             #   :trimmed
-            :rrc => [/_L\d{3,3}_R2_\d{3,3}\.fastq\.gz/], #reads_reverse_chunks                
-            :rf => [/_R1\.fastq\.gz/], #reads_forward  
-            :rr => [/_R2\.fastq\.gz/], #reads_reverse                
-            :logs => [/logs/],
-            :denovo => [/denovo/],
-            :rawdata => [/raw_data/,/rawdata/],
-            :mapquant => [/MAPQUANT/],
-            :mapquant_projects => [/MAPQUANT_Projects/]
+            :rrc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.fastq\.gz/]}, #reads_reverse_chunks                
+            :rf => {rules:[/_R1\.fastq\.gz/]}, #reads_forward  
+            :rr => {rules:[/_R2\.fastq\.gz/]}, #reads_reverse                
+            :logs => {rules:[/logs/]},
+            :denovo => {rules:[/denovo/]},
+            :rawdata => {rules:[/raw_data/,/rawdata/]},
+            :mapquant => {rules:[/MAPQUANT/]},
+            :mapquant_projects => {rules:[/MAPQUANT_Projects/]},
+            :project => {rules:[/Project_/], action:Proc.new{|file_name| $1.to_sym if file_name=~/Project_(.*?)\//}},
+            :sample => {rules:[/Sample_/], action:Proc.new{|file_name| $1.to_sym if file_name=~/Sample_(.*?)\//}},
+            :sample_sheet => {rules:[/SampleSheet.csv/]}
 }
 
       # def self.included(base)
@@ -109,6 +112,91 @@ module Bio
         }
 
         class << self
+
+
+# x=Bio::Ngs::FS::Project.discover("test/data/DemoHuman/", :excludes=>[/annotation/,/log/]); nil
+          def discover(path, options={})
+            data = Hash.new { |hash, key| hash[key] = []  }
+            # puts path
+            Dir.glob(File.join(path,"**/*/**/*")).each do |file|
+              #puts file if file=~/Project_Naive\//
+              if (File.file?(file) && !path_has_regexps?(file, options[:excludes]))
+                type = file_type(file)
+
+                data[file.to_sym]=type
+              end
+            end
+            data.select do |file_tag|
+              !data[file_tag].empty?
+            end
+          end
+
+#input is coming from discover output
+# i=Bio::Ngs::FS::Project.index(x); nil
+          def index(data)
+            indexH = Hash.new { |hash, key| hash[key] = []  }
+            data.each_pair do |filename, tags|
+              tags.each do |tag|
+                if tag.is_a? Symbol
+                  indexH[tag] << filename
+                elsif tag.is_a? Hash
+                  tag.each_pair do |sub_key, sub_value|
+                    #key = tag.keys.first
+                    #value = tag[key]
+                    value = sub_key
+                    indexH[sub_key] << sub_value #in case of project and sample it store (samples|projects) [(samples|projects)_name]
+                    indexH[sub_value]<< filename #stores for each (sample|project) name its filename so i can search directly for its name
+                  end
+                end
+              end  #tags
+            end #data
+            indexH.each_pair do |key, value|
+              indexH[key].uniq!
+            end
+          end #index
+
+#input is an index coming from index
+          def search(index, *criteria)
+            # results = []
+            unless criteria.size == 0
+              results = index[criteria.shift.to_sym].flatten
+              criteria.inject(results) do |r, criterion|
+                if criterion_components=composed_criterion?(criterion)
+                  r & composed_search(index, criterion_components[0], criterion_components[1])
+                else
+                  (r & index[criterion.to_sym].flatten) unless index[criterion.to_sym].nil?
+                end
+              end
+              
+              # results = index[criteria.shift].flatten
+              # criteria.each do |criterion|
+              #   results = (results & index[criterion].flatten) unless index[criterion].nil?
+              # end #criteria
+              # # results.flatten.uniq
+              # results
+            end
+          end
+
+          def composed_criterion?(item)
+            if item.is_a?(String) && (ary=item.split(':')).size > 2
+              ['-','|','&'].include?(ary.first) && ary.size > 2
+              [ary.shift, ary]
+            end
+          end
+
+          def composed_search(index, operator, criteria)
+            results = []
+            unless (criteria.size < 2) && ['-','|','&'].include?(operator)
+              x=criteria.shift
+              results = index[x.to_sym].flatten
+              criteria.inject(results) do |r, criterion|
+                r.send(operator, index[criterion.to_sym].flatten) unless index[criterion.to_sym].nil?
+              end #criteria
+            end
+          end #search
+
+
+
           def raw_run(name)
             unless name.nil?
               name=File.join("raw_data", name) unless name=~/raw_data/
@@ -169,11 +257,8 @@ module Bio
               path<<"quantification_denovo"
             end
 
-            if opts[:files]
-              path<<"**/*"
-            end
             # puts File.join(path)
-            data = aggregate_by_topic(skip_temp(Dir.glob(File.join(path))), opts)
+            data = aggregate_by_topic(search_path(path,opts), opts)
             if opts[:from] && data.key?(opts[:from]) && opts[:to].nil?
               data[opts[:from]]
             elsif opts[:to] && data.key?(opts[:to]) && opts[:from].nil?
@@ -189,6 +274,20 @@ module Bio
             end
 
           end #smart_path
+
+          #path is an array of path to be concatenated with File.join
+          def search_path(path, opts={})
+            if opts[:files]
+              path<<"**/*"
+            end
+            glob = Dir.glob(File.join(path))
+            skip_type  = opts[:files] ? :file? : :directory?
+            selected_glob =  glob.select do |item|
+              File.send skip_type, item
+            end
+            skip_temp(selected_glob)
+          end
+
 
           # return an hash key value for Sample or Project
           # like [ :Duck , "complete path to duck"] 
@@ -222,7 +321,6 @@ module Bio
 
           def aggregate_by_topic(paths=[], opts={})
             topics = Hash.new {|hash, key| hash[key]=[]}
-
             paths.each do |path|
               unless (opts[:exclude] && path_has_regexps?(path, opts[:exclude]))
                 file_type(path).each do |tag|
@@ -235,21 +333,36 @@ module Bio
 
           #file type form filename
           def file_type(file)
-            CATEGORIES.each do |tag|
-              path_has_regexps?(file,tag[1])
+            CATEGORIES.select do |tag|
+              path_has_regexps?(file,CATEGORIES[tag][:rules])
             end.map do |tag|
-              tag[0]
+              if tag[1].key?(:action)
+                {tag[0]=>tag[1][:action].call(file)}
+              else
+                tag[0]
+              end
             end
-            # else 
-            #   :unk #unkown
-            # end
           end
 
           def skip_temp(files=[])
-            files.select do |file_path|
-              !(file_path=~/[T|t]emp/)
-            end
+            # files.select do |file_path|
+            #   !(file_path=~/[T|t]emp/)
+            # end
+            skip_files_by_match(files, [/[T|t]emp/])
           end #skip_temp
+
+          def skip_file_by_match(file, regexps=[])
+            regexps.any? do |regexp|
+              file =~ regexp
+            end
+          end #skip_file_by_match
+
+          def skip_files_by_match(files=[], regexps=[] )
+            files.select do |file|
+              !skip_file_by_match(file, regexps)
+            end
+          end
+
         end #self
       end #Project
 
