@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-10-17"
+  s.date = "2012-11-20"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -100,6 +100,7 @@ Gem::Specification.new do |s|
     "lib/tasks/report.thor",
     "lib/tasks/rna.thor",
     "lib/tasks/sff_extract.thor",
+    "lib/tasks/smart.thor",
     "lib/templates/README.tt",
     "lib/templates/db.tt",
     "lib/wrapper.rb",
