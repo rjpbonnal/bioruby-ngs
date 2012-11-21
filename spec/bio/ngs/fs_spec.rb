@@ -67,16 +67,19 @@ describe Bio::Ngs::FS, ".files" do
 end #.files
 
 describe Bio::Ngs::FS::Project, ".projects" do
-  context "when requests for all projects" do
-    context "but not for files" do
-      it "gives back the list of all the projects" do
-        x = Bio::Ngs::FS::Project.projects
-         x.keys.should be_nil
-      end
-    end
-  end
+  # context "when requests for all projects" do
+  #   # context "but not for files" do
+  #   #   # it "gives back the list of all the projects" do
+  #   #   #   x = Bio::Ngs::FS::Project.projects
+  #   #   #    x.keys.should be_nil
+  #   #   # end
+  #   # end
+  # end
+  context "when parsing a directory" do
+    it "tags all the file with the corresponding rule/tag"
+      x = Bio::Ngs::FS::Project.
+  end 
 
 end
-
 
 end #File System utilities for BioNGS
