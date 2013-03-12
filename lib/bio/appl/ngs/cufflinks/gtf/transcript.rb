@@ -77,7 +77,8 @@ module Bio
       end
 
       def size
-        @stop-@start+1
+        #@stop-@start+1
+        exons.inject{|sum, exon| sum + exon.size}
       end
 
 
