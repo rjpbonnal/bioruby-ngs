@@ -13,17 +13,21 @@ module Bio
         def each_transcript(&block)
           if @blocks.nil? || @blocks.empty?
             transcript = Transcript.new(tag:new_tag)
+            
             @fh.rewind
-            transcript.tra = @fh.readline
+            # transcript.tra = @fh.readline
             @fh.each_line do |line|
               if line =~ /\ttranscript\t/
-                block.call(transcript, @fh.lineno)
-                transcript.clear
+                unless transcript.tra.nil?
+                  block.call(transcript, @fh.lineno) 
+                  transcript.clear
+                end
                 transcript.tra = line
               else line =~ /\texon\t/
                 transcript.exons << line
               end
             end
+            block.call(transcript, @fh.lineno) unless transcript.tra.nil? #call last buffered transcript
           else #lazy
             not_lazy
             blocks_to_run = @blocks
@@ -226,17 +230,31 @@ module Bio
 
         def get_transcript(n=1)
           x=nil
-          if r=read_transcript(n)
-            s=r.split("\n").first
-            e=r.split("\n")[1..-1]
-            x=Bio::Ngs::Cufflinks::Transcript.new
-            x.tra= s+"\n"
-            x.exons=e.map{|ei| ei+"\n"}
+          if n.is_a? Numeric
+            if r=read_transcript(n)
+              s=r.split("\n").first
+              e=r.split("\n")[1..-1]
+              x=Bio::Ngs::Cufflinks::Transcript.new
+              x.tra= s+"\n"
+              x.exons=e.map{|ei| ei+"\n"}
+            end
+          elsif n.is_a? Range
+            x=[]
+            n.each{|i| x<<get_transcript(i) }
+          else
+            raise ArgumentError, "Wrong type of parameter #{n.class}"
           end
           x
         end
 
         alias :[]  :get_transcript
+
+        def to_a
+          data=[]
+          (0..ff.count-1).each{|i| data<<ff[i]}
+
+          data
+        end
 
       end #GtfParser
 
