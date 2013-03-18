@@ -56,7 +56,8 @@ module Bio
           @score = data[5]
           @strand = data[6]
           @frame = data[7]
-          data[8..-1].join(" ").split(';').each do |attribute|
+          attrs = data[8..-1] #TODO: this can be nil dscover why
+          attrs.join(" ").split(';').each do |attribute|
             data_attr=attribute.tr('"','').split
             @attributes[data_attr[0].to_sym]= if Attr_to_Float.include? data_attr[0]
             data_attr[1].to_f
@@ -65,7 +66,7 @@ module Bio
           else
             data_attr[1]
           end
-        end
+        end unless attrs.nil?
       end
 
       def multi_exons?
@@ -77,8 +78,8 @@ module Bio
       end
 
       def size
-        #@stop-@start+1
-        exons.inject{|sum, exon| sum + exon.size}
+        @stop-@start+1
+        #exons.inject{|sum, exon| sum + exon.size}
       end
 
 
