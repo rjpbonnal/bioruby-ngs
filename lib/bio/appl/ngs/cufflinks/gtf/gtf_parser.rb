@@ -230,7 +230,7 @@ module Bio
 
         def get_transcript(n=1)
           x=nil
-          if n.is_a? Numeric
+          if n.is_numeric?
             if r=read_transcript(n)
               s=r.split("\n").first
               e=r.split("\n")[1..-1]
