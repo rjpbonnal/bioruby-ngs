@@ -45,7 +45,7 @@ class Smart < Thor
     #lista dei progetti, qui e’ stato eliminato il PhiX, dalla discovery precedente
     #Bio::Ngs::FS::Project.search(i, project ).each do |project|
     Bio::Ngs::FS::Project.search(smart[:index], *criteria).each do |result|
-     puts result
+     puts File.join(options[:root],result.to_s)
     end
 
   end #data
