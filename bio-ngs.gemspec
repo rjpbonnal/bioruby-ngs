@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesco Strozzi", "Raoul J.P. Bonnal"]
-  s.date = "2012-11-20"
+  s.date = "2013-05-16"
   s.description = "bio-ngs provides a framework for handling NGS data with BioRuby"
   s.email = "francesco.strozzi@gmail.com"
   s.executables = ["biongs"]
@@ -184,7 +184,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/helios/bioruby-ngs"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.23"
   s.summary = "bio-ngs provides a framework for handling NGS data with BioRuby"
 
   if s.respond_to? :specification_version then
@@ -199,14 +199,16 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
       s.add_runtime_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_runtime_dependency(%q<progressbar>, [">= 0.9.0"])
-      s.add_runtime_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_runtime_dependency(%q<rake>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_runtime_dependency(%q<parallel>, [">= 0"])
       s.add_runtime_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_runtime_dependency(%q<jdbc-sqlite3>, [">= 0"])
+      s.add_runtime_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
+      s.add_runtime_dependency(%q<sqlite3>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.1.0"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.3.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
-      s.add_development_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_development_dependency(%q<bio>, [">= 1.4.2"])
       s.add_development_dependency(%q<jdbc-sqlite3>, [">= 0"])
       s.add_development_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
@@ -221,7 +223,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_development_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_development_dependency(%q<json>, [">= 0"])
-      s.add_development_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<parallel>, [">= 0"])
       s.add_development_dependency(%q<bio-blastxmlparser>, [">= 0"])
     else
@@ -233,14 +235,16 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
       s.add_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_dependency(%q<progressbar>, [">= 0.9.0"])
-      s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<parallel>, [">= 0"])
       s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+      s.add_dependency(%q<jdbc-sqlite3>, [">= 0"])
+      s.add_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
+      s.add_dependency(%q<sqlite3>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.1.0"])
+      s.add_dependency(%q<bundler>, ["~> 1.3.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
-      s.add_dependency(%q<rcov>, ["~> 0.9.11"])
       s.add_dependency(%q<bio>, [">= 1.4.2"])
       s.add_dependency(%q<jdbc-sqlite3>, [">= 0"])
       s.add_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
@@ -255,7 +259,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<activerecord>, [">= 3.0.5"])
       s.add_dependency(%q<progressbar>, [">= 0.9.0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+      s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<parallel>, [">= 0"])
       s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
     end
@@ -268,14 +272,16 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<ruby-ensembl-api>, [">= 1.0.1"])
     s.add_dependency(%q<activerecord>, [">= 3.0.5"])
     s.add_dependency(%q<progressbar>, [">= 0.9.0"])
-    s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+    s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<parallel>, [">= 0"])
     s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
+    s.add_dependency(%q<jdbc-sqlite3>, [">= 0"])
+    s.add_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
+    s.add_dependency(%q<sqlite3>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.1.0"])
+    s.add_dependency(%q<bundler>, ["~> 1.3.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
-    s.add_dependency(%q<rcov>, ["~> 0.9.11"])
     s.add_dependency(%q<bio>, [">= 1.4.2"])
     s.add_dependency(%q<jdbc-sqlite3>, [">= 0"])
     s.add_dependency(%q<activerecord-jdbcsqlite3-adapter>, [">= 0"])
@@ -290,7 +296,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<activerecord>, [">= 3.0.5"])
     s.add_dependency(%q<progressbar>, [">= 0.9.0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<rake>, ["= 0.9.2.2"])
+    s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<parallel>, [">= 0"])
     s.add_dependency(%q<bio-blastxmlparser>, [">= 0"])
   end
