@@ -11,18 +11,26 @@ gem "daemons", ">= 1.1.0"
 gem "ruby-ensembl-api", ">= 1.0.1"
 gem "activerecord",">= 3.0.5"
 gem "progressbar",">= 0.9.0"
-gem "rake", "0.9.2.2"
+gem "rake"
 gem "json"
 gem "parallel"
 gem "bio-blastxmlparser"
+  platforms :jruby do
+    gem 'jdbc-sqlite3', :require => true 
+    gem "activerecord-jdbcsqlite3-adapter"
+  end
+  platforms :ruby do
+    gem 'sqlite3', :require => 'sqlite3'
+  end
+
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
   gem "shoulda", ">= 0"
-  gem "bundler", "~> 1.1.0"
+  gem "bundler", "~> 1.3.0"
   gem "jeweler", "~> 1.8.3"
-  gem "rcov", "~> 0.9.11"
+#  gem "rcov", "~> 0.9.11"
   gem "bio", ">= 1.4.2"
   
   platforms :jruby do
@@ -43,7 +51,7 @@ group :development do
   gem "activerecord",">= 3.0.5"
   gem "progressbar",">= 0.9.0"
   gem "json"
-  gem "rake", "0.9.2.2"
+  gem "rake"
   gem "parallel"
 	gem "bio-blastxmlparser"
 end
