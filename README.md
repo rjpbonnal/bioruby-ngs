@@ -229,6 +229,83 @@ Then in some case I need to extract only some of them or maybe parsing them from
 
 The first time tra_at_idx is used, it will take more time than usual becase it creates an internal index: a simple HASH mashalled and dumped, stored in a file with the name similar to the imput with an idx as postfix.
 
+### Interacting with the FileSystem
+
+Following the concept of convention over configuration BioNGS can discover types of files in your project directory. Suppose you have trimmed fastq  (`rtf`) from a project and you want to select just the forward trimmed fastq files:
+
+    biongs smart:data Project rtf "|:Sample1:Sample2:Sample3:Sample4:Sample5" --root path_to_your_data_directory
+
+you'll get the list of files with this this features.
+To speed up the search, discovered and tagged files are dumped locally in `path_to_your_data_directory` under `conf` directory.
+
+#### Type of files
+
+Biongs has predefined tag system. In the future it will be more general and a custom configuration file will be accepted. In the mean time, these are the 
+predefined tags
+
+    CATEGORIES ={
+                :cufflinks=>{rules:[/genes\.fpkm_traking/, #same for denovo
+                             /isoforms\.fpkm_traking/, #same for denovo
+                             /transcripts\.gtf/, #same for denovo
+                             /skipped\.gtf/,
+                             /genes\.fpkm_tracking/,
+                             /isoforms\.fpkm_tracking/]}, #same for denovo
+                  
+                :cuffdiff=>{rules:[/.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds\.diff/,
+                            /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds_exp\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*cds\.fpkm_tracking/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*gene_exp\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*genes\.fpkm_tracking/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*isoform_exp\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*isoforms\.fpkm_tracking/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*promoters\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*splicing\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*tss_group_exp\.diff/,
+                           /.*\/(DE|de|cuffdiff|differential|differentialexpression)\/.*tss_groups\.fpkm_tracking/]},
+                :quantification =>{rules:[/quantification/]},
+                :cuffcompare =>{rules:[/.*(compare).*\.tracking/,
+                               /.*(compare).*\.combined\.gtf/,
+                               /.*(compare).*\.loci/,
+                               /.*(compare).*\.stats/]},
+                :tophat => {rules:[/accepted_hits\.bam$/,
+                            /deletions\.bed/,
+                            /insertions\.bed/,
+                            /junctions\.bed/,
+                            /left_kept_reads\.info/,
+                            /right_kept_reads\.info/,
+                            /unmapped_left\.fq\.z/,
+                            /unmapped_right\.fq\.z/
+                            ]},
+                :rtfc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.trimmed\.fastq\.gz/]}, #reads_trimmed_forward_chunks
+                :rtrc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.trimmed\.fastq\.gz/]}, #reads_trimmed_reverse_chunks
+                :rtf => {rules:[/_R1\.trimmed\.fastq\.gz/]}, #reads_trimmed_forward
+                :rtr => {rules:[/_R2\.trimmed\.fastq\.gz/]}, #reads_trimmed_reverse
+                :rtufc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.unpaired\.fastq\.gz/]}, #reads_trimemd_unpaired_forward_chunks
+                :rturc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_reverse_chunks
+                :rtuf => {rules:[/_R1\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_forward
+                :rtur => {rules:[/_R2\.unpaired\.fastq\.gz/]}, #reads_trimmed_unpaired_reverse
+                :rfc => {rules:[/_L\d{3,3}_R1_\d{3,3}\.fastq\.gz/]}, #reads_forward_chunks
+                # elsif file=~/trimmed/ && file=~/_L\d+_R._\d+\./
+                #   :trimmed_splitted
+                # elsif file=~/trimmed/ 
+                #   :trimmed
+                :rrc => {rules:[/_L\d{3,3}_R2_\d{3,3}\.fastq\.gz/]}, #reads_reverse_chunks                
+                :rf => {rules:[/_R1\.fastq\.gz/]}, #reads_forward  
+                :rr => {rules:[/_R2\.fastq\.gz/]}, #reads_reverse                
+                :logs => {rules:[/logs/]},
+                :denovo => {rules:[/denovo/]},
+                :rawdata => {rules:[/raw_data/,/rawdata/]},
+                :mapquant => {rules:[/MAPQUANT/]},
+                :mapquant_projects => {rules:[/MAPQUANT_Projects/]},
+                :project => {rules:[/Project_/], action:Proc.new{|file_name| $1.to_sym if file_name=~/Project_(.*?)\//}},
+                :sample => {rules:[/Sample_/], action:Proc.new{|file_name| $1.to_sym if file_name=~/Sample_(.*?)\//}},
+                :sample_sheet => {rules:[/SampleSheet.csv/]}
+    }
+
+
+Like for `:project` and `:sample` the user can also associate a `Proc` to have a more complex tagging strategy.
+
+
 ### Converting data to RDF
 
 After quantification with Cufflinks data can be converted into RDF and this is a simple example of it
