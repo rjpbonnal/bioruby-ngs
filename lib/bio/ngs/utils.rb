@@ -13,6 +13,7 @@ module Bio
   module Ngs
     class Utils
       @@skip_check_binaries=false
+      @@verbose = false
 
       class BinaryNotFound < StandardError
         def initialize(opts={})
@@ -24,6 +25,14 @@ module Bio
         end
       end
       class << self
+
+        def verbose
+          @@verbose = true
+        end
+
+        def verbose?
+          @@verbose
+        end
 
         def skip_check_binaries
           @@skip_check_binaries=true
@@ -55,7 +64,7 @@ module Bio
                 raise BinaryNotFound.new(:skip_task=>true), "No binary found with this name: #{name}"
               end
             rescue BinaryNotFound => e
-              warn e.message
+              warn e.message if verbose?
             end
           end
         end #binary
@@ -210,3 +219,4 @@ module Bio
   end # end Bio
 
   Bio::Ngs::Utils.skip_check_binaries if %w(true yes ok 1).include?(ENV['BIONGS_SKIP_CHECK_BINARIES'])
+  Bio::Ngs::Utils.verbose if %w(true yes ok 1).include?(ENV['BIONGS_VERBOSE'])

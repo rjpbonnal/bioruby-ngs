@@ -11,13 +11,7 @@ path_binary = File.join(path_external,"bin","common")
 
 
   File.open(File.join(path,"Rakefile"),"w") do |rakefile|
-    if (ARGV.include?("--biolinux") | ARGV.include?("--no-third-party"))
-      rakefile.write <<-RAKE
-      task :default do
-        puts "Nothing to do, third party software must be, already, installed on the host system. Bye Bye!"
-      end #default
-      RAKE
-    else
+    if (ARGV.include?("--install-third-party"))
     rakefile.write <<-RAKE
 
     require 'rbconfig'
@@ -85,5 +79,13 @@ path_binary = File.join(path_external,"bin","common")
     task :default => [:download,:compile,:binary,:clean]
 
     RAKE
+
+    else
+      rakefile.write <<-RAKE
+      task :default do
+        puts "Nothing to do, third party software must be, already, installed on the host system. Bye Bye!"
+      end #default
+      RAKE
+
    end #unless
   end  #file

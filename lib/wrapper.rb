@@ -154,7 +154,7 @@ module Bio
       #TODO: refactor mostly due to stdin/out
       def run(opts = {:options=>{}, :arguments=>[], :output_file=>nil, :separator=>"="})
         if program.nil?
-          warn "WARNING: no program is associated with #{class_name.upcase} task."
+          warn "WARNING:run: no program is associated with #{class_name.upcase} task." if Bio::Ngs::Utils.verbose?
           return nil
         end  
         #REMOVE        params = opts[:options]
@@ -205,7 +205,7 @@ module Bio
       #   end      
       def thor_task(klass, task_name, &block)
         if program.nil?
-          warn "WARNING: no program is associated with #{class_name.upcase} task, does not make sense to create a thor task."
+          warn "WARNING:thor_task: no program is associated with #{class_name.upcase} task, does not make sense to create a thor task."  if Bio::Ngs::Utils.verbose?
           return nil
         end          
         if klass

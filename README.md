@@ -25,8 +25,8 @@ Provides a framework for handling NGS data with Bioruby.
 * External software will be downloaded, compiled and installed in a sandbox
 * No root grants required, no conflict with pre installed applications
 
-### Do not install third party software
-    gem install bio-ngs -- --no-third-party
+### Install third party software (by default this feature is disabled)
+    gem install bio-ngs -- --install-third-party
 
 * Using system wide software
 
@@ -462,6 +462,13 @@ To skip this check the user can define an environment variable assigning one of 
 
 you can also add this setting to the .bashrc or .profile in the user home directory.
 
+#### Warning messages
+Prior to version 0.7.0 was not possible to skip warning messages and biongs was a bit slow in staring. From 0.7.0 warnin messages are disable by default. To reenable warning messages is enough
+    
+    export BIONGS_VERBOS=true
+
+this setting to the .bashrc or .profile in the user home directory.
+
 ## Features
 ### Iterators for output files
 
@@ -498,7 +505,7 @@ If in your external library or binary you define LoadBaseTasks in Bio::Ngs (as a
       end
     end
 
-This is something useful if you want to develop a separate binary which uses bio-ngs librariys.
+This is something useful if you want to develop a separate binary which uses bio-ngs libraries.
 Is not yet possible to define a list of desired tasks to load.
 
 ### Notes

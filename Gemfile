@@ -29,7 +29,7 @@ gem "bio-blastxmlparser"
 group :development do
   gem "shoulda", ">= 0"
   gem "bundler", "~> 1.3.0"
-  gem "jeweler", "~> 1.8.3"
+  gem "jeweler", "~> 1.8.4", :git => 'https://github.com/technicalpickles/jeweler.git'
 #  gem "rcov", "~> 0.9.11"
   gem "bio", ">= 1.4.2"
   
