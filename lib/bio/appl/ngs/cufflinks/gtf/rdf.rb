@@ -31,6 +31,7 @@ module Bio
               "@prefix ns0: <http://purl.obolibrary.org/obo/> .",
               "@prefix gtf: <http://genome.db/gtf/> .",
               "@prefix ngs: <http://genome.db/ngs/> .",
+              "@prefix ensembl: <http://identifiers.org/ensembl/> ."
             ]
           end
 
@@ -60,12 +61,13 @@ module Bio
 unless opts[:remove_zero] && transcript.attributes[:FPKM] == 0.0
 
               transcript_id = transcript.attributes[:transcript_id]
-              transcript_uri = uri(domain:"ensembl",entity:transcript_id)
+              transcript_uri = "ensembl:#{transcript_id}" #uri(domain:"ensembl",entity:transcript_id)
               transcript_uuid = uri
 
               triple(transcript_uri, "rdf:type", "ns0:SO_0000833") # so:transcript
               triple(transcript_uri, "rdfs:label", quote(transcript_id))
-              triple(transcript_uri, "gtf:parent_gene", uri(domain:"ensembl", entity:transcript.attributes[:gene_id]))
+              # triple(transcript_uri, "gtf:parent_gene", uri(domain:"ensembl", entity:transcript.attributes[:gene_id]))
+              triple(transcript_uri, "gtf:parent_gene", "ensembl:transcript.attributes[:gene_id]")
               #triple(transcript_uri, "gtf:parent_gene", gene_uri)
               triple(transcript_uri, "gtf:uuid", transcript_uuid)
               if opts[:sample]
