@@ -161,38 +161,30 @@ class Quality < Thor
     system "rm tmp_1 tmp_2 tmp_gnuplot"    
   end 
 
+  desc "aggregate_run DIR [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
+  method_option :cpus, :type=>:numeric, :default => 2
+  def aggregate_run(dir, outdir=nil)
+    outdir = Dir.pwd if outdir.nil?
+    projects = Bio::Ngs::Illumina.build(dir)
+    project=projects.each_project do |project_name, project|
+      aggregate_project(dir, project_name, outdir)
+    end
+  end
 
-  desc "aggregate DIR PROJECT [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
-  def aggregate(dir, project_name, outdir=nil)
+
+  desc "aggregate_project DIR PROJECT [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
+  method_option :cpus, :type=>:numeric, :default => 2
+  def aggregate_project(dir, project_name, outdir=nil)
     outdir = Dir.pwd if outdir.nil?
     projects = Bio::Ngs::Illumina.build(dir)
     project=projects.get(project_name)
-    project.each_sample do |n,sample|
-      sample_base_name = File.join(projects.path, project.path, sample.path)
-      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
-      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
-      file_merge_forward = "#{sample.path}_R1.fastq.gz"
-      file_merge_reverse = "#{sample.path}_R2.fastq.gz"
-      dest_dir = outdir
-      if outdir
-        Dir.chdir(outdir) do
-          rel_projects_path = File.basename(projects.path)
-          puts rel_projects_path
-          Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
-          puts File.join(rel_projects_path,project.path)
-          Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
-          puts File.join(rel_projects_path,project.path, sample.path)
-          Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
-          dest_dir = File.join(rel_projects_path,project.path, sample.path)
-        end 
-      end 
-      Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-        `zcat #{data.first} | pigz -p 2  > #{File.join(dest_dir,data.last)}`
-      end
+    project.each_sample do |sample_name,sample|
+      aggregate_sample(dir, project_name, sample_name, outdir)
     end
   end
 
   desc "aggregate_sample DIR PROJECT SAMPLE [OUTDIR]", "create a single file (forward/reverse) from chucks of a sample in a project"
+  method_option :cpus, :type=>:numeric, :default => 2
   def aggregate_sample(dir, project_name, sample_name, outdir=nil)
     outdir = Dir.pwd if outdir.nil?
     projects=Bio::Ngs::Illumina.build(dir)
@@ -200,34 +192,37 @@ class Quality < Thor
     
     if project
       sample = project.get(sample_name)
-    if sample
-      sample_base_name = File.join(projects.path, project.path, sample.path)
-      file_names_forward = Dir.glob(File.join(sample_base_name, "*R1_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
-      file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
-      file_merge_forward = "#{sample.path}_R1.fastq.gz"
-      file_merge_reverse = "#{sample.path}_R2.fastq.gz"
-      dest_dir = outdir
-      if outdir
-        Dir.chdir(outdir) do
-          rel_projects_path = File.basename(projects.path)
-          puts rel_projects_path
-          Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
-          puts File.join(rel_projects_path,project.path)
-          Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
-          puts File.join(rel_projects_path,project.path, sample.path)
-          Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
-          dest_dir = File.join(rel_projects_path,project.path, sample.path)
+      if sample
+        sample_base_name = File.join(projects.path, project.path, sample.path)
+        file_names_forward = Dir.glob(File.join(sample_base_name, "*R1_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
+        file_names_reverse = Dir.glob(File.join(sample_base_name, "*R2_[0-9][0-9][0-9].fastq.gz")).sort.join(" ")
+        file_merge_forward = "#{sample.path}_R1.fastq.gz"
+        file_merge_reverse = "#{sample.path}_R2.fastq.gz"
+        dest_dir = outdir
+        if outdir
+          Dir.chdir(outdir) do
+            rel_projects_path = File.basename(projects.path)
+            puts rel_projects_path
+            Dir.mkdir(rel_projects_path) unless Dir.exists?(rel_projects_path)
+            puts File.join(rel_projects_path,project.path)
+            Dir.mkdir(File.join(rel_projects_path,project.path)) unless Dir.exists?(File.join(rel_projects_path,project.path))
+            puts File.join(rel_projects_path,project.path, sample.path)
+            Dir.mkdir(File.join(rel_projects_path,project.path, sample.path)) unless Dir.exists?(File.join(rel_projects_path,project.path, sample.path))
+            dest_dir = File.join(rel_projects_path,project.path, sample.path)
+          end 
         end 
-      end 
-      Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
-        `zcat #{data.first} | pigz -p 2 > #{File.join(dest_dir,data.last)}`
+        Parallel.map([[file_names_forward, file_merge_forward], [file_names_reverse, file_merge_reverse]], in_processes:3) do |data|
+          # puts "destdir #{dest_dir}"
+          # puts "filename #{data.last}"
+          # puts "input files #{data.first}"
+          `zcat #{data.first} | pigz -p #{options[:cpus]} > #{File.join(outdir,dest_dir,data.last)}`
+        end
+      else
+        puts "Sample #{sample_name} does not exist."
       end
     else
-       puts "Sample #{sample_name} does not exist."
+      puts "Project #{project_name} does not exist."
     end
-  else
-    puts "Project #{project_name} does not exist."
-  end
   end
 
   desc "reads_per_projects_and_samples [DIR]", "count the number of reads for each sample"
@@ -266,23 +261,29 @@ class Quality < Thor
   end
 
   desc "trim_momatic_pe FORWARD REVERSE [DESTDIR]", "Trim reads on quality by using Trimmomatic, Paired Ends"
-  method_option :threads, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
+  method_option :cpus, :type => :numeric, :default => 2, :desc => 'Number of threads to use by Trimmomatic'
+  method_option :steps, :type => :array, :default=> ["ILLUMINACLIP:#{File.join(File.dirname(ENV['TRIMMOMATIC_JAR']),'adapters','TruSeq3-PE.fa')}:2:30:10"]+%w(LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36), :desc => 'Trimming steps as described: http://www.usadellab.org/cms/index.php?page=trimmomatic'
   method_option :log, :type => :string, :desc => 'Log Trimmomatic activities'
   def trim_momatic_pe(forward, reverse, destdir=nil)
-    uuid = SecureRandom.uuid
-    puts "[#{Time.now}] #{uuid} Start trimming #{forward} and #{reverse} paired end reads by Trimmomatic"
-    puts "#{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar"
-    # -threads #{options[:threads]} {'-trimlog' if options[:log]} #{options[:log]} 
-    forward_filename = File.basename(forward)
-    forward_dir = File.dirname(forward)
-    reverse_filename = File.basename(reverse)
-    reverse_dir = File.dirname(reverse)
-    forward_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
-    reverse_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
-    forward_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
-    reverse_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
-    `java -classpath #{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar org.usadellab.trimmomatic.TrimmomaticPE -threads #{options[:threads]} -phred33 #{forward} #{reverse} #{forward_trimmed_filename} #{forward_unpaired_filename}  #{reverse_trimmed_filename} #{reverse_unpaired_filename} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36`
-    puts "[#{Time.now}] #{uuid} Finished "
+    trimmomatic_jar = ENV['TRIMMOMATIC_JAR']
+    if trimmomatic_jar.nil?
+      warn "I can not load Trimmomatic, there is no jar file specifed. Please declare an environment variable named TRIMMOMATIC_JAR with fullpathname to Trimmomatic jar."
+    else
+      uuid = SecureRandom.uuid
+      puts "[#{Time.now}] #{uuid} Start trimming #{forward} and #{reverse} paired end reads by Trimmomatic"
+      # puts "#{File.dirname(__FILE__)}/../bio/ngs/ext/bin/common/trimmomatic/trimmomatic-0.22.jar"
+      # -threads #{options[:threads]} {'-trimlog' if options[:log]} #{options[:log]} 
+      forward_filename = File.basename(forward)
+      forward_dir = File.dirname(forward)
+      reverse_filename = File.basename(reverse)
+      reverse_dir = File.dirname(reverse)
+      forward_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
+      reverse_trimmed_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'trimmed.fastq.gz'))
+      forward_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),forward_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
+      reverse_unpaired_filename = File.join( (destdir.nil? ? forward_dir : destdir),reverse_filename.gsub(/fastq\.gz/,'unpaired.fastq.gz'))
+      `java -classpath #{trimmomatic_jar} org.usadellab.trimmomatic.TrimmomaticPE -threads #{options[:cpus]} -phred33 #{forward} #{reverse} #{forward_trimmed_filename} #{forward_unpaired_filename}  #{reverse_trimmed_filename} #{reverse_unpaired_filename} #{options[:steps].join(" ")}`
+      puts "[#{Time.now}] #{uuid} Finished "
+    end
   end
 
   desc "illumina_aggregated_sample_trim DIR PROJECT [SAMPLE]", "Trim aggregated data from Illumina project"

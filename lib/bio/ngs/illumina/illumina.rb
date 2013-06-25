@@ -3,6 +3,7 @@
 require 'bio/ngs/illumina/project'
 require 'bio/ngs/illumina/sample'
 require 'bio/ngs/illumina/fastq'
+require 'bio/ngs/illumina/utils'
 
 module Bio
   module Ngs
@@ -14,6 +15,8 @@ module Bio
           metadata[:path]=path
         end
         alias :projects :pool
+
+        alias :each_project :each
 
         def path
           metadata[:path]

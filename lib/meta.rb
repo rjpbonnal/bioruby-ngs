@@ -29,6 +29,10 @@ module Meta
       metadata.key? tag
     end
 
+    def tags
+      metadata.keys.sort
+    end
+
     def has_value?(val)
       metadata.each_pair do |tag, value|
         return true if value == val
@@ -111,6 +115,15 @@ module Meta
 
     def each &block
       pool.each_pair{|name, member| block.call(name, member)}
+    end
+
+    def tags
+      tags_ary = []
+      each do |name, member|
+        tags_ary << member.tags if member.respond_to? :tags
+      end
+
+      tags_ary.flatten.uniq.sort
     end
 
     # TODO implement <=>

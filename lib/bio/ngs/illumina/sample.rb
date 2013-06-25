@@ -122,6 +122,14 @@ module Bio
             chunks_id.uniq.sort
           end
 
+          def chunks_by_pair
+            #TODO debug!!!
+            chunks.map do |id|
+              tmp = (get :chunks, id)
+              [tmp.get(:side, :lefth)[1], tmp.get(:side,:right)[1]]
+            end
+          end
+
           def lanes
             lanes_id = []
             each_file do |file_name, reads|

@@ -220,6 +220,7 @@ module Bio
 
           def projects
             prjs= Hash.new { |hash, key| hash[key] = Hash.new { |hash, key| hash[key] = [] }  }
+            
             data = smart_path :project=> :all
             data.each_pair do |key, paths|
               paths.each do |path|
