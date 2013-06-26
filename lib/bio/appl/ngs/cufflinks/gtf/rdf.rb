@@ -30,6 +30,7 @@ module Bio
               "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
               "@prefix ns0: <http://purl.obolibrary.org/obo/> .",
               "@prefix gtf: <http://genome.db/gtf/> .",
+              "@prefix gtf_vocabulary: <http://genome.db/gtf/rdf-schema#> .",
               "@prefix ngs: <http://genome.db/ngs/> .",
               "@prefix ensembl: <http://identifiers.org/ensembl/> ."
             ]
@@ -67,7 +68,7 @@ unless opts[:remove_zero] && transcript.attributes[:FPKM] == 0.0
               triple(transcript_uri, "rdf:type", "ns0:SO_0000833") # so:transcript
               triple(transcript_uri, "rdfs:label", quote(transcript_id))
               # triple(transcript_uri, "gtf:parent_gene", uri(domain:"ensembl", entity:transcript.attributes[:gene_id]))
-              triple(transcript_uri, "gtf:parent_gene", "ensembl:transcript.attributes[:gene_id]")
+              triple(transcript_uri, "gtf_vocabulary:parent_gene", "ensembl:#{transcript.attributes[:gene_id]}")
               #triple(transcript_uri, "gtf:parent_gene", gene_uri)
               triple(transcript_uri, "gtf:uuid", transcript_uuid)
               if opts[:sample]
