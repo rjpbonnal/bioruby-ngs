@@ -117,7 +117,7 @@ Most of this tasks create sub-processes to speed up conversions
     biongs pre:illumina_filter [DIR(s)]  # Filter the data using Y/N flag in FastQ headers (Illumina). Search for fastq.gz files within director...
     biongs pre:merge [file(s)]           # Merge together fastQ files (accepts wildcards)
     biongs pre:paired_merge [file(s)]    # Merge together FastQ files while checking for correct pairing (accepts wildcards)
-    biongs pre:trim [fastq(s)]           # Calulate quality profile and trim the all the reads using FastX (accepts wildcards)
+    biongs pre:trim [fastq(s)]           # Calculate quality profile and trim the all the reads using FastX (accepts wildcards)
     biongs pre:uncompress [file(s)]      # Uncompress multiple files in parallel (accepts wildcards)
 
 ### project
